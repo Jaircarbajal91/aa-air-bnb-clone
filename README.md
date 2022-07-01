@@ -292,7 +292,7 @@ Returns the details of a spot specified by its id.
 * Require Authentication: false
 * Request
   * Method: GET
-  * URL: spots/:spotId/details
+  * URL: spots/:spotId
   * Body: none
 
 * Successful Response
@@ -349,7 +349,7 @@ Creates and returns a new spot.
 * Require Authentication: true
 * Request
   * Method: POST
-  * URL: /spots/auth/create
+  * URL: /spots/auth
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -424,7 +424,7 @@ Updates and returns an existing spot.
 * Require proper authorization: Spot must belong to the current user
 * Request
   * Method: PUT
-  * URL: /spots/auth/:spotId/edit
+  * URL: /spots/auth/:spotId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -512,7 +512,7 @@ Deletes an existing spot.
 * Require proper authorization: Spot must belong to the current user
 * Request
   * Method: DELETE
-  * URL: spots/auth/:spotId/delete
+  * URL: spots/auth/:spotId
   * Body: none
 
 * Successful Response
@@ -653,7 +653,7 @@ Create and return a new review for a spot specified by id.
 * Require Authentication: true
 * Request
   * Method: POST
-  * URL: /reviews/auth/:spotId/create
+  * URL: /reviews/auth/:spotId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -802,7 +802,7 @@ Delete an existing review.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: DELETE
-  * URL: reviews/auth/:reviewId/delete
+  * URL: reviews/auth/:reviewId
   * Body: none
 
 * Successful Response
@@ -952,7 +952,7 @@ Create and return a new booking from a spot specified by id.
 * Require proper authorization: Spot must NOT belong to the current user
 * Request
   * Method: POST
-  * URL: /bookings/auth/:spotId/create
+  * URL: /bookings/auth/:spotId
   * Body:
 
     ```json
@@ -1132,7 +1132,7 @@ Delete an existing booking.
   Spot must belong to the current user
 * Request
   * Method: DELETE
-  * URL: /bookings/auth/:bookingId/delete
+  * URL: /bookings/auth/:bookingId
   * Body: none
 
 * Successful Response
@@ -1182,7 +1182,7 @@ Create and return a new image for a spot specified by id.
 * Require proper authorization: Spot must belong to the current user
 * Request
   * Method: POST
-  * URL: /images/auth/:spotId/create
+  * URL: /images/auth/:spotId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1229,7 +1229,7 @@ Create and return a new image for a review specified by id.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: PUT
-  * URL: /images/auth/:reviewId/create
+  * URL: /images/auth/:reviewId
   * Headers:
     * Content-Type: application/json
   * Body:
