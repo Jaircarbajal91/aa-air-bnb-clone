@@ -1,0 +1,20 @@
+{
+  "name": "aa-air-bnb-clone",
+  "version": "1.0.0",
+  "description": "## Database Schema Design",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jaircarbajal91/aa-air-bnb-clone.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jaircarbajal91/aa-air-bnb-clone/issues"
+  },
+  "homepage": "https://github.com/Jaircarbajal91/aa-air-bnb-clone#readme"
+}

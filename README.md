@@ -1,8 +1,9 @@
-# `<name of application here>`
+# `JAir BnB`
 
 ## Database Schema Design
 
-`<insert database schema design here>`
+![](./backend/images/schema/Screen%20Shot%202022-07-01%20at%207.53.40%20AM.png)
+
 
 ## API Documentation
 
