@@ -2,7 +2,7 @@
 
 ## Database Schema Design
 
-![](./backend/images/schema/Screen%20Shot%202022-07-01%20at%207.53.40%20AM.png)
+![](./backend/images/schema/Screen%20Shot%202022-07-01%20at%2011.05.30%20AM.png)
 
 
 ## API Documentation
