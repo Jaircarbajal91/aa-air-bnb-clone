@@ -28,7 +28,8 @@
     "per-env": "^1.0.2",
     "sequelize": "^6.21.1",
     "sequelize-cli": "^6.4.1",
-    "sqlite3": "^5.0.8"
+    "sqlite3": "^5.0.8",
+    "pg": "^8.7.3"
   },
   "devDependencies": {
     "dotenv-cli": "^5.1.0",
