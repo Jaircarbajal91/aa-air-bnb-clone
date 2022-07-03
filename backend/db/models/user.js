@@ -62,14 +62,6 @@ module.exports = (sequelize, DataTypes) => {
           }
         }
       },
-      firstName: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      lastName: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
       email: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -84,9 +76,16 @@ module.exports = (sequelize, DataTypes) => {
           len: [60, 60]
         }
       },
+      firstName: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      lastName: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       token: {
         type: Sequelize.STRING,
-        allowNull: false,
         unique: true
       }
     },
