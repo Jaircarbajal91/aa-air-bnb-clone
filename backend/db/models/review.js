@@ -27,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     spotId: {
-      type:  DataTypes.INTEGER,
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     review: {
@@ -35,7 +35,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     stars:{
-      type: DataTypes.INTEGER,
+      type: DataTypes.FLOAT,
     },
     imageId: {
       type: DataTypes.INTEGER
