@@ -6,21 +6,7 @@ const reviews = [{
   review: 'This place ruled!',
   stars: 5.0,
   imageId: 1
-},
-{
-  userId: 2,
-  spotId: 2,
-  review: 'This place SUCKED!',
-  stars: 1.5,
-  imageId: 2
-},
-{
-  userId: 3,
-  spotId: 3,
-  review: 'This place was ok!',
-  stars: 3.5,
-  imageId: 3
-},
+}
 ]
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -33,7 +19,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.deleteInsert('Reviews', {
+    await queryInterface.bulkDelete('Reviews', {
       where: userId
     });
   }
