@@ -21,7 +21,7 @@ module.exports = {
         allowNull: false
       },
       stars: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.FLOAT
       },
       imageId: {
         type: Sequelize.INTEGER
