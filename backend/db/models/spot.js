@@ -13,58 +13,47 @@ module.exports = (sequelize, DataTypes) => {
       Spot.hasMany(models.Booking, {
         foreignKey: 'spotId'
       })
-      Spot.hasMany(models.Image, {
+      Spot.hasMany(models.Review, {
         foreignKey: 'spotId'
       })
       Spot.hasMany(models.Image, {
         foreignKey: 'spotId'
+      })
+      Spot.belongsTo(models.User, {
+        foreignKey: 'ownerId'
       })
     }
   }
   Spot.init({
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
     },
     description: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type:DataTypes.STRING,
     },
     address: {
       type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
     },
     city: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
+    },
     state: {
       type: DataTypes.STRING,
-      allowNull: false
     },
     country: {
       type: DataTypes.STRING,
-      allowNull: false
     },
     lat: {
       type: DataTypes.FLOAT,
-      allowNull: false,
-      unique: true
     },
     lng: {
       type: DataTypes.FLOAT,
-      allowNull: false,
-      unique: true
     },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+    price: {
+      type: DataTypes.DECIMAL,
     },
-    imageId: {
+    ownerId: {
       type: DataTypes.INTEGER,
-      allowNull: false
     }
   }, {
     sequelize,
