@@ -8,8 +8,8 @@ module.exports = {
     logQueryParameters: true,
     typValications: true,
     benchmark: true,
-    logging: (...msg) => console.log(msg),
-    logQueryParameters: true
+    // logging: (...msg) => console.log(msg),
+    logging: true
   },
   production: {
     use_env_variable: 'DATABASE_URL',
