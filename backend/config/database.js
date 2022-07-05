@@ -9,7 +9,7 @@ module.exports = {
     typValications: true,
     benchmark: true,
     // logging: (...msg) => console.log(msg),
-    logging: true
+    logging: false
   },
   production: {
     use_env_variable: 'DATABASE_URL',
