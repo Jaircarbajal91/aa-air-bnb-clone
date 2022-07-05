@@ -32,7 +32,7 @@ router.get(
 );
 
 router.post(
-  '/',
+  '/login',
   validateLogin,
   async (req, res, next) => {
     const { credential, password } = req.body;
@@ -44,9 +44,15 @@ router.post(
       err.errors = ['The provided credentials were invalid.'];
       return next(err);
     }
-    await setTokenCookie(res, user);
+    const token = await setTokenCookie(res, user);
+    user.token = token
+    user.save()
     return res.json({
-      user
+      "id": user.id,
+      "firstName": user.firstName,
+      "lastName": user.lastName,
+      "email": user.email,
+      "token": user.token
     });
   }
 );
