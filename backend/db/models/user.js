@@ -34,12 +34,15 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
     // accepts an object with a username, email, and password key. Hash the password using the bcryptjs package's hashSync method. Create a User with the username, email, and hashedPassword. Return the created user using the currentUser scope.
-    static async signup({ username, email, password }) {
+    static async signup({ username, email, password, firstName, lastName, token }) {
       const hashedPassword = bcrypt.hashSync(password);
       const user = await User.create({
         username,
         email,
-        hashedPassword
+        hashedPassword,
+        firstName,
+        lastName,
+        token
       });
       return await User.scope('currentUser').findByPk(user.id);
     }
@@ -85,15 +88,15 @@ module.exports = (sequelize, DataTypes) => {
         }
       },
       firstName: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
       },
       lastName: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false
       },
       token: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         unique: true
       }
     },
