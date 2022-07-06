@@ -40,6 +40,19 @@ const spots = [
     ownerId: 3,
     previewImage: 'asldkfjhalsdk'
   },
+  {
+    name: 'Place 4',
+    description: 'City',
+    address: '1233 City St',
+    city: 'New York',
+    state: 'Ny',
+    country: 'United States',
+    lat: 37.7645358,
+    lng: -122.4730327,
+    price: 123,
+    ownerId: 2,
+    previewImage: 'asldkfjhalsdk'
+  },
 ]
 
 module.exports = {
