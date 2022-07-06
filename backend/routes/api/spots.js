@@ -24,10 +24,7 @@ router.get('/:spotId', async (req, res) => {
       {
         model: Review,
         as: 'reviews',
-        attributes: [
-          [sequelize.fn('COUNT', sequelize.col('*')), 'numReviews'],
-          [sequelize.fn('AVG', sequelize.col('stars')), 'avgStarRating']
-        ]
+        attributes: []
       },
       {
         model: Image,
@@ -39,8 +36,17 @@ router.get('/:spotId', async (req, res) => {
         as: 'Owner',
         attributes: ['id', 'firstName', 'lastName']
       }
-    ]
+    ],
+    attributes: {
+      include: [
+        [sequelize.fn('COUNT', sequelize.col('Reviews.id')), 'numReviews'],
+        [sequelize.fn('AVG', sequelize.col('Reviews.stars')), 'avgStarRating'],
+      ]
+    }
   });
+
+  const spotData = spot.toJSON()
+  spotData.avgStarRating = Number(spotData.avgStarRating.toFixed(1))
 
 
   if (!spot.id) {
@@ -50,7 +56,7 @@ router.get('/:spotId', async (req, res) => {
       "statusCode": 404
     })
   }
-  res.json(spot);
+  res.json(spotData);
 })
 
 router.get('/', async (req, res) => {
