@@ -27,6 +27,10 @@ const validateSignup = [
   handleValidationErrors
 ];
 
+router.get('/', (req, res) => {
+  res.send('hello')
+})
+
 router.post(
   '/signup',
   checkRequiredFields,
@@ -67,7 +71,7 @@ async function checkUniqueEmail(req, res, next) {
       email
     }
   })
-  if (user) {
+  if (user.email) {
     res.statusCode = 403;
     return res.json({
       "message": "User already exists",
