@@ -11,7 +11,8 @@ const spots = [
     lat: 37.7645358,
     lng: -122.4730327,
     price: 123,
-    ownerId: 2
+    ownerId: 2,
+    previewImage: 'asldkfjhalsdk'
   },
   {
     name: 'Place 2',
@@ -23,7 +24,8 @@ const spots = [
     lat: 37.7645358,
     lng: -122.4730327,
     price: 1232,
-    ownerId: 1
+    ownerId: 1,
+    previewImage: 'asldkfjhalsdk'
   },
   {
     name: 'Place 3',
@@ -35,7 +37,8 @@ const spots = [
     lat: 37.7645358,
     lng: -122.4730327,
     price: 123,
-    ownerId: 3
+    ownerId: 3,
+    previewImage: 'asldkfjhalsdk'
   },
 ]
 
