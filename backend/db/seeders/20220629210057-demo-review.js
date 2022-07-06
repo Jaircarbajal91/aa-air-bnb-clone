@@ -10,6 +10,20 @@ const reviews = [
   },
   {
     userId: 2,
+    spotId: 1,
+    review: 'This is fine',
+    stars: 3,
+    imageId: 1
+  },
+  {
+    userId: 3,
+    spotId: 1,
+    review: 'This is fine',
+    stars: 4,
+    imageId: 1
+  },
+  {
+    userId: 2,
     spotId: 2,
     review: 'This is great',
     stars: 2,
