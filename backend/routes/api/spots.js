@@ -151,7 +151,7 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
 })
 
 router.delete('/auth/:spotId', requireAuth, async (req, res) => {
-  const spot = await User.findByPk(req.params.spotId);
+  const spot = await Spot.findByPk(req.params.spotId);
   if (!spot) {
     return res.status(404).json({
       "message": "Spot couldn't be found",
