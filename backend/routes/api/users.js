@@ -49,7 +49,7 @@ router.post(
   }
 );
 
-router.get('/auth', async (req, res) => {
+router.get('/auth', requireAuth, async (req, res) => {
   const id = req.user.id;
   console.log(req.user)
 
