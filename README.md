@@ -2,7 +2,7 @@
 
 ## Database Schema Design
 
-![](./backend/images/schema/Screen%20Shot%202022-07-03%20at%208.50.57%20AM.png)
+![](./backend/images/schema/Screen%20Shot%202022-07-01%20at%2011.05.30%20AM.png)
 
 
 ## API Documentation
@@ -77,7 +77,7 @@ information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * URL: /login
+  * URL: /session/login
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -143,7 +143,7 @@ user's information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * URL: /signup
+  * URL: users/signup
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -153,7 +153,8 @@ user's information.
       "firstName": "John",
       "lastName": "Smith",
       "email": "john.smith@gmail.com",
-      "password": "secret password"
+      "password": "secret password",
+      "username": "johnsmith12"
     }
     ```
 
@@ -168,6 +169,7 @@ user's information.
       "id": 1,
       "firstName": "John",
       "lastName": "Smith",
+      "username": "johnsmith12",
       "email": "john.smith@gmail.com",
       "token": ""
     }
