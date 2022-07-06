@@ -14,40 +14,49 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'spotId', onDelete: 'SET NULL'
       })
       Spot.hasMany(models.Review, {
-        foreignKey: 'spotId', as: 'reviews', onDelete: 'SET NULL'
+        foreignKey: 'spotId', as: 'reviews', onDelete: 'CASCADE'
       })
       Spot.hasMany(models.Image, {
-        foreignKey: 'spotId', as: 'images', onDelete: 'SET NULL'
+        foreignKey: 'spotId', as: 'images', onDelete: 'CASCADE'
       })
       Spot.belongsTo(models.User, {
-        foreignKey: 'ownerId', as: 'Owner', onDelete: 'SET NULL'
+        foreignKey: 'ownerId', as: 'Owner', onDelete: 'CASCADE'
       })
     }
   }
   Spot.init({
     name: {
       type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        len: [1, 50]
+      }
     },
     description: {
       type:DataTypes.STRING,
+      allowNull: false,
     },
     address: {
       type: DataTypes.STRING,
+      allowNull: false
     },
     city: {
       type: DataTypes.STRING,
+      allowNull: false
     },
     state: {
       type: DataTypes.STRING,
+      allowNull: false
     },
     country: {
       type: DataTypes.STRING,
+      allowNull: false
     },
     lat: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.FLOAT(3, 15),
     },
     lng: {
-      type: DataTypes.FLOAT,
+      type: DataTypes.FLOAT(3, 15),
     },
     price: {
       type: DataTypes.DECIMAL,
