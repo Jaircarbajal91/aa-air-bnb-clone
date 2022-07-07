@@ -36,7 +36,7 @@ router.post('/auth/spot/:spotId', requireAuth, async (req, res) => {
   const allImagesForSpot = await Image.findAll({
     where: {
       [Op.and]: [
-        { spotId: req.params.spotId},
+        { spotId: req.params.spotId },
         { imageableType: "Spot" }
       ]
     }
