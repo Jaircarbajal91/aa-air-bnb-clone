@@ -2,7 +2,7 @@
 
 ## Database Schema Design
 
-![](./backend/images/schema/Screen%20Shot%202022-07-01%20at%2011.05.30%20AM.png)
+![](./backend/images/schema/Screen%20Shot%202022-07-07%20at%202.24.29%20PM.png)
 
 
 ## API Documentation
@@ -51,7 +51,7 @@ Returns the information about the current user that is logged in.
 * Require Authentication: true
 * Request
   * Method: GET
-  * URL: users/auth
+  * URL: api/users/auth
   * Body: none
 
 * Successful Response
@@ -77,14 +77,14 @@ information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * URL: /session/login
+  * URL: api/session/login
   * Headers:
     * Content-Type: application/json
   * Body:
 
     ```json
     {
-      "email": "john.smith@gmail.com",
+      "credential": "john.smith@gmail.com",
       "password": "secret password"
     }
     ```
@@ -143,7 +143,7 @@ user's information.
 * Require Authentication: false
 * Request
   * Method: POST
-  * URL: users/signup
+  * URL: api/users/signup
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -216,7 +216,7 @@ Returns all the spots.
 * Require Authentication: false
 * Request
   * Method: GET
-  * URL: /spots
+  * URL: api/spots
   * Body: none
 
 * Successful Response
@@ -255,7 +255,7 @@ Returns all the spots owned (created) by the current user.
 * Require Authentication: true
 * Request
   * Method: GET
-  * URL: /spots/auth
+  * URL: api/spots/auth
   * Body: none
 
 * Successful Response
@@ -294,7 +294,7 @@ Returns the details of a spot specified by its id.
 * Require Authentication: false
 * Request
   * Method: GET
-  * URL: spots/:spotId
+  * URL: api/spots/:spotId
   * Body: none
 
 * Successful Response
@@ -736,7 +736,7 @@ Update and return an existing review.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: PUT
-  * URL: users/auth/reviews/:reviewId
+  * URL: auth/:reviewId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1184,7 +1184,7 @@ Create and return a new image for a spot specified by id.
 * Require proper authorization: Spot must belong to the current user
 * Request
   * Method: POST
-  * URL: /images/auth/:spotId
+  * URL: /images/auth/spot/:spotId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1231,7 +1231,7 @@ Create and return a new image for a review specified by id.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: PUT
-  * URL: /images/auth/:reviewId
+  * URL: /images/auth/review/:reviewId
   * Headers:
     * Content-Type: application/json
   * Body:
