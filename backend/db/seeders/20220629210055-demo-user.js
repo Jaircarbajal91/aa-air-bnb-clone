@@ -9,21 +9,24 @@ module.exports = {
         username: 'Demo-lition',
         hashedPassword: bcrypt.hashSync('password'),
         firstName: 'demo',
-        lastName: 'lition'
+        lastName: 'lition',
+        token: 'asdfasssssdfa'
       },
       {
         email: 'user1@user.io',
         username: 'FakeUser1',
         hashedPassword: bcrypt.hashSync('password2'),
         firstName: 'fake',
-        lastName: 'user'
+        lastName: 'user',
+        token: 'asdfasdfa'
       },
       {
         email: 'user2@user.io',
         username: 'FakeUser2',
         hashedPassword: bcrypt.hashSync('password3'),
         firstName: 'third',
-        lastName: 'entry'
+        lastName: 'entry',
+        token: 'asdfasdfas'
       }
     ], {});
   },

@@ -164,7 +164,7 @@ router.get('/', async (req, res) => {
       [Op.and]: pagination.options
     },
     limit: pagination.size,
-    offset: (pagination.size * (pagination.page - 1))
+    offset: (pagination.size * (pagination.page))
   })
   res.json({
     spots,
