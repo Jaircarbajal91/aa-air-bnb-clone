@@ -9,31 +9,40 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       name: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       description: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       address: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       city: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       state: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       country: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       lat: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT(3, 15),
+        allowNull: false
       },
       lng: {
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT(3, 15),
+        allowNull: false
       },
       price: {
-        type: Sequelize.DECIMAL
+        type: Sequelize.DECIMAL,
+        allowNull: false
       },
       ownerId: {
         type: Sequelize.INTEGER,

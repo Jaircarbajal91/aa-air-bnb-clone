@@ -54,18 +54,23 @@ module.exports = (sequelize, DataTypes) => {
     },
     lat: {
       type: DataTypes.FLOAT(3, 15),
+      allowNull: false
     },
     lng: {
       type: DataTypes.FLOAT(3, 15),
+      allowNull: false
     },
     price: {
       type: DataTypes.DECIMAL,
+      allowNull: false
     },
     ownerId: {
       type: DataTypes.INTEGER,
+      allowNull: false
     },
     previewImage: {
-      type: DataTypes.STRING
+      type: DataTypes.STRING,
+      allowNull: false
     }
   }, {
     sequelize,

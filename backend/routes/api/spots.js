@@ -156,20 +156,20 @@ router.get('/', async (req, res) => {
   }
 
   pagination.size = size
-  pagination.page = page || 1
+  pagination.page = page
 
 
   const spots = await Spot.findAll({
     where: {
       [Op.and]: pagination.options
     },
-    limit: pagination.size,
-    offset: (pagination.size * (pagination.page - 1))
+    limit: pagination.size || 20,
+    offset: pagination.size * pagination.page
   })
   res.json({
     spots,
     page: pagination.page,
-    size: pagination.size,
+    size: pagination.size || 20,
   }
   )
 })
