@@ -26,7 +26,13 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.INTEGER,
     },
     reviewId: {
-      type: DataTypes.INTEGER
+      type: DataTypes.INTEGER,
+    },
+    imageableId: {
+      type: DataTypes.INTEGER,
+    },
+    imageableType: {
+      type: DataTypes.STRING,
     }
   }, {
     sequelize,
