@@ -21,6 +21,24 @@ const bookings = [
     startDate: today,
     endDate: today
   },
+  {
+    spotId: 3,
+    userId: 2,
+    startDate: today,
+    endDate: today
+  },
+  {
+    spotId: 3,
+    userId: 1,
+    startDate: today,
+    endDate: today
+  },
+  {
+    spotId: 2,
+    userId: 3,
+    startDate: today,
+    endDate: today
+  },
 ]
 
 module.exports = {

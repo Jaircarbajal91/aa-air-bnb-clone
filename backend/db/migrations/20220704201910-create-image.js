@@ -27,6 +27,12 @@ module.exports = {
           key: 'id'
         },
       },
+      imageableId: {
+        type: Sequelize.INTEGER,
+      },
+      imageableType: {
+        type: Sequelize.STRING,
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

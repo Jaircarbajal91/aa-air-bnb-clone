@@ -2,7 +2,7 @@ const express = require('express');
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
 const { Spot, User, Review, Image, sequelize } = require('../../db/models');
 const router = express.Router();
-
+const { Op, EmptyResultError } = require("sequelize");
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const user = require('../../db/models/user');
@@ -60,12 +60,122 @@ router.get('/:spotId', async (req, res) => {
 })
 
 router.get('/', async (req, res) => {
-  const spots = await Spot.findAll()
-  res.json(spots)
+
+  const pagination = {
+    options: []
+  }
+  let { page, size, maxLat, minLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+  const err = {
+    "message": "Validation Error",
+    "statusCode": 400,
+    "errors": {}
+  }
+
+  page = Number(page);
+  size = Number(size);
+
+
+  if (Number.isNaN(page)) page = 0;
+  if (Number.isNaN(size)) size = 20;
+
+  if (page > 10) page = 10
+  if (size > 20) size = 20
+
+  if (page < 0) err.errors.page = "Page must be greater than or equal to 0"
+  if (size < 0) err.errors.size = "Size must be greater than or equal to 0"
+  if (Number(maxLat) > 90) {
+    err.errors.maxLat = "Maximum latitude is invalid"
+    maxLat = false
+  }
+  if (Number(minLat) < -90) {
+    err.errors.maxLat = "Minimum latitude is invalid"
+    minLng = false
+  }
+  if (Number(maxLng) > 180) {
+    err.errors.maxLng = "Maximum longitude is invalid"
+    maxLng = false
+  }
+  if (Number(minLng) < -180) {
+    err.errors.minLng = "Minimum longitude is invalid"
+    minLng = false
+  }
+  if (Number(minPrice) < 0) {
+    err.errors.minPrice = "Maximum price must be greater than 0"
+    minPrice = false
+  }
+  if (Number(maxPrice) < 0) {
+    err.errors.maxPrice = "Minimum price must be greater than 0"
+    maxPrice = false
+  }
+
+  if (page < 0 || size < 0 || (!maxLat && maxLat !== undefined) || (!minLat && minLat !== undefined) || (!maxLng && maxLng !== undefined) || (!minLng && minLng !== undefined) || (!minPrice && minPrice !== undefined) || (!maxPrice && maxPrice !== undefined)) {
+    return res.status(400).json(err)
+  }
+
+  if (maxLat) {
+    pagination.options.push(
+      {
+        lat: { [Op.lte]: Number(maxLat) }
+      }
+    )
+  }
+  if (minLat) {
+    pagination.options.push(
+      {
+        lat: { [Op.gte]: Number(minLat) }
+      }
+    )
+  }
+  if (minLng) {
+    pagination.options.push(
+      {
+        lng: { [Op.gte]: Number(minLng) }
+      }
+    )
+  }
+  if (maxLng) {
+    pagination.options.push(
+      {
+        lng: { [Op.lte]: Number(maxLng) }
+      }
+    )
+  }
+  if (minPrice) {
+    pagination.options.push(
+      {
+        price: { [Op.gte]: Number(minPrice) }
+      }
+    )
+  }
+  if (maxPrice) {
+    pagination.options.push(
+      {
+        price: { [Op.lte]: Number(maxPrice) }
+      }
+    )
+  }
+
+  pagination.size = size
+  pagination.page = page || 1
+
+
+  const spots = await Spot.findAll({
+    where: {
+      [Op.and]: pagination.options
+    },
+    limit: pagination.size,
+    offset: (pagination.size * (pagination.page - 1))
+  })
+  res.json({
+    spots,
+    page: pagination.page,
+    size: pagination.size,
+  }
+  )
 })
 
 router.post('/auth', requireAuth, async (req, res) => {
-  const {address, city, state, country, lat, lng, name, description, price} = req.body;
+  const { address, city, state, country, lat, lng, name, description, price } = req.body;
 
   const error = {
     "message": "Validation Error",
@@ -105,8 +215,8 @@ router.post('/auth', requireAuth, async (req, res) => {
 })
 
 router.put('/auth/:spotId', requireAuth, async (req, res) => {
-  const {spotId} = req.params;
-  const {address, city, state, country, lat, lng, name, description, price} = req.body;
+  const { spotId } = req.params;
+  const { address, city, state, country, lat, lng, name, description, price } = req.body;
   const spot = await Spot.findByPk(spotId);
 
   if (!spot) {
