@@ -62,10 +62,10 @@ Returns the information about the current user that is logged in.
 
     ```json
     {
-      "id": 1,
-      "firstName": "John",
-      "lastName": "Smith",
-      "email": "john.smith@gmail.com"
+      "id": 2,
+      "firstName": "fake",
+      "lastName": "user",
+      "email": "user1@user.io"
     }
     ```
 
@@ -84,8 +84,8 @@ information.
 
     ```json
     {
-      "credential": "john.smith@gmail.com",
-      "password": "secret password"
+      "credential": "user1@user.io",
+      "password": "password2"
     }
     ```
 
@@ -97,11 +97,11 @@ information.
 
     ```json
     {
-      "id": 1,
-      "firstName": "John",
-      "lastName": "Smith",
-      "email": "john.smith@gmail.com",
-      "token": ""
+        "id": 2,
+        "firstName": "fake",
+        "lastName": "user",
+        "email": "user1@user.io",
+        "token": "[token-value]"
     }
     ```
 
@@ -113,8 +113,12 @@ information.
 
     ```json
     {
-      "message": "Invalid credentials",
-      "statusCode": 401
+      "title": "Login failed",
+      "message": "Login failed",
+      "errors": [
+          "The provided credentials were invalid."
+      ],
+      "stack": "[stack]"
     }
     ```
 
@@ -126,11 +130,11 @@ information.
 
     ```json
     {
-      "message": "Validation error",
+      "message": "Bad request",
       "statusCode": 400,
       "errors": {
-        "email": "Email is required",
-        "password": "Password is required"
+        "email": "Please provide a valid email or username.",
+        "password": "Please provide a password"
       }
     }
     ```
@@ -171,7 +175,7 @@ user's information.
       "lastName": "Smith",
       "username": "johnsmith12",
       "email": "john.smith@gmail.com",
-      "token": ""
+      "token": "[token-value]"
     }
     ```
 
@@ -202,9 +206,11 @@ user's information.
       "message": "Validation error",
       "statusCode": 400,
       "errors": {
-        "email": "Invalid email",
+        "email": "Email is required",
         "firstName": "First Name is required",
-        "lastName": "Last Name is required"
+        "lastName": "Last Name is required",
+        "password": "Password is required",
+        "username": "Username is required"
       }
     }
     ```
@@ -230,20 +236,20 @@ Returns all the spots.
       "Spots":[
         {
           "id": 1,
-          "ownerId": 1,
-          "address": "123 Disney Lane",
-          "city": "San Francisco",
-          "state": "California",
-          "country": "United States of America",
+          "name": "Place 1",
+          "description": "Desert",
+          "address": "11223 Desert St",
+          "city": "Vegas",
+          "state": "NV",
+          "country": "United States",
           "lat": 37.7645358,
           "lng": -122.4730327,
-          "name": "App Academy",
-          "description": "Place where web developers are created",
           "price": 123,
-          "createdAt": "2021-11-19 20:39:36",
-          "updatedAt": "2021-11-19 20:39:36",
-          "previewImage": "image url"
-        }
+          "ownerId": 2,
+          "previewImage": "asldkfjhalsdk",
+          "createdAt": "2022-07-07T22:37:32.000Z",
+          "updatedAt": "2022-07-07T22:37:32.000Z"
+        },
       ]
     }
     ```
@@ -305,30 +311,33 @@ Returns the details of a spot specified by its id.
 
     ```json
     {
-      "id": 1,
-      "ownerId": 1,
-      "address": "123 Disney Lane",
-      "city": "San Francisco",
-      "state": "California",
-      "country": "United States of America",
+      "id": 2,
+      "name": "Place 2",
+      "description": "Island",
+      "address": "12312 Island St",
+      "city": "Honolulu",
+      "state": "HI",
+      "country": "United States",
       "lat": 37.7645358,
       "lng": -122.4730327,
-      "name": "App Academy",
-      "description": "Place where web developers are created",
-      "price": 123,
-      "createdAt": "2021-11-19 20:39:36",
-      "updatedAt": "2021-11-19 20:39:36" ,
-      "numReviews": 5,
-      "avgStarRating": 4.5,
-      "images": [
-        "image url"
+      "price": 1232,
+      "ownerId": 1,
+      "previewImage": "asldkfjhalsdk",
+      "createdAt": "2022-07-08T19:16:28.000Z",
+      "updatedAt": "2022-07-08T19:16:28.000Z",
+      "numReviews": 2,
+      "avgStarRating": 2,
+      "Images": [
+          {
+              "url": "http://cdn.cnn.com/cnnnext/dam/assets/180219103122-zanzibar-and-its-islands---mnemba-a-view-from-the-sky-mnemba-island-lodge.jpg"
+          }
       ],
-      "Owner": {
-        "id": 1,
-        "firstName": "John",
-        "lastName": "Smith"
+      "User": {
+          "id": 1,
+          "firstName": "demo",
+          "lastName": "lition"
       }
-    }
+  }
     ```
 
 * Error response: Couldn't find a Spot with the specified id
@@ -351,7 +360,7 @@ Creates and returns a new spot.
 * Require Authentication: true
 * Request
   * Method: POST
-  * URL: /spots/auth
+  * URL: api/spots/auth
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -389,6 +398,7 @@ Creates and returns a new spot.
       "name": "App Academy",
       "description": "Place where web developers are created",
       "price": 123,
+      "previewImage": "image url",
       "createdAt": "2021-11-19 20:39:36",
       "updatedAt": "2021-11-19 20:39:36"
     }
@@ -413,6 +423,7 @@ Creates and returns a new spot.
         "lng": "Longitude is not valid",
         "name": "Name must be less than 50 characters",
         "description": "Description is required",
+        "previewImage": "Preview Image is required",
         "price": "Price per day is required"
       }
     }
@@ -426,14 +437,14 @@ Updates and returns an existing spot.
 * Require proper authorization: Spot must belong to the current user
 * Request
   * Method: PUT
-  * URL: /spots/auth/:spotId
+  * URL: api/spots/auth/:spotId
   * Headers:
     * Content-Type: application/json
   * Body:
 
     ```json
     {
-      "address": "123 Disney Lane",
+      "address": "11s123 Dsisney Lane",
       "city": "San Francisco",
       "state": "California",
       "country": "United States of America",
@@ -441,6 +452,7 @@ Updates and returns an existing spot.
       "lng": -122.4730327,
       "name": "App Academy",
       "description": "Place where web developers are created",
+      "previewImage": "image url",
       "price": 123
     }
     ```
@@ -453,19 +465,20 @@ Updates and returns an existing spot.
 
     ```json
     {
-      "id": 1,
-      "ownerId": 1,
-      "address": "123 Disney Lane",
-      "city": "San Francisco",
-      "state": "California",
-      "country": "United States of America",
-      "lat": 37.7645358,
-      "lng": -122.4730327,
-      "name": "App Academy",
-      "description": "Place where web developers are created",
-      "price": 123,
-      "createdAt": "2021-11-19 20:39:36",
-      "updatedAt": "2021-11-20 10:06:40"
+        "id": 1,
+        "name": "App Academy",
+        "description": "Place where web developers are created",
+        "address": "11s123 Dsisney Lane",
+        "city": "San Francisco",
+        "state": "California",
+        "country": "United States",
+        "lat": 37.7645358,
+        "lng": -122.4730327,
+        "price": 123,
+        "ownerId": 2,
+        "previewImage": "asldkfjhalsdk",
+        "createdAt": "2022-07-08T19:16:28.000Z",
+        "updatedAt": "2022-07-08T19:25:11.718Z"
     }
     ```
 
@@ -514,7 +527,7 @@ Deletes an existing spot.
 * Require proper authorization: Spot must belong to the current user
 * Request
   * Method: DELETE
-  * URL: spots/auth/:spotId
+  * URL: api/spots/auth/:spotId
   * Body: none
 
 * Successful Response
@@ -550,7 +563,7 @@ Returns all the reviews written by the current user.
 * Require Authentication: true
 * Request
   * Method: GET
-  * URL: /reviews/auth
+  * URL: api/reviews/auth
   * Body: none
 
 * Successful Response
@@ -588,7 +601,9 @@ Returns all the reviews written by the current user.
             "price": 123
           },
           "images": [
-            "image url"
+            {
+              "url": "image url"
+            }
           ]
         }
       ]
@@ -602,7 +617,7 @@ Returns all the reviews that belong to a spot specified by id.
 * Require Authentication: false
 * Request
   * Method: GET
-  * URL: reviews/:spotId
+  * URL: /api/reviews/:spotId
   * Body: none
 
 * Successful Response
@@ -614,23 +629,17 @@ Returns all the reviews that belong to a spot specified by id.
     ```json
     {
       "Reviews": [
-        {
-          "id": 1,
-          "userId": 1,
-          "spotId": 1,
-          "review": "This was an awesome spot!",
-          "stars": 5,
-          "createdAt": "2021-11-19 20:39:36",
-          "updatedAt": "2021-11-19 20:39:36" ,
-          "User": {
-            "id": 1,
-            "firstName": "John",
-            "lastName": "Smith"
-          },
-          "images": [
-            "image url"
-          ]
-        }
+          {
+              "id": 5,
+              "userId": 2,
+              "spotId": 3,
+              "review": "This is amazing",
+              "stars": 3,
+              "imageId": 3,
+              "createdAt": "2022-07-08T19:16:28.000Z",
+              "updatedAt": "2022-07-08T19:16:28.000Z",
+              "Images": []
+          }
       ]
     }
     ```
@@ -655,7 +664,7 @@ Create and return a new review for a spot specified by id.
 * Require Authentication: true
 * Request
   * Method: POST
-  * URL: /reviews/auth/:spotId
+  * URL: api/reviews/auth/:spotId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -663,7 +672,7 @@ Create and return a new review for a spot specified by id.
     ```json
     {
       "review": "This was an awesome spot!",
-      "stars": 5,
+      "stars": 5
     }
     ```
 
@@ -736,7 +745,7 @@ Update and return an existing review.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: PUT
-  * URL: auth/:reviewId
+  * URL: api/reviews/auth/:reviewId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -744,7 +753,7 @@ Update and return an existing review.
     ```json
     {
       "review": "This was an awesome spot!",
-      "stars": 5,
+      "stars": 5
     }
     ```
 
@@ -804,7 +813,7 @@ Delete an existing review.
 * Require proper authorization: Review must belong to the current user
 * Request
   * Method: DELETE
-  * URL: reviews/auth/:reviewId
+  * URL: api/reviews/auth/:reviewId
   * Body: none
 
 * Successful Response
@@ -840,7 +849,7 @@ Return all the bookings that the current user has made.
 * Require Authentication: true
 * Request
   * Method: GET
-  * URL: /bookings/auth
+  * URL: api/bookings/auth
   * Body: none
 
 * Successful Response
@@ -885,7 +894,7 @@ Return all the bookings for a spot specified by id.
 * Require Authentication: true
 * Request
   * Method: GET
-  * URL: /bookings/auth/:spotId
+  * URL: api/bookings/auth/:spotId
   * Body: none
 
 * Successful Response: If you ARE NOT the owner of the spot.
@@ -954,7 +963,7 @@ Create and return a new booking from a spot specified by id.
 * Require proper authorization: Spot must NOT belong to the current user
 * Request
   * Method: POST
-  * URL: /bookings/auth/:spotId
+  * URL: api/bookings/auth/:spotId
   * Body:
 
     ```json
@@ -1036,7 +1045,7 @@ Update and return an existing booking.
 * Require proper authorization: Booking must belong to the current user
 * Request
   * Method: PUT
-  * URL: /bookings/auth/:bookingId
+  * URL: api/bookings/auth/:bookingId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1134,7 +1143,7 @@ Delete an existing booking.
   Spot must belong to the current user
 * Request
   * Method: DELETE
-  * URL: /bookings/auth/:bookingId
+  * URL: api/bookings/auth/:bookingId
   * Body: none
 
 * Successful Response
@@ -1184,7 +1193,7 @@ Create and return a new image for a spot specified by id.
 * Require proper authorization: Spot must belong to the current user
 * Request
   * Method: POST
-  * URL: /images/auth/spot/:spotId
+  * URL: api/images/auth/spot/:spotId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1230,8 +1239,8 @@ Create and return a new image for a review specified by id.
 * Require Authentication: true
 * Require proper authorization: Review must belong to the current user
 * Request
-  * Method: PUT
-  * URL: /images/auth/review/:reviewId
+  * Method: POST
+  * URL: api/images/auth/review/:reviewId
   * Headers:
     * Content-Type: application/json
   * Body:
@@ -1293,7 +1302,7 @@ Delete an existing image.
   the image's imageableId and imageableType
 * Request
   * Method: DELETE
-  * URL: /images/auth/:imageId
+  * URL: api/images/auth/:imageId
   * Body: none
 
 * Successful Response
@@ -1329,7 +1338,7 @@ Return spots filtered by query parameters.
 * Require Authentication: false
 * Request
   * Method: GET
-  * URL: /spots
+  * URL: api/spots?
   * Query Parameters
     * page: integer, minimum: 0, maximum: 10, default: 0
     * size: integer, minimum: 0, maximum: 20, default: 20

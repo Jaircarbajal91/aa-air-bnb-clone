@@ -31,10 +31,23 @@ const validateSignup = [
 router.post(
   '/signup',
   checkRequiredFields,
-  checkUniqueEmail,
   validateSignup,
   async (req, res) => {
+    const err = {
+      "message": "User already exists",
+      "statusCode": 403,
+      "errors": {}
+    }
     const { email, password, username, firstName, lastName } = req.body;
+    const existingUser = await User.findOne({
+      where: {
+        email
+      }
+    })
+    if (existingUser) {
+      err.errors.email = "User with that email already exists"
+      return res.status(403).json(err)
+    }
     const user = await User.signup({ email, username, password, firstName, lastName });
 
     const token = await setTokenCookie(res, user);
@@ -59,27 +72,6 @@ router.get('/auth', requireAuth, async (req, res) => {
   })
   res.json(user)
 })
-
-async function checkUniqueEmail(req, res, next) {
-  const email = req.user?.email;
-  if (!email) return next()
-  const user = await User.findOne({
-    where: {
-      email
-    }
-  })
-  if (user.email) {
-    res.statusCode = 403;
-    return res.json({
-      "message": "User already exists",
-      "statusCode": 403,
-      "errors": {
-        "email": "User with that email already exists"
-      }
-    })
-  }
-  next()
-}
 
 function checkRequiredFields(req, res, next) {
   const { firstName, lastName, email, password, username } = req.body;

@@ -2,7 +2,7 @@
 
 const reviews = [
   {
-    userId: 1,
+    userId: 3,
     spotId: 1,
     review: 'This is fine',
     stars: 1,
@@ -23,17 +23,31 @@ const reviews = [
     imageId: 1
   },
   {
-    userId: 2,
+    userId: 1,
     spotId: 2,
     review: 'This is great',
     stars: 2,
     imageId: 2
   },
   {
-    userId: 3,
+    userId: 2,
     spotId: 3,
     review: 'This is amazing',
     stars: 3,
+    imageId: 3
+  },
+  {
+    userId: 2,
+    spotId: 4,
+    review: 'This is amazing',
+    stars: 3,
+    imageId: 3
+  },
+  {
+    userId: 1,
+    spotId: 4,
+    review: 'This is fantastic',
+    stars: 4,
     imageId: 3
   },
 ]

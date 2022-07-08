@@ -36,6 +36,13 @@ const images = [
     imageableId: 2,
     imageableType: "Review"
   },
+  {
+    url: 'https://cdn.mos.cms.futurecdn.net/CbivdLKKTLVsjak9RDT9J5.jpg',
+    spotId: 4,
+    reviewId: null,
+    imageableId: 1,
+    imageableType: "Spot"
+  },
 ]
 
 module.exports = {

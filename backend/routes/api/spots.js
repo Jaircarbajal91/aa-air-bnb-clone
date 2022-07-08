@@ -23,17 +23,14 @@ router.get('/:spotId', async (req, res) => {
     include: [
       {
         model: Review,
-        as: 'reviews',
         attributes: []
       },
       {
         model: Image,
-        as: 'images',
         attributes: ['url']
       },
       {
         model: User,
-        as: 'Owner',
         attributes: ['id', 'firstName', 'lastName']
       }
     ],
@@ -45,10 +42,6 @@ router.get('/:spotId', async (req, res) => {
     }
   });
 
-  const spotData = spot.toJSON()
-  spotData.avgStarRating = Number(spotData.avgStarRating.toFixed(1))
-
-
   if (!spot.id) {
     res.statusCode = 404;
     return res.json({
@@ -56,6 +49,10 @@ router.get('/:spotId', async (req, res) => {
       "statusCode": 404
     })
   }
+  const spotData = spot.toJSON()
+  spotData.avgStarRating = Number(spotData?.avgStarRating?.toFixed(1)) || 1
+
+
   res.json(spotData);
 })
 
@@ -161,7 +158,7 @@ router.get('/', async (req, res) => {
     offset: pagination.size * pagination.page
   })
   res.json({
-    spots,
+    Spots: spots,
     page: pagination.page,
     size: pagination.size || 20,
   }
@@ -169,7 +166,7 @@ router.get('/', async (req, res) => {
 })
 
 router.post('/auth', requireAuth, async (req, res) => {
-  const { address, city, state, country, lat, lng, name, description, price } = req.body;
+  const { address, city, state, country, lat, lng, name, description, price, previewImage } = req.body;
 
   const error = {
     "message": "Validation Error",
@@ -186,12 +183,25 @@ router.post('/auth', requireAuth, async (req, res) => {
   if (!name) error.errors.name = "Name must be less than 50 characters"
   if (!description) error.errors.description = "Description is required"
   if (!price) error.errors.price = "Price per day is required"
+  if (!previewImage) error.errors.previewImage = "Preview Image is required"
 
-  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price) {
+  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage) {
     res.statusCode = 400;
     return res.json(error);
   }
 
+  const checkSpots = await Spot.findOne({
+    where: {
+      address
+    }
+  })
+
+  if (checkSpots) {
+    return res.status(404).json({
+      message: "Address already exists",
+      statusCode: 404
+    })
+  }
   const spot = await Spot.create({
     ownerId: req.user.id,
     address,
@@ -202,7 +212,8 @@ router.post('/auth', requireAuth, async (req, res) => {
     lng,
     name,
     description,
-    price
+    price,
+    previewImage
   });
 
   res.status(201).json(spot);
@@ -210,13 +221,25 @@ router.post('/auth', requireAuth, async (req, res) => {
 
 router.put('/auth/:spotId', requireAuth, async (req, res) => {
   const { spotId } = req.params;
-  const { address, city, state, country, lat, lng, name, description, price } = req.body;
+  const { address, city, state, country, lat, lng, name, description, price, previewImage } = req.body;
   const spot = await Spot.findByPk(spotId);
 
-  if (!spot) {
+  if (!spot || spot.ownerId !== req.user.id) {
     return res.status(404).json({
       "message": "Spot couldn't be found",
       "statusCode": 404
+    })
+  }
+
+  const checkAddress = await Spot.findOne({
+    where:{
+      address
+    }
+  })
+  if (checkAddress) {
+    return res.status(404).json({
+      message: 'Cannot update address to an existing Spot',
+      statusCode: 404
     })
   }
 
@@ -235,8 +258,9 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
   if (!name) error.errors.name = "Name must be less than 50 characters"
   if (!description) error.errors.description = "Description is required"
   if (!price) error.errors.price = "Price per day is required"
+  if (!previewImage) error.errors.previewImage = "Preview Image is required"
 
-  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price) {
+  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage) {
     res.statusCode = 400;
     return res.json(error);
   }
@@ -249,6 +273,7 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
   spot.name = name
   spot.description = description
   spot.price = price
+  spot.previewImage = previewImage
 
   await spot.save()
   res.status(200).json(spot);
@@ -256,7 +281,7 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
 
 router.delete('/auth/:spotId', requireAuth, async (req, res) => {
   const spot = await Spot.findByPk(req.params.spotId);
-  if (!spot) {
+  if (!spot || spot.ownerId !== req.user.id) {
     return res.status(404).json({
       "message": "Spot couldn't be found",
       "statusCode": 404

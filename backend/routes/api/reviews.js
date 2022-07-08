@@ -50,7 +50,7 @@ router.get('/:spotId', async (req, res) => {
       "statusCode": 404
     })
   }
-  res.json(reviews)
+  res.json({Reviews:reviews})
 })
 
 router.post('/auth/:spotId', requireAuth, async (req, res) => {

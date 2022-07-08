@@ -14,13 +14,13 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'spotId', onDelete: 'CASCADE'
       })
       Spot.hasMany(models.Review, {
-        foreignKey: 'spotId', as: 'reviews', onDelete: 'CASCADE'
+        foreignKey: 'spotId', onDelete: 'CASCADE'
       })
       Spot.hasMany(models.Image, {
-        foreignKey: 'spotId', as: 'images', onDelete: 'CASCADE'
+        foreignKey: 'spotId', onDelete: 'CASCADE'
       })
       Spot.belongsTo(models.User, {
-        foreignKey: 'ownerId', as: 'Owner', onDelete: 'CASCADE'
+        foreignKey: 'ownerId', onDelete: 'CASCADE'
       })
     }
   }

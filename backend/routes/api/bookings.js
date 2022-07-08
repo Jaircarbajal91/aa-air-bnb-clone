@@ -1,7 +1,7 @@
 const express = require('express');
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
 const { Spot, User, Review, Image, Booking, sequelize } = require('../../db/models');
-const { Op, EmptyResultError } = require("sequelize");
+const { Op } = require("sequelize");
 const router = express.Router();
 
 const { check } = require('express-validator');
@@ -58,10 +58,10 @@ router.get('/auth', requireAuth, async (req, res) => {
       userId: req.user.id
     }
   })
-  if (!bookings.length) {
-    return res.status(204).json({
+  if (bookings.length === 0) {
+    return res.status(404).json({
       message: "You have no bookings yet",
-      statusCode: 204
+      statusCode: 404
     })
   }
   res.json(bookings);
@@ -90,6 +90,14 @@ router.post('/auth/:spotId', requireAuth, async (req, res) => {
   if (!startDate || !endDate || (startDate > endDate)) {
     return res.status(400).json(err)
   }
+
+  if (new Date(endDate) < new Date()) {
+    return res.status(400).json({
+      "message": "Can't book a spot in the past",
+      "statusCode": 400
+    })
+  }
+
 
   const allDates = await Booking.findAll({
     attributes: ['startDate', 'endDate'],
@@ -157,9 +165,15 @@ router.put('/auth/:bookingId', requireAuth, async (req, res, next) => {
   };
   const {startDate, endDate} = req.body;
 
-  if (new Date(endDate) < new Date()) {
+  if (new Date(booking.endDate) < new Date()) {
     return res.status(400).json({
       "message": "Past bookings can't be modified",
+      "statusCode": 400
+    })
+  }
+  if (new Date(endDate) < new Date()) {
+    return res.status(400).json({
+      "message": "Cannot set bookings in the past",
       "statusCode": 400
     })
   }
@@ -201,7 +215,7 @@ router.put('/auth/:bookingId', requireAuth, async (req, res, next) => {
 
 router.delete('/auth/:bookingId', requireAuth, async (req, res) => {
   const booking = await Booking.findByPk(req.params.bookingId);
-  if (!booking) {
+  if (!booking || booking.userId !== req.user.id) {
     return res.status(404).json({
       "message": "Booking couldn't be found",
       "statusCode": 404

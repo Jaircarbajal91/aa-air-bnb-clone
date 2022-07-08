@@ -1,7 +1,7 @@
 const express = require('express');
 const { setTokenCookie, requireAuth } = require('../../utils/auth');
 const { Spot, User, Review, Image, Booking, sequelize } = require('../../db/models');
-const { Op, EmptyResultError } = require("sequelize");
+const { Op } = require("sequelize");
 const router = express.Router();
 
 const { check } = require('express-validator');
@@ -10,13 +10,9 @@ const user = require('../../db/models/user');
 
 
 router.post('/auth/spot/:spotId', requireAuth, async (req, res) => {
-  const spot = await Spot.findByPk(req.params.spotId, {
-    where: {
-      ownerId: req.user.id
-    }
-  });
+  const spot = await Spot.findByPk(req.params.spotId);
 
-  if (!spot) {
+  if (!spot || spot.ownerId !== req.user.id) {
     return res.status(404).json({
       "message": "Spot couldn't be found",
       "statusCode": 404
@@ -59,13 +55,9 @@ router.post('/auth/spot/:spotId', requireAuth, async (req, res) => {
 
 
 router.post('/auth/review/:reviewId', requireAuth, async (req, res) => {
-  const review = await Review.findByPk(req.params.reviewId, {
-    where: {
-      userId: req.user.id
-    }
-  });
+  const review = await Review.findByPk(req.params.reviewId);
 
-  if (!review) {
+  if (!review || review.userId !== req.user.id) {
     return res.status(404).json({
       "message": "Review couldn't be found",
       "statusCode": 404
@@ -101,7 +93,7 @@ router.post('/auth/review/:reviewId', requireAuth, async (req, res) => {
 
   let image = await Image.create({
     url,
-    imageableId: allImagesForSpot.length + 1,
+    imageableId: allReviewsForSpot.length + 1,
     imageableType: "Review",
     reviewId: req.params.reviewId
   })
@@ -116,11 +108,13 @@ router.post('/auth/review/:reviewId', requireAuth, async (req, res) => {
 
 router.delete('/auth/:imageId', requireAuth, async (req, res) => {
   const image = await Image.findByPk(req.params.imageId, {
-    where: {
-      userId: req.user.id
-    }
+    include: [
+      {
+        model: Review
+      }
+    ]
   })
-  if (!image) {
+  if (!image || image?.Review?.userId !== req.user.id) {
     return res.status(404).json({
       "message": "Image couldn't be found",
       "statusCode": 404

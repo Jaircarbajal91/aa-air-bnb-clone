@@ -33,8 +33,7 @@ module.exports = {
         allowNull: false
       },
       imageId: {
-        type: Sequelize.INTEGER,
-        allowNull: false
+        type: Sequelize.INTEGER
       },
       createdAt: {
         allowNull: false,
