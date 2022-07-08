@@ -43,7 +43,7 @@ router.get('/:spotId', async (req, res) => {
   for (let review of reviews) {
     sum += review.stars;
   }
-  let avg = sum / reviews.length;
+  let avg = (sum / reviews.length).toFixed(1);
   const result = spot.toJSON()
   const user = await User.findByPk(spot.ownerId, {
     attributes: {
@@ -180,14 +180,17 @@ router.post('/auth', requireAuth, async (req, res) => {
   if (!city) error.errors.city = "City is required"
   if (!state) error.errors.state = "State is required"
   if (!country) error.errors.country = "Country is required"
-  if (!lat) error.errors.lat = "Latitude is not valid"
-  if (!lng) error.errors.lng = "Longitude is not valid"
-  if (!name) error.errors.name = "Name must be less than 50 characters"
+  if (!lat) error.errors.lat = "Latitude is required"
+  if (Number(lat) > 90 || Number(lat) < -90) error.errors.lat = "Latitude is not valid"
+  if (!lng) error.errors.lng = "Longitude is required"
+  if (Number(lng) > 180 || Number(lng) < -180)  error.errors.lat = "Longitude is not valid"
+  if (!name) error.errors.name = "Name is required"
+  if (name.length > 50) error.errors.name = "Name must be less than 50 characters"
   if (!description) error.errors.description = "Description is required"
   if (!price) error.errors.price = "Price per day is required"
   if (!previewImage) error.errors.previewImage = "Preview Image is required"
 
-  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage) {
+  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || ( Number(lng) > 180 || Number(lng) < -180)) {
     res.statusCode = 400;
     return res.json(error);
   }
@@ -233,18 +236,6 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
     })
   }
 
-  const checkAddress = await Spot.findOne({
-    where:{
-      address
-    }
-  })
-  if (checkAddress) {
-    return res.status(404).json({
-      message: 'Cannot update address to an existing Spot',
-      statusCode: 404
-    })
-  }
-
   const error = {
     "message": "Validation Error",
     "statusCode": 400,
@@ -255,14 +246,17 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
   if (!city) error.errors.city = "City is required"
   if (!state) error.errors.state = "State is required"
   if (!country) error.errors.country = "Country is required"
-  if (!lat) error.errors.lat = "Latitude is not valid"
-  if (!lng) error.errors.lng = "Longitude is not valid"
-  if (!name) error.errors.name = "Name must be less than 50 characters"
+  if (!lat) error.errors.lat = "Latitude is required"
+  if (Number(lat) > 90 || Number(lat) < -90) error.errors.lat = "Latitude is not valid"
+  if (!lng) error.errors.lng = "Longitude is required"
+  if (Number(lng) > 180 || Number(lng) < -180)  error.errors.lat = "Longitude is not valid"
+  if (!name) error.errors.name = "Name is required"
+  if (name.length > 50) error.errors.name = "Name must be less than 50 characters"
   if (!description) error.errors.description = "Description is required"
   if (!price) error.errors.price = "Price per day is required"
   if (!previewImage) error.errors.previewImage = "Preview Image is required"
 
-  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage) {
+  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || ( Number(lng) > 180 || Number(lng) < -180)) {
     res.statusCode = 400;
     return res.json(error);
   }

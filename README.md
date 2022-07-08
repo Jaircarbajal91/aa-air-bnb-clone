@@ -374,6 +374,7 @@ Creates and returns a new spot.
       "lat": 37.7645358,
       "lng": -122.4730327,
       "name": "App Academy",
+      "previewImage": "image url",
       "description": "Place where web developers are created",
       "price": 123
     }
