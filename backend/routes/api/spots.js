@@ -147,13 +147,7 @@ router.get('/', async (req, res) => {
       }
     )
   }
-  if (maxPrice) {
-    pagination.options.push(
-      {
-        price: { [Op.lte]: Number(maxPrice) }
-      }
-    )
-  }
+  if (maxPrice) {pagination.options.push({price: { [Op.lte]: Number(maxPrice)}})}
 
   pagination.size = size
   pagination.page = page
