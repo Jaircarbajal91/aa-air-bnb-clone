@@ -19,42 +19,43 @@ router.get('/auth', requireAuth, async (req, res) => {
 })
 
 router.get('/:spotId', async (req, res) => {
-  const spot = await Spot.findByPk(req.params.spotId, {
-    include: [
-      {
-        model: Review,
-        attributes: []
-      },
-      {
-        model: Image,
-        attributes: ['url']
-      },
-      {
-        model: User,
-        attributes: ['id', 'firstName', 'lastName']
-      }
-    ],
-    attributes: {
-      include: [
-        [sequelize.fn('COUNT', sequelize.col('Reviews.id')), 'numReviews'],
-        [sequelize.fn('AVG', sequelize.col('Reviews.stars')), 'avgStarRating'],
-      ]
-    },
-    group: ['Spot.id', 'User.id']
-  });
-
-  if (!spot.id) {
-    res.statusCode = 404;
-    return res.json({
+  const spot = await Spot.findByPk(req.params.spotId)
+  if (!spot) {
+    return res.status(404).json({
       "message": "Spot couldn't be found",
       "statusCode": 404
     })
   }
-  const spotData = spot.toJSON()
-  spotData.avgStarRating = Number(spotData?.avgStarRating?.toFixed(1)) || 1
+  const images = await Image.findAll({
+    where: {
+      spotId: req.params.spotId
+    },
+    attributes: ['url']
+  })
+  const reviews = await Review.findAll({
+    where: {
+      spotId: req.params.spotId
+    }
+  })
 
 
-  res.json(spotData);
+  let sum = 0;
+  for (let review of reviews) {
+    sum += review.stars;
+  }
+  let avg = sum / reviews.length;
+  const result = spot.toJSON()
+  const user = await User.findByPk(spot.ownerId, {
+    attributes: {
+      exclude: ['username']
+    }
+  });
+
+  result.numReviews = reviews.length;
+  result.avgStarRating = avg;
+  result.Images = images
+  result.User = user
+  res.json(result);
 })
 
 router.get('/', async (req, res) => {
