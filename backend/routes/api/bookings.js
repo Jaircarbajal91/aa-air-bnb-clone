@@ -44,7 +44,7 @@ router.get('/auth/:spotId', requireAuth, async (req, res) => {
     })
   }
 
-  res.json(spotBookings)
+  res.json({Bookings: spotBookings})
 })
 
 router.get('/auth', requireAuth, async (req, res) => {
@@ -64,7 +64,7 @@ router.get('/auth', requireAuth, async (req, res) => {
       statusCode: 404
     })
   }
-  res.json(bookings);
+  res.json({Bookings: bookings});
 })
 
 
@@ -171,13 +171,6 @@ router.put('/auth/:bookingId', requireAuth, async (req, res, next) => {
       "statusCode": 400
     })
   }
-  if (new Date(endDate) < new Date()) {
-    return res.status(400).json({
-      "message": "Cannot set bookings in the past",
-      "statusCode": 400
-    })
-  }
-
   if (!startDate) err.errors.startDate = "Start date is required"
   if (!endDate) err.errors.endDate = "End date is required"
   if (startDate > endDate) err.errors.endDate = "endDate cannot come before startDate"
@@ -185,6 +178,13 @@ router.put('/auth/:bookingId', requireAuth, async (req, res, next) => {
   if (!startDate || !endDate || (startDate > endDate)) {
     return res.status(400).json(err)
   }
+  if (new Date(endDate) < new Date()) {
+    return res.status(400).json({
+      "message": "Cannot set bookings in the past",
+      "statusCode": 400
+    })
+  }
+
 
   err.message = "Sorry, this spot is already booked for the specified dates"
   err.statusCode = 403

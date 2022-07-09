@@ -12,10 +12,17 @@ const user = require('../../db/models/user');
 router.post('/auth/spot/:spotId', requireAuth, async (req, res) => {
   const spot = await Spot.findByPk(req.params.spotId);
 
-  if (!spot || spot.ownerId !== req.user.id) {
+  if (!spot) {
     return res.status(404).json({
       "message": "Spot couldn't be found",
       "statusCode": 404
+    })
+  }
+
+  if (spot.ownerId !== req.user.id) {
+    return res.status(403).json({
+      "message": "Forbidden",
+      "statusCode": 403
     })
   }
   const {url} = req.body;
@@ -57,10 +64,17 @@ router.post('/auth/spot/:spotId', requireAuth, async (req, res) => {
 router.post('/auth/review/:reviewId', requireAuth, async (req, res) => {
   const review = await Review.findByPk(req.params.reviewId);
 
-  if (!review || review.userId !== req.user.id) {
+  if (!review) {
     return res.status(404).json({
       "message": "Review couldn't be found",
       "statusCode": 404
+    })
+  }
+
+  if (review.userId !== req.user.id) {
+    return res.status(403).json({
+      "message": "Forbidden",
+      "statusCode": 403
     })
   }
 
@@ -114,10 +128,16 @@ router.delete('/auth/:imageId', requireAuth, async (req, res) => {
       }
     ]
   })
-  if (!image || image?.Review?.userId !== req.user.id) {
+  if (!image) {
     return res.status(404).json({
       "message": "Image couldn't be found",
       "statusCode": 404
+    })
+  }
+  if (image?.Review?.userId !== req.user.id) {
+    return res.status(403).json({
+    "message": "Forbidden",
+      "statusCode": 403
     })
   }
   await image.destroy()
