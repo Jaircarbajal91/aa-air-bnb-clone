@@ -194,7 +194,7 @@ router.post('/auth', requireAuth, async (req, res) => {
   if (!price) error.errors.price = "Price per day is required"
   if (!previewImage) error.errors.previewImage = "Preview Image is required"
 
-  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || ( Number(lng) > 180 || Number(lng) < -180)) {
+  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || ( Number(lng) > 180 || Number(lng) < -180)) {
     res.statusCode = 400;
     return res.json(error);
   }
