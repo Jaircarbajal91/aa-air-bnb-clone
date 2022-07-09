@@ -29,7 +29,15 @@ router.get('/auth', requireAuth, async (req, res) => {
       userId: id
     }
   })
-  res.json(reviews)
+  if (reviews.length == 0) {
+    res.status(202)
+    return res.json({
+      message: "User has no reviews",
+      statusCode: 202
+    })
+
+  }
+  res.json({Reviews: reviews})
 })
 
 router.get('/:spotId', async (req, res) => {
@@ -50,11 +58,11 @@ router.get('/:spotId', async (req, res) => {
       "statusCode": 404
     })
   }
-  res.json({Reviews:reviews})
+  res.json({Reviews: reviews})
 })
 
 router.post('/auth/:spotId', requireAuth, async (req, res) => {
-  const {review, stars} = req.body;
+  const {review, stars, imageId} = req.body;
   const err = {
     "message": "Validation error",
     "statusCode": 400,
@@ -96,19 +104,27 @@ router.post('/auth/:spotId', requireAuth, async (req, res) => {
     review,
     stars,
     spotId: req.params.spotId,
-    userId: req.user.id
+    userId: req.user.id,
+    imageId: imageId || null
   })
   res.json(newReview)
 })
 
 router.put('/auth/:reviewId', requireAuth, async (req, res) => {
   const reviewToUpdate = await Review.findByPk(req.params.reviewId);
-  const {review, stars} = req.body
+  const {review, stars, imageId} = req.body
 
-  if (!reviewToUpdate || reviewToUpdate.userId !== req.user.id) {
+  if (!reviewToUpdate) {
     return res.status(404).json({
       "message": "Review couldn't be found",
       "statusCode": 404
+    })
+  }
+
+  if (reviewToUpdate.userId !== req.user.id) {
+    return res.status(403).json({
+      "message": "Forbidden",
+      "statusCode": 403
     })
   }
 
@@ -120,12 +136,21 @@ router.put('/auth/:reviewId', requireAuth, async (req, res) => {
   }
   if (!review) err.errors.review = "Review text is required"
   if (!stars) err.errors.stars = "Stars must be an integer from 1 to 5"
-  if (!review || !stars) {
+  if (imageId) {
+    if (isNaN(imageId)) {
+      err.errors.imageId = "Image Id should be a number"
+    } else {
+      reviewToUpdate.imageId = imageId
+    }
+  }
+  if (!review || !stars || (imageId && isNaN(imageId))) {
     return res.status(400).json(err);
   }
 
+
   reviewToUpdate.review = review
   reviewToUpdate.stars = stars
+
   await reviewToUpdate.save()
   res.json(reviewToUpdate);
 })
@@ -133,10 +158,16 @@ router.put('/auth/:reviewId', requireAuth, async (req, res) => {
 router.delete('/auth/:reviewId', requireAuth, async (req, res) => {
   const review = await Review.findByPk(req.params.reviewId);
 
-  if (!review || review.userId !== req.user.id) {
+  if (!review) {
     return res.status(404).json({
       "message": "Review couldn't be found",
       "statusCode": 404
+    })
+  }
+  if (review.userId !== req.user.id) {
+    return res.status(403).json({
+      "message": "Forbidden",
+      "statusCode": 403
     })
   }
 

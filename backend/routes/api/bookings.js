@@ -144,9 +144,9 @@ router.put('/auth/:bookingId', requireAuth, async (req, res, next) => {
     })
   }
   if (booking.userId !== req.user.id) {
-    return res.status(401).json({
-      "message": "Unauthorized to make edits for this booking",
-      "statusCode": 401
+    return res.status(403).json({
+      "message": "Forbidden",
+      "statusCode": 403
     })
   }
   const {spotId} = booking.toJSON()
@@ -215,10 +215,16 @@ router.put('/auth/:bookingId', requireAuth, async (req, res, next) => {
 
 router.delete('/auth/:bookingId', requireAuth, async (req, res) => {
   const booking = await Booking.findByPk(req.params.bookingId);
-  if (!booking || booking.userId !== req.user.id) {
+  if (!booking) {
     return res.status(404).json({
       "message": "Booking couldn't be found",
       "statusCode": 404
+    })
+  }
+  if (booking.userId !== req.user.id) {
+    return res.status(403).json({
+      "message": "Forbidden",
+      "statusCode": 403
     })
   }
   const {startDate} = booking.toJSON()

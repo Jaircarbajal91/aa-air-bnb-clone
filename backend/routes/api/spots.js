@@ -233,10 +233,16 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
   const { address, city, state, country, lat, lng, name, description, price, previewImage } = req.body;
   const spot = await Spot.findByPk(spotId);
 
-  if (!spot || spot.ownerId !== req.user.id) {
+  if (!spot) {
     return res.status(404).json({
       "message": "Spot couldn't be found",
       "statusCode": 404
+    })
+  }
+  if (spot.ownerId !== req.user.id) {
+    return res.status(403).json({
+      "message": "Forbidden",
+      "statusCode": 403
     })
   }
 
@@ -281,10 +287,17 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
 
 router.delete('/auth/:spotId', requireAuth, async (req, res) => {
   const spot = await Spot.findByPk(req.params.spotId);
-  if (!spot || spot.ownerId !== req.user.id) {
+  if (!spot) {
     return res.status(404).json({
       "message": "Spot couldn't be found",
       "statusCode": 404
+    })
+  }
+
+  if (spot.ownerId !== req.user.id) {
+    return res.status(403).json({
+      "message": "Forbidden",
+      "statusCode": 403
     })
   }
   await spot.destroy()
