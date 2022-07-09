@@ -445,16 +445,16 @@ Updates and returns an existing spot.
 
     ```json
     {
-      "address": "11s123 Dsisney Lane",
-      "city": "San Francisco",
-      "state": "California",
+      "address": "112233 Fake Street",
+      "city": "Make Believe",
+      "state": "Imagination",
       "country": "United States of America",
       "lat": 37.7645358,
       "lng": -122.4730327,
-      "name": "App Academy",
-      "description": "Place where web developers are created",
-      "previewImage": "image url",
-      "price": 123
+      "name": "Never Land",
+      "description": "A made up place",
+      "previewImage": "made up image url",
+      "price": 100
     }
     ```
 
