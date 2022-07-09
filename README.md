@@ -337,7 +337,7 @@ Returns the details of a spot specified by its id.
           "firstName": "demo",
           "lastName": "lition"
       }
-  }
+      }
     ```
 
 * Error response: Couldn't find a Spot with the specified id
