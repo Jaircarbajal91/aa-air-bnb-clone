@@ -40,13 +40,14 @@ router.get('/:spotId', async (req, res) => {
 
 
   let sum = 0;
-  for (let review of reviews) {
-    sum += review?.stars;
-  }
   let avg = 0;
-  if (!isNaN(sum)) {
+  if (reviews.length) {
+    for (let review of reviews) {
+      sum += review.stars;
+    }
     avg = (sum / reviews.length).toFixed(1);
   }
+
   const result = spot.toJSON()
   const user = await User.findByPk(spot.ownerId, {
     attributes: {
