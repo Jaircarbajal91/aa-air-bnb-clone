@@ -52,7 +52,9 @@ router.post(
       "firstName": user.firstName,
       "lastName": user.lastName,
       "email": user.email,
-      "token": user.token
+      "token": user.token,
+      "createdAt": user.createdAt,
+      "updatedAt": user.updatedAt
     });
   }
 );
