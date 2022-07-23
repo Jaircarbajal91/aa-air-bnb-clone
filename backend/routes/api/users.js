@@ -65,7 +65,6 @@ router.post(
 
 router.get('/auth', requireAuth, async (req, res) => {
   const id = req.user.id;
-  console.log(req.user)
 
   const user = await User.findByPk(id, {
     attributes: ['id', 'firstName', 'lastName', 'email']
