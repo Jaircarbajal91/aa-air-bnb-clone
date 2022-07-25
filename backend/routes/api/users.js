@@ -58,6 +58,7 @@ router.post(
       firstName,
       lastName,
       email,
+      username,
       token
     });
   }

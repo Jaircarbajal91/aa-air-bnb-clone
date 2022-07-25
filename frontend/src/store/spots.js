@@ -30,6 +30,7 @@ export const getAllSpots = () => async dispatch => {
   const response = await csrfFetch('/api/spots');
   if (response.ok) {
     const spots = await response.json();
+    console.log("fetched", spots)
     dispatch(getSpots(spots.Spots));
     return response
   }
@@ -41,7 +42,7 @@ export const getSpotDetails = (id) => async dispatch => {
   if (response.ok) {
     const spot = await response.json();
     dispatch(getSingleSpot(spot));
-    return result
+    return spot
   }
   return response;
 };
@@ -49,13 +50,11 @@ export const getSpotDetails = (id) => async dispatch => {
 export const createNewSpot = spot => async dispatch => {
   const response = await csrfFetch('/api/spots/auth', {
     method: "POST",
-    headers: {
-      'Content-Type': 'application/json'
-    },
     body: JSON.stringify(spot)
   })
   if (response.ok) {
     const newSpot = await response.json()
+    console.log(newSpot)
     dispatch(createSingleSpot(newSpot))
     return newSpot;
   }
@@ -82,6 +81,11 @@ const spotsReducer = (state = {}, action) => {
       })
       delete newState[action.spot.id].Images
       return newState
+    }
+    case CREAT_NEW_SPOT: {
+      let newState = {...state};
+      newState[action.spot.id] = action.spot
+      return newState;
     }
     default:
       return state;

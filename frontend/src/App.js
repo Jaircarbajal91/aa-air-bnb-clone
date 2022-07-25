@@ -15,21 +15,22 @@ function App() {
     dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
   }, [dispatch]);
 
+
   return (
     <>
       <Navigation isLoaded={isLoaded} />
       {isLoaded && (
         <Switch>
-          <Route path="/signup">
-            <SignupFormPage />
-          </Route>
-          <Route path="/spots/create">
-            <NewSpotForm />
-          </Route>
           <Route exact path="/">
             <SpotCards />
           </Route>
-          <Route path="/spots/:spotId">
+          <Route exact path="/signup">
+            <SignupFormPage />
+          </Route>
+          <Route exact path="/spots/create">
+            <NewSpotForm />
+          </Route>
+          <Route exact path="/spots/:spotId">
             <CurrentSpot />
           </Route>
         </Switch>

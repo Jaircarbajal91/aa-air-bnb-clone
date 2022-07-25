@@ -1,6 +1,7 @@
-import { useSelector } from "react-redux"
-import { Redirect } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux"
+import { Redirect, useHistory } from "react-router-dom";
 import { useState } from "react";
+import { createNewSpot } from "../../store/spots";
 import "./NewForm.css"
 
 function NewSpotForm() {
@@ -16,11 +17,14 @@ function NewSpotForm() {
   const [description, setDescription] = useState("")
   const [previewImage, setPreviewImage] = useState("")
 
+  const history = useHistory()
+
+  const dispatch = useDispatch()
   if (sessionUser === null) {
     alert("must be logged in to create a spot")
     return <Redirect to="/" />
   }
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
     const newSpot = {
       name,
@@ -30,9 +34,12 @@ function NewSpotForm() {
       country,
       lat,
       lng,
+      previewImage,
       price,
       description
     }
+    const req = await dispatch(createNewSpot(newSpot));
+    history.push("/")
   }
   return (
     <form
