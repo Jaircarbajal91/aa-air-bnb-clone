@@ -51,6 +51,7 @@ router.post(
       "id": user.id,
       "firstName": user.firstName,
       "lastName": user.lastName,
+      "username": user.username,
       "email": user.email,
       "token": user.token,
       "createdAt": user.createdAt,
