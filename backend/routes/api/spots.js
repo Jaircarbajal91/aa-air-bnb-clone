@@ -170,7 +170,7 @@ router.get('/', async (req, res) => {
   })
 
   spots.forEach((spot, i) => {
-    let result;
+    let result = {}
     spot = spot.toJSON()
     let sum = 0;
     let avg = 0;
@@ -182,11 +182,16 @@ router.get('/', async (req, res) => {
       avg = (sum / reviews.length).toFixed(1);
       spot.numReviews = reviews.length;
       spot.avgStarRating = avg;
-      result = {...spot}
       delete spot.Reviews
+      result = {...spot}
+      spots[i] = result;
+    } else {
+      spot.numReviews = reviews.length;
+      spot.avgStarRating = "0";
+      delete spot.Reviews
+      result = {...spot}
       spots[i] = result;
     }
-    delete spots[i].Reviews
   })
 
   res.json({

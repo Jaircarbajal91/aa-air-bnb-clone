@@ -85,8 +85,6 @@ const spotsReducer = (state = {}, action) => {
     case CREAT_NEW_SPOT: {
       let newState = {...state};
       newState[action.spot.id] = action.spot
-      console.log(newState)
-      newState.orderedSpotsList.push({...action.spot})
       return newState;
     }
     default:
