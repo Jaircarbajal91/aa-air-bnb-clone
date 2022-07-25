@@ -150,7 +150,7 @@ router.get('/', async (req, res) => {
       }
     )
   }
-  if (maxPrice) { pagination.options.push({ price: { [Op.lte]: Number(maxPrice) } }) }
+  if (maxPrice) {pagination.options.push({price: { [Op.lte]: Number(maxPrice)}})}
 
   pagination.size = size
   pagination.page = page
@@ -169,27 +169,28 @@ router.get('/', async (req, res) => {
     offset: pagination.size * pagination.page
   })
 
-  let result = []
-  spots.forEach(spot => {
-    const reviewsArr = spot.Reviews
-    let updatedSpot = spot.toJSON()
-
+  spots.forEach((spot, i) => {
+    let result;
+    spot = spot.toJSON()
     let sum = 0;
     let avg = 0;
-    if (reviewsArr.length) {
-      for (let review of reviewsArr) {
+    let reviews = spot.Reviews
+    if (reviews.length) {
+      for (let review of reviews) {
         sum += review.stars;
       }
-      avg = (sum / reviewsArr.length).toFixed(1);
-      updatedSpot.numReviews = reviewsArr.length;
-      updatedSpot.avgStarRating = avg;
-      delete updatedSpot.Reviews
-      result.push({...updatedSpot})
+      avg = (sum / reviews.length).toFixed(1);
+      spot.numReviews = reviews.length;
+      spot.avgStarRating = avg;
+      result = {...spot}
+      delete spot.Reviews
+      spots[i] = result;
     }
+    delete spots[i].Reviews
   })
 
   res.json({
-    Spots: result,
+    Spots: spots,
     page: pagination.page,
     size: pagination.size || 20,
   }
@@ -212,14 +213,14 @@ router.post('/auth', requireAuth, async (req, res) => {
   if (!lat) error.errors.lat = "Latitude is required"
   if (Number(lat) > 90 || Number(lat) < -90) error.errors.lat = "Latitude is not valid"
   if (!lng) error.errors.lng = "Longitude is required"
-  if (Number(lng) > 180 || Number(lng) < -180) error.errors.lat = "Longitude is not valid"
+  if (Number(lng) > 180 || Number(lng) < -180)  error.errors.lat = "Longitude is not valid"
   if (!name) error.errors.name = "Name is required"
   if (name?.length > 50) error.errors.name = "Name must be less than 50 characters"
   if (!description) error.errors.description = "Description is required"
   if (!price) error.errors.price = "Price per day is required"
   if (!previewImage) error.errors.previewImage = "Preview Image is required"
 
-  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || (Number(lng) > 180 || Number(lng) < -180)) {
+  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || ( Number(lng) > 180 || Number(lng) < -180)) {
     res.statusCode = 400;
     return res.json(error);
   }
@@ -284,14 +285,14 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
   if (!lat) error.errors.lat = "Latitude is required"
   if (Number(lat) > 90 || Number(lat) < -90) error.errors.lat = "Latitude is not valid"
   if (!lng) error.errors.lng = "Longitude is required"
-  if (Number(lng) > 180 || Number(lng) < -180) error.errors.lat = "Longitude is not valid"
+  if (Number(lng) > 180 || Number(lng) < -180)  error.errors.lat = "Longitude is not valid"
   if (!name) error.errors.name = "Name is required"
   if (name?.length > 50) error.errors.name = "Name must be less than 50 characters"
   if (!description) error.errors.description = "Description is required"
   if (!price) error.errors.price = "Price per day is required"
   if (!previewImage) error.errors.previewImage = "Preview Image is required"
 
-  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || (Number(lng) > 180 || Number(lng) < -180)) {
+  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || ( Number(lng) > 180 || Number(lng) < -180)) {
     res.statusCode = 400;
     return res.json(error);
   }

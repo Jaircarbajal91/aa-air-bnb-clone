@@ -10,7 +10,7 @@ function SpotCards() {
   useEffect(() => {
     dispatch(getAllSpots());
   }, [dispatch])
-
+  console.log(spots)
   return (
     <div className="spots-cards-container">
       {spots?.map(spot => (
