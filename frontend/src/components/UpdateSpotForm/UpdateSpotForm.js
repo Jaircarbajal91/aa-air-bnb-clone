@@ -1,10 +1,11 @@
 import { useSelector, useDispatch } from "react-redux"
-import { Redirect, useHistory } from "react-router-dom";
+import { Redirect, useHistory, useParams } from "react-router-dom";
 import { useState } from "react";
-import { createNewSpot } from "../../store/spots";
-import "./NewForm.css"
+import { updateSpot } from "../../store/spots";
+import './UpdateSpot.css'
 
-function NewSpotForm() {
+function UpdateSpotForm ({setShowModal}) {
+  const {spotId} = useParams()
   const sessionUser = useSelector(state => state.session.user)
   const [name, setName] = useState("")
   const [address, setAddress] = useState("")
@@ -16,17 +17,18 @@ function NewSpotForm() {
   const [price, setPrice] = useState("")
   const [description, setDescription] = useState("")
   const [previewImage, setPreviewImage] = useState("")
+  const [errors, setErrors] = useState([])
 
   const history = useHistory()
-
   const dispatch = useDispatch()
   if (sessionUser === null) {
-    alert("must be logged in to create a spot")
+    alert("must be logged in to edit a spot")
     return <Redirect to="/" />
   }
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const newSpot = {
+    const updatedSpot = {
+      id: spotId,
       name,
       address,
       city,
@@ -38,14 +40,17 @@ function NewSpotForm() {
       price,
       description
     }
-    const createdSpot = await dispatch(createNewSpot(newSpot));
-    history.push("/")
+
+    const newSpot = await dispatch(updateSpot(updatedSpot))
+    setShowModal(false)
+    history.push(`/spots/${spotId}`)
   }
   return (
     <form
       onSubmit={handleSubmit}
-      className="new-spot-form"
+      className="update-spot-form"
     >
+      <h3>Update Spot Form</h3>
       <label >
         Name:
         <input
@@ -116,7 +121,8 @@ function NewSpotForm() {
       <label >
         Preview Image:
         <input
-          type="file"
+          type="url"
+          name="preview-image"
           accept="image/png, image/gif, image/jpeg"
           value={previewImage}
           onChange={(e) => setPreviewImage(e.target.value)}
@@ -130,9 +136,9 @@ function NewSpotForm() {
           onChange={(e) => setDescription(e.target.value)}
         />
       </label>
-      <button type="submit">Create Spot</button>
+      <button type="submit">Update Spot</button>
     </form>
   )
 }
 
-export default NewSpotForm
+export default UpdateSpotForm
