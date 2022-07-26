@@ -58,7 +58,7 @@ router.get('/:spotId', async (req, res) => {
   result.numReviews = reviews.length;
   result.avgStarRating = avg;
   result.Images = images
-  result.User = user
+  result.Owner = user
   res.json(result);
 })
 
@@ -150,7 +150,7 @@ router.get('/', async (req, res) => {
       }
     )
   }
-  if (maxPrice) {pagination.options.push({price: { [Op.lte]: Number(maxPrice)}})}
+  if (maxPrice) { pagination.options.push({ price: { [Op.lte]: Number(maxPrice) } }) }
 
   pagination.size = size
   pagination.page = page
@@ -183,13 +183,13 @@ router.get('/', async (req, res) => {
       spot.numReviews = reviews.length;
       spot.avgStarRating = avg;
       delete spot.Reviews
-      result = {...spot}
+      result = { ...spot }
       spots[i] = result;
     } else {
       spot.numReviews = reviews.length;
       spot.avgStarRating = "0";
       delete spot.Reviews
-      result = {...spot}
+      result = { ...spot }
       spots[i] = result;
     }
   })
@@ -198,8 +198,7 @@ router.get('/', async (req, res) => {
     Spots: spots,
     page: pagination.page,
     size: pagination.size || 20,
-  }
-  )
+  })
 })
 
 router.post('/auth', requireAuth, async (req, res) => {
@@ -218,14 +217,14 @@ router.post('/auth', requireAuth, async (req, res) => {
   if (!lat) error.errors.lat = "Latitude is required"
   if (Number(lat) > 90 || Number(lat) < -90) error.errors.lat = "Latitude is not valid"
   if (!lng) error.errors.lng = "Longitude is required"
-  if (Number(lng) > 180 || Number(lng) < -180)  error.errors.lat = "Longitude is not valid"
+  if (Number(lng) > 180 || Number(lng) < -180) error.errors.lat = "Longitude is not valid"
   if (!name) error.errors.name = "Name is required"
   if (name?.length > 50) error.errors.name = "Name must be less than 50 characters"
   if (!description) error.errors.description = "Description is required"
   if (!price) error.errors.price = "Price per day is required"
   if (!previewImage) error.errors.previewImage = "Preview Image is required"
 
-  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || ( Number(lng) > 180 || Number(lng) < -180)) {
+  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || (Number(lng) > 180 || Number(lng) < -180)) {
     res.statusCode = 400;
     return res.json(error);
   }
@@ -290,14 +289,14 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
   if (!lat) error.errors.lat = "Latitude is required"
   if (Number(lat) > 90 || Number(lat) < -90) error.errors.lat = "Latitude is not valid"
   if (!lng) error.errors.lng = "Longitude is required"
-  if (Number(lng) > 180 || Number(lng) < -180)  error.errors.lat = "Longitude is not valid"
+  if (Number(lng) > 180 || Number(lng) < -180) error.errors.lat = "Longitude is not valid"
   if (!name) error.errors.name = "Name is required"
   if (name?.length > 50) error.errors.name = "Name must be less than 50 characters"
   if (!description) error.errors.description = "Description is required"
   if (!price) error.errors.price = "Price per day is required"
   if (!previewImage) error.errors.previewImage = "Preview Image is required"
 
-  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || ( Number(lng) > 180 || Number(lng) < -180)) {
+  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || (Number(lng) > 180 || Number(lng) < -180)) {
     res.statusCode = 400;
     return res.json(error);
   }

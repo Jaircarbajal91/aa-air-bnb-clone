@@ -19,6 +19,35 @@ const validateLogin = [
 ];
 
 router.get(
+  '/demo',
+  async (req, res, next) => {
+    const credential = 'demo@user.io'
+    const password = 'password'
+    const user = await User.login({ credential, password });
+    if (!user) {
+      const err = new Error('Login failed');
+      err.status = 401;
+      err.title = 'Login failed';
+      err.errors = ['The provided credentials were invalid.'];
+      return next(err);
+    }
+    const token = await setTokenCookie(res, user);
+    user.token = token
+    user.save()
+    return res.json({
+      "id": user.id,
+      "firstName": user.firstName,
+      "lastName": user.lastName,
+      "username": user.username,
+      "email": user.email,
+      "token": user.token,
+      "createdAt": user.createdAt,
+      "updatedAt": user.updatedAt
+    });
+  }
+)
+
+router.get(
   '/',
   restoreUser,
   (req, res) => {
@@ -30,6 +59,7 @@ router.get(
     } else return res.json({});
   }
 );
+
 
 router.post(
   '/login',

@@ -19,7 +19,7 @@ function Card({ spot }) {
       onClick={(e) => handleClick(e)}
     >
       <div className="">
-        <img src="https://cdn.mos.cms.futurecdn.net/CbivdLKKTLVsjak9RDT9J5.jpg" alt="" className="spot-img" />
+        <img src={`${spot.previewImage}`} className="spot-img" />
         <div>{spot.city} {spot.state}</div>
         <div>
           <i className="fa-solid fa-star"></i>
