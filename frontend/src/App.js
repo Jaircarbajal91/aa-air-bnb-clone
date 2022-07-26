@@ -5,7 +5,7 @@ import SignupFormPage from "./components/SignupFormPage";
 import * as sessionActions from "./store/session";
 import Navigation from "./components/Navigation";
 import SpotCards from "./components/SpotsCards";
-import CurrentSpot from "./components/Bookings/CurrentSpot";
+import CurrentSpot from "./components/CurrentSpot/CurrentSpot";
 import NewSpotForm from "./components/NewSpotForm";
 
 function App() {
