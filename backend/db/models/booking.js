@@ -41,7 +41,7 @@ module.exports = (sequelize, DataTypes) => {
     scopes: {
       nonOwner: {
         attributes: {
-          exclude: ['id', 'userId', 'createdAt', 'updatedAt']
+          exclude: ['userId', 'createdAt', 'updatedAt']
         }
       }
     }

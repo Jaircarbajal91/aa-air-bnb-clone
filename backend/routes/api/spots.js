@@ -301,6 +301,7 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
     return res.json(error);
   }
 
+
   spot.address = address
   spot.city = city
   spot.state = state
@@ -310,6 +311,7 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
   spot.description = description
   spot.price = price
   spot.previewImage = previewImage
+  spot.country = country
 
   await spot.save()
   res.status(200).json(spot);

@@ -4,7 +4,6 @@ import { useDispatch } from "react-redux";
 function DeleteSpot({spotId, setShowModal}) {
   const dispatch = useDispatch()
   const history = useHistory()
-  console.log(spotId)
   const handleDelete = async (e) => {
     await dispatch(deleteSpot(spotId))
     setShowModal(false)

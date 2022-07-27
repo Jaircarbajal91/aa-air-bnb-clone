@@ -12,8 +12,9 @@ function Navigation({ isLoaded }) {
   if (sessionUser) {
     sessionLinks = (
       <>
+        <NavLink to="/spots/create"> | Create a Spot | </NavLink>
+        <NavLink to="/bookings"> My Bookings </NavLink>
         <ProfileButton user={sessionUser} />
-        <NavLink to="/spots/create">Create a Spot</NavLink>
       </>
     );
   } else {
@@ -28,7 +29,7 @@ function Navigation({ isLoaded }) {
   return (
     <ul>
       <li>
-        <NavLink exact to="/">Home</NavLink>
+        <NavLink exact to="/">Home </NavLink>
         {isLoaded && sessionLinks}
       </li>
     </ul>
