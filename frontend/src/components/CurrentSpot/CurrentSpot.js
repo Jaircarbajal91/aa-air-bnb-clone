@@ -1,7 +1,8 @@
 import { useParams } from 'react-router-dom'
 import { useSelector, dispatch, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
-import { getSpotDetails, updateSpot } from '../../store/spots'
+import {updateSpot } from '../../store/spots'
+import { getSpotDetails } from '../../store/selectedSpot'
 import { Modal } from '../../context/Modal'
 import UpdateSpotForm from '../UpdateSpotForm/UpdateSpotForm'
 import DeleteSpot from '../DeleteSpot/DeleteSpot'
@@ -11,7 +12,7 @@ import './CurrentSpot.css'
 
 function CurrentSpot() {
   const { spotId } = useParams()
-  const paramSpot = useSelector(state => state.spots[spotId])
+  const paramSpot = useSelector(state => state.selectedSpot[spotId])
   const [showModal, setShowModal] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
@@ -34,7 +35,7 @@ function CurrentSpot() {
     }
     checkSpot()
   }, [dispatch, spot])
-  
+
   useEffect(() => {
     const getSpotBookings = async () => {
       if (bookings === undefined) {
@@ -71,7 +72,7 @@ function CurrentSpot() {
           )}
         </div>
       )}
-      {spotExists && <CreateBookingForm spot={spot} />}
+      {spotExists && <CreateBookingForm spot={spot} bookings={bookings}/>}
     </div>
   )
 }

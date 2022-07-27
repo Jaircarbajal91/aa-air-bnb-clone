@@ -1,7 +1,6 @@
 import "./Listing.css"
 
 function Listing({ booking }) {
-  console.log(booking)
   const { name, previewImage, city, state, price } = booking.Spot
   let { startDate, endDate } = booking
   startDate = new Date(startDate).toLocaleString().split(',')[0]

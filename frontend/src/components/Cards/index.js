@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
-import { getSpotDetails } from "../../store/spots"
+import { getSpotDetails } from "../../store/selectedSpot";
 import "./Card.css"
 import { useHistory, Route } from "react-router-dom";
 import Review from "../Reviews";

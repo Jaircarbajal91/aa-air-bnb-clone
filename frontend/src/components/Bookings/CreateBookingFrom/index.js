@@ -3,7 +3,7 @@ import { createBookingThunk } from "../../../store/bookings";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom"
 
-function CreateBookingForm({ spot }) {
+function CreateBookingForm({ spot, bookings }) {
   const dispatch = useDispatch()
   const history  = useHistory()
   let today = new Date()

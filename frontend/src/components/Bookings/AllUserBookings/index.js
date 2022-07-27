@@ -9,7 +9,7 @@ function UserBookings() {
   const [isLoaded, setIsLoaded] = useState(false)
   useEffect(() => {
     const getBookings = async () => {
-      if (bookings === undefined) {
+      if (bookings === undefined || bookings.length) {
         const bookingsArr = await dispatch(getAllUserBookingsThunk())
         setIsLoaded(true)
       } else {
@@ -17,7 +17,7 @@ function UserBookings() {
       }
     }
     getBookings()
-  }, [dispatch, bookings])
+  }, [dispatch])
   return (
     <div>
       <table>

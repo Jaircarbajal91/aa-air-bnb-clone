@@ -116,8 +116,7 @@ function NewSpotForm() {
       <label >
         Preview Image:
         <input
-          type="file"
-          accept="image/png, image/gif, image/jpeg"
+          type="url"
           value={previewImage}
           onChange={(e) => setPreviewImage(e.target.value)}
         />
