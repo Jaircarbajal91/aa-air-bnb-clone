@@ -18,7 +18,7 @@ function Card({ spot }) {
     <div id={`spot-${spot.id}`} className="spot-card-container"
       onClick={(e) => handleClick(e)}
     >
-      <div className="">
+      <div className="card-container">
         <img src={`${spot.previewImage}`} className="spot-img" />
         <div>{spot.city} {spot.state}</div>
         <div>

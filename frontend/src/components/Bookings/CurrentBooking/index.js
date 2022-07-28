@@ -11,7 +11,6 @@ function CurrentBooking() {
   const dispatch = useDispatch()
   const bookings = useSelector(state => state.bookings)
   const booking = useSelector(state => state.bookings?.[bookingId])
-  const [showModal, setShowModal] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false)
@@ -24,7 +23,7 @@ function CurrentBooking() {
   }
   useEffect(() => {
     const getBooking = async () => {
-      if (bookings === null) {
+      if (bookings === null || spot === undefined) {
         const res = await dispatch(getAllUserBookingsThunk())
         setIsLoaded(true)
       } else {
@@ -59,7 +58,7 @@ function CurrentBooking() {
           <div className="confirmation-right-container">
             <div className="confirmation-header">
               <h1>Your reservation is confirmed</h1>
-              <p>{`You're going to ${spot?.city}!`}</p>
+              <p>{`You're going to ${spot.city}!`}</p>
             </div>
             <img style={{
               maxWidth: '20em'
@@ -67,7 +66,7 @@ function CurrentBooking() {
             <div className="confirmation-description">
               <p>{spot.name}</p>
               <p>{spot.description}</p>
-              <p>{spot.city}, {spot.state}</p>
+              <p>{spot.city}, {spot?.state}</p>
             </div>
             <div className="confirmation-booking info">
               <div className="confirmation-left-itinerary">
@@ -94,16 +93,16 @@ function CurrentBooking() {
           </div>
           {booking.userId === sessionUser.id && (
             <div>
-              <button onClick={() => setShowUpdate(true)}>Edit Spot</button>
-              <button onClick={() => setShowDelete(true)}>Delete Spot</button>
+              <button onClick={() => setShowUpdate(true)}>Change Reservaion</button>
+              <button onClick={() => setShowDelete(true)}>Cancel Reservaion</button>
               {showUpdate && (
                 <Modal onClose={() => setShowUpdate(false)}>
-                  <UpdateBookingForm booking={booking} setShowModal={setShowModal} />
+                  <UpdateBookingForm booking={booking} setShowUpdate={setShowUpdate} />
                 </Modal>
               )}
               {showDelete && (
                 <Modal onClose={() => setShowDelete(false)}>
-                  <DeleteBooking booking={booking} setShowModal={setShowModal} />
+                  <DeleteBooking booking={booking} setShowDelete={setShowDelete} />
                 </Modal>
               )}
             </div>

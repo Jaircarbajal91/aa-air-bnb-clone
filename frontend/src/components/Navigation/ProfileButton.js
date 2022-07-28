@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch } from 'react-redux';
+import { NavLink } from "react-router-dom";
 import * as sessionActions from '../../store/session';
+import icon from '../Navigation/images/icon.svg'
+import hamburger from '../Navigation/images/hamburgerIcon.svg'
+import './ProfileButton.css'
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
@@ -29,17 +33,20 @@ function ProfileButton({ user }) {
   };
   return (
     <>
-      <button onClick={openMenu}>
-        <i className="fas fa-user-circle" />
-      </button>
+      <div className="profile-button-border"
+        onClick={openMenu}>
+        <img className="hamburger-icon" src={hamburger} />
+        <img className="profile-icon" src={icon} />
+      </div>
       {showMenu && (
-        <ul className="profile-dropdown">
-          <li>{user.username}</li>
-          <li>{user.email}</li>
-          <li>
-            <button onClick={logout}>Log Out</button>
-          </li>
-        </ul>
+        <div className="profile-dropdown">
+          <ul className="profile-list">
+            <li className="profile-username">{user.username}</li>
+            <li className="profile-email">{user.email}</li>
+            <li><NavLink className="menu-my-bookings" activeClassName="active" to="/bookings">My Bookings</NavLink></li>
+            <li className="profile-logout" onClick={logout}>Log Out</li>
+          </ul>
+        </div>
       )}
     </>
   );

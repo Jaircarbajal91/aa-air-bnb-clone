@@ -4,7 +4,7 @@ import { useState } from "react";
 import { updateBookingThunk } from "../../../store/bookings";
 import './UpdateBooking.css'
 
-function UpdateBookingForm ({setShowModal}) {
+function UpdateBookingForm ({setShowUpdate}) {
   const {bookingId} = useParams()
   const sessionUser = useSelector(state => state.session.user)
   const [startDate, setStartDate] = useState("")
@@ -26,7 +26,7 @@ function UpdateBookingForm ({setShowModal}) {
     }
 
     const respose = await dispatch(updateBookingThunk(updateBooking))
-    setShowModal(false)
+    setShowUpdate(false)
     history.push(`/bookings/${bookingId}`)
   }
   return (
@@ -51,7 +51,7 @@ function UpdateBookingForm ({setShowModal}) {
           onChange={(e) => setEndDate(e.target.value)}
         />
       </label>
-      <button type="submit">Update Spot</button>
+      <button type="submit">Change Reservaion</button>
     </form>
   )
 }

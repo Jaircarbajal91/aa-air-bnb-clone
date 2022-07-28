@@ -1,0 +1,27 @@
+div.svg-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 118px;
+  max-height: 64px;
+  margin-left: 3em;
+}
+
+img.svg-logo {
+  max-height: 2em;
+  max-width: 1.8em;
+}
+
+img.svg-logo-name {
+  max-height: 5em;
+  max-width: 3.8em;
+}
+
+nav.main-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgb(234, 229, 229);
+  margin-bottom: 2em;
+  height: 4em;
+}
