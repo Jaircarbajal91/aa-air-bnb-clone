@@ -59,7 +59,7 @@ function CurrentBooking() {
           <div className="confirmation-right-container">
             <div className="confirmation-header">
               <h1>Your reservation is confirmed</h1>
-              <p>{`You're going to ${spot.city}!`}</p>
+              <p>{`You're going to ${spot?.city}!`}</p>
             </div>
             <img style={{
               maxWidth: '20em'
