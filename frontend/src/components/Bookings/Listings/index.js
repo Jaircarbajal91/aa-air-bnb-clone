@@ -1,8 +1,10 @@
+import { useHistory } from "react-router-dom"
 import "./Listing.css"
 
 function Listing({ booking }) {
+  const history = useHistory()
   const { name, previewImage, city, state, price } = booking.Spot
-  let { startDate, endDate } = booking
+  let { id, startDate, endDate } = booking
   startDate = new Date(startDate).toLocaleString().split(',')[0]
   endDate = new Date(endDate).toLocaleString().split(',')[0]
   const date1 = new Date(startDate);
@@ -14,12 +16,21 @@ function Listing({ booking }) {
     style: 'currency',
     currency: 'USD',
   });
+  const handleClick = (e) => {
+    history.push(`/bookings/${id}`)
+  }
   return (
     <>
-      <td><img className="listing-preivew-image" src={`${previewImage}`} /> {name}</td>
+      <td
+        className="table-name"
+        onClick={handleClick}>
+        <img className="listing-preivew-image" src={`${previewImage}`} />
+        {name}
+      </td>
       <td>{city}, {state}</td>
       <td>{startDate} - {endDate}</td>
       <td>{formatter.format(total)}</td>
+      <td className="table-edit">edit</td>
     </>
   )
 }

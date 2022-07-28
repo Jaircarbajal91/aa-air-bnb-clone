@@ -4,6 +4,15 @@ const GET_ALL_SPOTS = 'spots/getAllSpots';
 const CREAT_NEW_SPOT = 'spots/createNewSpot';
 const UPDATE_SPOT = 'spots/updateSpot';
 const DELETE_SPOT = 'spots/deleteSpot';
+const GET_SPOT_DETAILS = 'spots/getSpotDetails';
+
+
+const getSingleSpot = spot => {
+  return {
+    type: GET_SPOT_DETAILS,
+    spot
+  };
+};
 
 const getSpots = spots => {
   return {
@@ -34,12 +43,23 @@ const deleteSpotAction = id => {
   }
 }
 
+
 export const getAllSpots = () => async dispatch => {
   const response = await csrfFetch('/api/spots');
   if (response.ok) {
     const spots = await response.json();
     dispatch(getSpots(spots.Spots));
     return response
+  }
+  return response;
+};
+
+export const getSpotDetails = (id) => async dispatch => {
+  const response = await csrfFetch(`/api/spots/${id}`);
+  if (response.ok) {
+    const spot = await response.json();
+    dispatch(getSingleSpot(spot));
+    return spot
   }
   return response;
 };
@@ -98,7 +118,18 @@ const spotsReducer = (state = {}, action) => {
       newState.orderedSpotsList = [...action.spots.sort((a, b) => b.id - a.id)]
       return newState
     }
-
+    case GET_SPOT_DETAILS: {
+      let newState = {...state}
+      newState.selectedSpot = {}
+      newState.selectedSpot[action.spot.id] = action.spot
+      const images = action.spot.Images
+      newState.selectedSpot[action.spot.id].images = {}
+      images.forEach((image, i) => {
+        newState.selectedSpot[action.spot.id].images[i + 1] = image.url
+      })
+      delete newState.selectedSpot[action.spot.id].Images
+      return newState
+    }
     case DELETE_SPOT: {
       const newState = {...state}
       delete newState[action.id]

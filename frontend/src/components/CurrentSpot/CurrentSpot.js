@@ -1,8 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useSelector, dispatch, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
-import {updateSpot } from '../../store/spots'
-import { getSpotDetails } from '../../store/selectedSpot'
+import {updateSpot, getSpotDetails } from '../../store/spots'
 import { Modal } from '../../context/Modal'
 import UpdateSpotForm from '../UpdateSpotForm/UpdateSpotForm'
 import DeleteSpot from '../DeleteSpot/DeleteSpot'
@@ -12,7 +11,7 @@ import './CurrentSpot.css'
 
 function CurrentSpot() {
   const { spotId } = useParams()
-  const paramSpot = useSelector(state => state.selectedSpot[spotId])
+  const paramSpot = useSelector(state => state.selectedSpot?.selectedSpot[spotId])
   const [showModal, setShowModal] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
@@ -45,12 +44,13 @@ function CurrentSpot() {
     }
     getSpotBookings()
   }, [dispatch, bookings])
+  const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return (
     <div className='current-spot'>
       <p>{spot?.description}: {spot?.name}</p>
       <div>
         <i className="fa-solid fa-star"></i>
-        <p>{spot?.avgStarRating}</p>
+        <p>{rating}</p>
       </div>
       <p>{spot?.city}, {spot?.state} {spot?.country}</p>
       {spot && (<div>

@@ -8,6 +8,7 @@ import SpotCards from "./components/SpotsCards";
 import CurrentSpot from "./components/CurrentSpot/CurrentSpot";
 import NewSpotForm from "./components/NewSpotForm";
 import UserBookings from "./components/Bookings/AllUserBookings";
+import CurrentBooking from "./components/Bookings/CurrentBooking";
 
 function App() {
   const dispatch = useDispatch();
@@ -36,6 +37,9 @@ function App() {
           </Route>
           <Route exact path="/bookings">
             <UserBookings />
+          </Route>
+          <Route exact path="/bookings/:bookingId">
+            <CurrentBooking />
           </Route>
         </Switch>
       )}

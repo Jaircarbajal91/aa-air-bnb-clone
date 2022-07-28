@@ -31,16 +31,16 @@ function CreateBookingForm({ spot, bookings }) {
   const [endDate, setEndDate] = useState(week)
   const { price, avgStarRating, numReviews } = spot
 
-  let review;
-  if (numReviews === 0) review = `New`
-  else if (numReviews === 1) review = `1 review`
-  else review = `${numReviews} reviews`
+  let reviews;
+  if (numReviews === 0) reviews = `0 reviews`
+  else if (numReviews === 1) reviews = `1 review`
+  else reviews = `${numReviews} reviews`
 
-
+  const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   const handleSubmit = async (e) => {
     e.preventDefault()
     const booking = await dispatch(createBookingThunk(spot.id, {startDate, endDate}))
-    history.push('/bookings')
+    history.push(`/bookings/${booking.id}`)
   }
   return (
     <form
@@ -49,7 +49,7 @@ function CreateBookingForm({ spot, bookings }) {
       <p><strong>${price}</strong> night</p>
       <div>
         <i className="fa-solid fa-star"></i>
-        <span>{spot.avgStarRating} {review}</span>
+        <span> {rating}  {reviews}</span>
       </div>
       <label htmlFor="">CHECK-IN: </label>
       <input type="date" id="start" name="trip-start"
