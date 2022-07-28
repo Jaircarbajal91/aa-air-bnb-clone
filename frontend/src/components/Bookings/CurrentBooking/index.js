@@ -2,13 +2,20 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { getAllUserBookingsThunk } from "../../../store/bookings"
+import { Modal } from "../../../context/Modal"
+import DeleteBooking from "../../DeleteBooking"
+import UpdateBookingForm from "../UpdateBooking"
 
 function CurrentBooking() {
   const { bookingId } = useParams()
   const dispatch = useDispatch()
   const bookings = useSelector(state => state.bookings)
   const booking = useSelector(state => state.bookings?.[bookingId])
+  const [showModal, setShowModal] = useState(false);
+  const [showDelete, setShowDelete] = useState(false);
+  const [showUpdate, setShowUpdate] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false)
+  const sessionUser = useSelector(state => state.session.user)
   const spot = booking?.Spot
   let startDate, endDate;
   if (booking) {
@@ -85,9 +92,22 @@ function CurrentBooking() {
               <p>{formatter.format(total)}</p>
             </div>
           </div>
-          <div className="edit-booking-confirmation">
-            <button>Change Reservation</button>
-          </div>
+          {booking.userId === sessionUser.id && (
+            <div>
+              <button onClick={() => setShowUpdate(true)}>Edit Spot</button>
+              <button onClick={() => setShowDelete(true)}>Delete Spot</button>
+              {showUpdate && (
+                <Modal onClose={() => setShowUpdate(false)}>
+                  <UpdateBookingForm booking={booking} setShowModal={setShowModal} />
+                </Modal>
+              )}
+              {showDelete && (
+                <Modal onClose={() => setShowDelete(false)}>
+                  <DeleteBooking booking={booking} setShowModal={setShowModal} />
+                </Modal>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>
