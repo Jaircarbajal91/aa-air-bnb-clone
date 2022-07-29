@@ -39,6 +39,7 @@ function CreateBookingForm({ spot, bookings }) {
         let end = dates.endDate
         if ((startDate >= start && startDate <= end)) {
           newErrors.push("Start date conflicts with an existing booking")
+          break;
         }
         if ((endDate >= start && endDate <= end)) {
           newErrors.push("End date conflicts with an existing booking")
@@ -58,7 +59,7 @@ function CreateBookingForm({ spot, bookings }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setHasSubmitted(true)
-    if (errors.length) return;
+    if (errors.length > 0) return;
     const booking = await dispatch(createBookingThunk(spot.id, { startDate, endDate }))
     history.push(`/bookings/${booking.id}`)
   }
