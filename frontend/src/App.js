@@ -41,6 +41,9 @@ function App() {
           <Route exact path="/bookings/:bookingId">
             <CurrentBooking />
           </Route>
+          <Route>
+            <div>Page Not Found</div>
+          </Route>
         </Switch>
       )}
     </>

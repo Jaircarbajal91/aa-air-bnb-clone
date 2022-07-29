@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux"
 import { Redirect, useHistory, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { updateBookingThunk } from "../../../store/bookings";
 import './UpdateBooking.css'
 
@@ -41,6 +41,7 @@ function UpdateBookingForm ({setShowUpdate}) {
           type="date"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -49,6 +50,7 @@ function UpdateBookingForm ({setShowUpdate}) {
           type="date"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
+          required
         />
       </label>
       <button type="submit">Change Reservaion</button>

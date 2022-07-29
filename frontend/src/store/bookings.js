@@ -119,7 +119,6 @@ const bookingsReducer = (state = null, action) => {
     case GET_ALL_USER_BOOKINGS: {
       const newState = { ...state }
       const bookingsArr = action.bookings.Bookings
-      console.log(bookingsArr)
       bookingsArr.forEach(booking => {
         newState[booking.id] = booking
       })

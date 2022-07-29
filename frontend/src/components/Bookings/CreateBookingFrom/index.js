@@ -2,14 +2,17 @@ import { useEffect, useState } from "react"
 import { createBookingThunk } from "../../../store/bookings";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom"
+import { use } from "chai";
 
 function CreateBookingForm({ spot, bookings }) {
   const dispatch = useDispatch()
-  const history  = useHistory()
+  const history = useHistory()
   let today = new Date()
   let week = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
   let tomorrow = new Date(today)
   tomorrow.setDate(tomorrow.getDate() + 1)
+
+  console.log(bookings)
 
   const getDate = (today) => {
     let result;
@@ -19,29 +22,50 @@ function CreateBookingForm({ spot, bookings }) {
     return result;
   }
 
-  // useEffect(() => {
-
-  // }, [today])
-
   today = getDate(today)
   week = getDate(week)
   tomorrow = getDate(tomorrow)
 
   const [startDate, setStartDate] = useState(today)
   const [endDate, setEndDate] = useState(week)
+  const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [errors, setErrors] = useState([])
   const { price, avgStarRating, numReviews } = spot
 
+  useEffect(() => {
+    let newErrors = []
+
+    const allDates = bookings
+    if (allDates?.length) {
+      for (let dates of allDates) {
+        let start = dates.startDate
+        let end = dates.endDate
+        if ((startDate >= start && startDate <= end)) {
+          newErrors.push("Start date conflicts with an existing booking")
+        }
+        if ((endDate >= start && endDate <= end)) {
+          newErrors.push("End date conflicts with an existing booking")
+        }
+      }
+    }
+
+    setErrors(newErrors)
+  }, [startDate, endDate])
+
   let reviews;
-  if (numReviews === 0) reviews = `0 reviews`
+  if (numReviews === 0) reviews = ``
   else if (numReviews === 1) reviews = `1 review`
   else reviews = `${numReviews} reviews`
 
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   const handleSubmit = async (e) => {
     e.preventDefault()
-    const booking = await dispatch(createBookingThunk(spot.id, {startDate, endDate}))
+    setHasSubmitted(true)
+    if (errors.length) return;
+    const booking = await dispatch(createBookingThunk(spot.id, { startDate, endDate }))
     history.push(`/bookings/${booking.id}`)
   }
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -66,6 +90,13 @@ function CreateBookingForm({ spot, bookings }) {
       >
       </input>
       <button type="submit">Reserve</button>
+      {hasSubmitted && errors.length > 0 && (
+        <ul>
+          {errors.map(error => (
+            <li key={error}>{error}</li>
+          ))}
+        </ul>
+      )}
       <p>You won't be charged yet</p>
     </form>
   )

@@ -9,7 +9,6 @@ function DeleteBooking({booking, setShowDelete}) {
     setShowDelete(false)
     history.push("/bookings")
   }
-
   return (
     <div>
       <button onClick={() => handleDelete()}>YES</button>

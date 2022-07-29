@@ -13,14 +13,15 @@ function CurrentBooking() {
   const booking = useSelector(state => state.bookings?.[bookingId])
   const [showDelete, setShowDelete] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
+  const [changeable, setChangeable] = useState(true)
   const [isLoaded, setIsLoaded] = useState(false)
+  const [total, setTotal] = useState('')
+  const [checkIn, setCheckIn] = useState('')
+  const [checkOut, setCheckOut] = useState('')
   const sessionUser = useSelector(state => state.session.user)
   const spot = booking?.Spot
+
   let startDate, endDate;
-  if (booking) {
-    startDate = booking.startDate
-    endDate = booking.endDate
-  }
   useEffect(() => {
     const getBooking = async () => {
       if (bookings === null || spot === undefined) {
@@ -28,29 +29,31 @@ function CurrentBooking() {
         setIsLoaded(true)
       } else {
         setIsLoaded(true)
+        let start = new Date(booking.startDate)
+        let end = new Date(booking.endDate)
+        startDate = new Date(start.getTime() + start.getTimezoneOffset() * 60000)
+        endDate = new Date(end.getTime() + end.getTimezoneOffset() * 60000)
+        setCheckIn(new Date(startDate).toDateString())
+        setCheckOut(new Date(endDate).toDateString())
+
+        const Difference_In_Time = end.getTime() - start.getTime();
+        const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+        setTotal(Difference_In_Days * spot.price)
+
+        const date = new Date(startDate).getTime()
+        const today = new Date().getTime()
+
+        if (date < today) setChangeable(false)
       }
     }
     getBooking()
   }, [dispatch, bookings])
 
-  const formatDate = (date) => {
-    let result = new Date(date).toLocaleDateString('en-us', {
-      weekday: "long", year: "numeric", month: "short", day: "numeric"
-    })
-    return result
-  }
-  const checkIn = formatDate(startDate)
-  const checkOut = formatDate(endDate)
-
-  const date1 = new Date(startDate);
-  const date2 = new Date(endDate);
-  const Difference_In_Time = date2.getTime() - date1.getTime();
-  const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-  const total = Difference_In_Days * spot?.price
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',
   });
+
   return (
     <div className="current-booking">
       {isLoaded && (
@@ -70,13 +73,13 @@ function CurrentBooking() {
             </div>
             <div className="confirmation-booking info">
               <div className="confirmation-left-itinerary">
-                <p>{checkIn.split(',')[0]}</p>
-                <p>{checkIn.split(',')[1]},{checkIn.split(',')[2]}</p>
+                <p>{checkIn.substring(0, 3)}</p>
+                <p>{checkIn.substring(3)}</p>
                 <p>Check-in time is 4PM - 9PM</p>
               </div>
               <div className="confirmation-right-itinerary">
-                <p>{checkOut.split(',')[0]}</p>
-                <p>{checkOut.split(',')[1]},{checkIn.split(',')[2]}</p>
+                <p>{checkOut.substring(0, 3)}</p>
+                <p>{checkOut.substring(3)}</p>
                 <p>Check out time is 11AM</p>
               </div>
             </div>
@@ -91,7 +94,7 @@ function CurrentBooking() {
               <p>{formatter.format(total)}</p>
             </div>
           </div>
-          {booking.userId === sessionUser.id && (
+          {booking.userId === sessionUser.id && changeable && (
             <div>
               <button onClick={() => setShowUpdate(true)}>Change Reservaion</button>
               <button onClick={() => setShowDelete(true)}>Cancel Reservaion</button>
