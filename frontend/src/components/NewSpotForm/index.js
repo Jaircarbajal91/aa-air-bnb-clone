@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { Redirect, useHistory } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { createNewSpot } from "../../store/spots";
+import { getAllSpots } from "../../store/spots";
 import "./NewForm.css"
 
 function NewSpotForm() {
@@ -16,21 +17,43 @@ function NewSpotForm() {
   const [price, setPrice] = useState("")
   const [description, setDescription] = useState("")
   const [previewImage, setPreviewImage] = useState("")
+  const [hasSubmitted, setHasSubmitted] = useState(false)
   const [errors, setErrors] = useState([])
-
   const history = useHistory()
+  const dispatch = useDispatch()
+
+  const spots = useSelector(state => state.spots?.orderedSpotsList)
+  useEffect(() => {
+    const newErrors = []
+    if (spots) {
+      for (let spot of spots) {
+        if (spot.address === address) {
+          newErrors.push("Address already exists")
+          break;
+        }
+      }
+    }
+    if (name.length > 50) newErrors.push("Name must be less than 50 characters")
+    if (Number(lat) > 90 || Number(lat) < -90)  newErrors.push("Latitude is not valid")
+    if (Number(lng) > 180 || Number(lng) < -180) newErrors.push("Longitude is not valid")
+    setErrors(newErrors)
+  }, [name, address, lat, lng])
 
   useEffect(() => {
+    dispatch(getAllSpots())
+  }, [dispatch])
 
-  }, [name, address, lat,])
-
-  const dispatch = useDispatch()
   if (sessionUser === null) {
     alert("must be logged in to create a spot")
     return <Redirect to="/" />
   }
-  const handleSubmit =  (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+    setHasSubmitted(true)
+    if (errors.length > 0) {
+      history.push('/spots/create');
+      return
+    }
     const newSpot = {
       name,
       address,
@@ -43,16 +66,9 @@ function NewSpotForm() {
       price,
       description
     }
-    dispatch(createNewSpot(newSpot))
-    .then(() => history.push("/"))
-    .catch(async (res) => {
-      const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
-          window.scrollTo(0, 0);
-        }
-    })
-    // const newErrors = await response.json()
+
+    const response = await dispatch(createNewSpot(newSpot))
+    history.push('/')
     // setErrors(newErrors.errors)
   }
   return (
@@ -60,9 +76,13 @@ function NewSpotForm() {
       onSubmit={handleSubmit}
       className="new-spot-form"
     >
-      <ul>
-        {!!errors.length && errors.map((error, idx) => <li key={idx}>{error}</li>)}
-      </ul>
+      {hasSubmitted && errors.length > 0 && (
+        <ul>
+          {errors.map(error => (
+            <li key={error}>{error}</li>
+          ))}
+        </ul>
+      )}
       <label >
         Name:
         <input
