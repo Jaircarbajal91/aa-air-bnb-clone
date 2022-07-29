@@ -8,13 +8,13 @@ import { useDispatch } from 'react-redux'
   function LoginFormModal({showLoginModal, setShowLoginModal}) {
     const [showModal, setShowModal] = useState(false);
     const dispatch = useDispatch()
-    
+
 
     return (
       <>
         {showLoginModal && (
           <Modal onClose={() => setShowLoginModal(false)}>
-            <LoginForm />
+            <LoginForm setShowLoginModal={setShowLoginModal}/>
           </Modal>
         )}
       </>
