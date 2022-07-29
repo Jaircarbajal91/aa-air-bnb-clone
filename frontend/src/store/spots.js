@@ -65,7 +65,6 @@ export const getSpotDetails = (id) => async dispatch => {
 };
 
 export const createNewSpot = spot => async dispatch => {
-  console.log('in thunk')
   const response = await csrfFetch('/api/spots/auth', {
     method: "POST",
     headers: {
@@ -73,15 +72,12 @@ export const createNewSpot = spot => async dispatch => {
     },
     body: JSON.stringify(spot)
   })
-  console.log("here above!!!!!", response)
   if (response.ok) {
     const newSpot = await response.json()
     dispatch(createSingleSpot(newSpot))
     return newSpot;
   }
-  console.log("getting errors")
   const errors = await response.json()
-  console.log(errors.errors)
   return errors
 }
 

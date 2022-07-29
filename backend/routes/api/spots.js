@@ -235,7 +235,6 @@ router.post('/auth', requireAuth, async (req, res, next) => {
     }
   })
 
-  console.log(checkSpots)
   if (checkSpots) {
     const err = new Error('Address already exists')
     err.status = 400

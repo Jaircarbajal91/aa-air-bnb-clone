@@ -12,8 +12,6 @@ function CreateBookingForm({ spot, bookings }) {
   let tomorrow = new Date(today)
   tomorrow.setDate(tomorrow.getDate() + 1)
 
-  console.log(bookings)
-
   const getDate = (today) => {
     let result;
     let month = (today.getMonth() + 1) < 10 ? `0${(today.getMonth() + 1)}` : (today.getMonth() + 1)
