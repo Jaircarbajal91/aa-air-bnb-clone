@@ -5,7 +5,9 @@ div.svg-container{
   max-width: 118px;
   max-height: 64px;
   margin-left: 3em;
+  cursor: pointer;
 }
+
 
 img.svg-logo {
   max-height: 2em;

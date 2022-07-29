@@ -15,7 +15,9 @@ function Navigation({ isLoaded }) {
   if (sessionUser) {
     sessionLinks = (
       <div className='right-profile-container'>
-        <NavLink className='become-host-link' to="/spots/create">Become a Host</NavLink>
+        <div className='host-hover-border'>
+          <NavLink className='become-host-link' to="/spots/create">Become a Host</NavLink>
+        </div>
         <ProfileButton user={sessionUser} />
       </div>
     );
@@ -36,7 +38,7 @@ function Navigation({ isLoaded }) {
           marginLeft: '.7em'
         }} className='svg-logo-name' src={name} />
       </div>
-        {isLoaded && sessionLinks}
+      {isLoaded && sessionLinks}
     </nav>
   );
 }
