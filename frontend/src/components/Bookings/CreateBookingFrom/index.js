@@ -2,7 +2,6 @@ import { useEffect, useState } from "react"
 import { createBookingThunk } from "../../../store/bookings";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom"
-import { use } from "chai";
 
 function CreateBookingForm({ spot, bookings }) {
   const dispatch = useDispatch()
