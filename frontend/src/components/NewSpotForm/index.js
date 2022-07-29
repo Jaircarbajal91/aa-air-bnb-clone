@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux"
 import { Redirect, useHistory } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createNewSpot } from "../../store/spots";
 import "./NewForm.css"
 
@@ -16,15 +16,20 @@ function NewSpotForm() {
   const [price, setPrice] = useState("")
   const [description, setDescription] = useState("")
   const [previewImage, setPreviewImage] = useState("")
+  const [errors, setErrors] = useState([])
 
   const history = useHistory()
+
+  useEffect(() => {
+
+  }, [name, address, lat,])
 
   const dispatch = useDispatch()
   if (sessionUser === null) {
     alert("must be logged in to create a spot")
     return <Redirect to="/" />
   }
-  const handleSubmit = async (e) => {
+  const handleSubmit =  (e) => {
     e.preventDefault()
     const newSpot = {
       name,
@@ -38,20 +43,33 @@ function NewSpotForm() {
       price,
       description
     }
-    const createdSpot = await dispatch(createNewSpot(newSpot));
-    history.push("/")
+    dispatch(createNewSpot(newSpot))
+    .then(() => history.push("/"))
+    .catch(async (res) => {
+      const data = await res.json();
+        if (data && data.errors) {
+          setErrors(data.errors);
+          window.scrollTo(0, 0);
+        }
+    })
+    // const newErrors = await response.json()
+    // setErrors(newErrors.errors)
   }
   return (
     <form
       onSubmit={handleSubmit}
       className="new-spot-form"
     >
+      <ul>
+        {!!errors.length && errors.map((error, idx) => <li key={idx}>{error}</li>)}
+      </ul>
       <label >
         Name:
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -60,6 +78,7 @@ function NewSpotForm() {
           type="text"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -68,6 +87,7 @@ function NewSpotForm() {
           type="text"
           value={city}
           onChange={(e) => setCity(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -76,6 +96,7 @@ function NewSpotForm() {
           type="text"
           value={state}
           onChange={(e) => setState(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -84,6 +105,7 @@ function NewSpotForm() {
           type="text"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -92,6 +114,7 @@ function NewSpotForm() {
           type="number"
           value={lat}
           onChange={(e) => setLat(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -100,6 +123,7 @@ function NewSpotForm() {
           type="number"
           value={lng}
           onChange={(e) => setLng(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -111,6 +135,7 @@ function NewSpotForm() {
           step="0.01"
           placeholder="100.00"
           onChange={(e) => setPrice(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -119,6 +144,7 @@ function NewSpotForm() {
           type="url"
           value={previewImage}
           onChange={(e) => setPreviewImage(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -127,6 +153,7 @@ function NewSpotForm() {
           type="text"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          required
         />
       </label>
       <button type="submit">Create Spot</button>

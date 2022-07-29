@@ -1,20 +1,26 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from "react-router-dom";
 import * as sessionActions from '../../store/session';
 import icon from '../Navigation/images/icon.svg'
 import hamburger from '../Navigation/images/hamburgerIcon.svg'
+import LoginFormModal from "../LoginFormModal";
+import { logInAsDemo } from "../../store/session";
 import './ProfileButton.css'
 
-function ProfileButton({ user }) {
+
+function ProfileButton({ user, isLoaded }) {
   const dispatch = useDispatch();
   const [showMenu, setShowMenu] = useState(false);
-
+  const [showLoginModal, setShowLoginModal] = useState(false);
   const openMenu = () => {
     if (showMenu) return;
     setShowMenu(true);
   };
 
+  async function handleDemo() {
+    const demo = await dispatch(logInAsDemo())
+  }
   useEffect(() => {
     if (!showMenu) return;
 
@@ -27,12 +33,20 @@ function ProfileButton({ user }) {
     return () => document.removeEventListener("click", closeMenu);
   }, [showMenu]);
 
+  const sessionUser = useSelector(state => state.session.user);
+
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout());
   };
   return (
     <>
+      {showLoginModal && (<LoginFormModal showLoginModal={showLoginModal} setShowLoginModal={setShowLoginModal} />)}
+      <div className='right-profile-container'>
+        <div className='host-hover-border'>
+          <NavLink className='become-host-link' to="/spots/create">Become a Host</NavLink>
+        </div>
+      </div>
       <div className="profile-button-border"
         onClick={openMenu}>
         <img className="hamburger-icon" src={hamburger} />
@@ -40,12 +54,24 @@ function ProfileButton({ user }) {
       </div>
       {showMenu && (
         <div className="profile-dropdown">
-          <ul className="profile-list">
-            <li className="profile-username">{user.username}</li>
-            <li className="profile-email">{user.email}</li>
-            <li><NavLink className="menu-my-bookings" activeClassName="active" to="/bookings">My Bookings</NavLink></li>
-            <li className="profile-logout" onClick={logout}>Log Out</li>
-          </ul>
+          {isLoaded && sessionUser && (
+            <ul className="profile-list">
+              <li className="profile-list-item">{user.username}</li>
+              <li><NavLink className="menu-my-bookings" activeClassName="active" to="/bookings">My Bookings</NavLink></li>
+              <li className="profile-list-item" onClick={logout}>Log Out</li>
+            </ul>
+          )}
+          {isLoaded && !sessionUser && (
+            <ul className="profile-list">
+              <li>
+                <NavLink className='profile-list-item' onClick={() => setShowLoginModal(true)} to=''>Login</NavLink>
+              </li>
+              <li>
+                <NavLink className='profile-list-item' onClick={() => handleDemo()} to=''>Demo Login</NavLink>
+              </li>
+              <li><NavLink className='profile-list-item' to="/signup">Sign Up</NavLink></li>
+            </ul>
+          )}
         </div>
       )}
     </>

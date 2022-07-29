@@ -1,0 +1,11 @@
+div.spots-cards-container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+div.spots-container {
+  display: flex;
+  justify-content: center;
+  max-width: 100%;
+}

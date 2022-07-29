@@ -117,8 +117,9 @@ export const deleteBookingThunk = id => async dispatch => {
 const bookingsReducer = (state = null, action) => {
   switch (action.type) {
     case GET_ALL_USER_BOOKINGS: {
-      const newState = {...state}
+      const newState = { ...state }
       const bookingsArr = action.bookings.Bookings
+      console.log(bookingsArr)
       bookingsArr.forEach(booking => {
         newState[booking.id] = booking
       })
@@ -127,21 +128,26 @@ const bookingsReducer = (state = null, action) => {
     }
     case GET_ALL_BOOKINGS_SPOT: {
       const newState = {}
-      const bookingsArr = action.bookings.Bookings
-      bookingsArr.forEach(booking => {
-        newState[booking.id] = booking
-      })
-      newState.orderedBookingList = [...bookingsArr]
-      return newState
+      if (action.bookings.Bookings) {
+        const bookingsArr = action.bookings.Bookings
+        bookingsArr.forEach(booking => {
+          newState[booking.id] = booking
+        })
+        newState.orderedBookingList = [...bookingsArr]
+        return newState
+      } else {
+        newState.message = action.bookings.message
+        return newState
+      }
     }
     case DELETE_BOOKING: {
-      const newState = {...state}
+      const newState = { ...state }
       delete newState[action.id]
       return newState
     }
     case UPDATE_BOOKING:
     case CREATE_BOOKING: {
-      const newState = {...state};
+      const newState = { ...state };
       newState[action.booking.id] = action.booking
       return newState;
     }

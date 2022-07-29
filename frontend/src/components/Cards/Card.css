@@ -1,4 +1,39 @@
 img.spot-img {
-  max-width: 322px;
-  max-height: 322px;
+  object-fit: cover;
+  width: 300px;
+  height: 285px;
+  border-radius: .7em;
+}
+
+div.spot-card-container {
+  margin: .6em;
+  width: 300px;
+  min-height: 388px;
+}
+
+div.spot-info-container{
+  margin-top: .5em;
+  min-height: 90px;
+  display: flex;
+  justify-content: space-between;
+}
+
+div.spot-info-left {
+  display: flex;
+  max-width: 75%;
+  min-height: inherit;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+div.spot-info-right {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 25%;
+  font-size: small;
+  justify-content: space-around;
+}
+
+i.fa-solid{
+  margin-left: 2em;
 }

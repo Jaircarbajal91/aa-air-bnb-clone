@@ -39,7 +39,7 @@ div.profile-button-border:hover{
 }
 
 .host-hover-border:hover {
-  background-color: rgb(247, 243, 243);;
+  background-color: rgb(247, 243, 243);
 }
 
 img.hamburger-icon{
@@ -51,6 +51,11 @@ img.hamburger-icon{
 
 ul.profile-list {
   list-style-type: none;
+}
+
+.profile-list-item {
+  color: black;
+  text-decoration: none;
 }
 
 div.right-profile-container {
@@ -72,4 +77,16 @@ div.right-profile-container {
   color: black;
   text-decoration: none;
   font-size: .9rem;
+}
+
+div.profile-dropdown {
+  display: flex;
+  flex-direction: column;
+  width: 15em;
+  background-color: white;
+  box-shadow: 1px -2px 4px rgb(195, 195, 195);
+  border-radius: .5em;
+  position: absolute;
+  top: 90%;
+  right: 6%;
 }

@@ -201,7 +201,7 @@ router.get('/', async (req, res) => {
   })
 })
 
-router.post('/auth', requireAuth, async (req, res) => {
+router.post('/auth', requireAuth, async (req, res, next) => {
   const { address, city, state, country, lat, lng, name, description, price, previewImage } = req.body;
 
   const error = {
@@ -235,12 +235,14 @@ router.post('/auth', requireAuth, async (req, res) => {
     }
   })
 
+  console.log(checkSpots)
   if (checkSpots) {
-    return res.status(404).json({
-      message: "Address already exists",
-      statusCode: 404
-    })
+    const err = new Error('Address already exists')
+    err.status = 400
+    err.errors = [err.message]
+    next(err)
   }
+
   const spot = await Spot.create({
     ownerId: req.user.id,
     address,

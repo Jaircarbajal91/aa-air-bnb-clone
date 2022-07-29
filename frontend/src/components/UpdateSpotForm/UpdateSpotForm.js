@@ -1,11 +1,11 @@
 import { useSelector, useDispatch } from "react-redux"
 import { Redirect, useHistory, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { updateSpot } from "../../store/spots";
 import './UpdateSpot.css'
 
-function UpdateSpotForm ({setShowModal}) {
-  const {spotId} = useParams()
+function UpdateSpotForm({ setShowUpdate }) {
+  const { spotId } = useParams()
   const sessionUser = useSelector(state => state.session.user)
   const [name, setName] = useState("")
   const [address, setAddress] = useState("")
@@ -18,15 +18,30 @@ function UpdateSpotForm ({setShowModal}) {
   const [description, setDescription] = useState("")
   const [previewImage, setPreviewImage] = useState("")
   const [errors, setErrors] = useState([])
+  const [hasSubmitted, setHasSubmitted] = useState(false)
 
   const history = useHistory()
   const dispatch = useDispatch()
+  useEffect(() => {
+    const newErrors = []
+    if (name.length > 50) newErrors.push("Name must be less than 50 characters")
+    if (Number(lat) > 90 || Number(lat) < -90)  newErrors.push("Latitude is not valid")
+    if (Number(lng) > 180 || Number(lng) < -180)  newErrors.push("Longitude is not valid")
+
+    setErrors(newErrors)
+
+  }, [name, lat, lng])
+
   if (sessionUser === null) {
     alert("must be logged in to edit a spot")
     return <Redirect to="/" />
   }
+
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setHasSubmitted(true)
+    if (errors.length > 0) return;
+
     const updatedSpot = {
       id: spotId,
       name,
@@ -41,8 +56,8 @@ function UpdateSpotForm ({setShowModal}) {
       description
     }
 
-    const newSpot = await dispatch(updateSpot(updatedSpot))
-    setShowModal(false)
+    const response = await dispatch(updateSpot(updatedSpot))
+    setShowUpdate(false)
     history.push(`/spots/${spotId}`)
   }
   return (
@@ -51,12 +66,20 @@ function UpdateSpotForm ({setShowModal}) {
       className="update-spot-form"
     >
       <h3>Update Spot Form</h3>
+      {hasSubmitted && errors.length > 0 && (
+        <ul>
+          {errors.map(error => (
+            <li key={error}>{error}</li>
+          ))}
+        </ul>
+      )}
       <label >
         Name:
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -65,6 +88,7 @@ function UpdateSpotForm ({setShowModal}) {
           type="text"
           value={address}
           onChange={(e) => setAddress(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -73,6 +97,7 @@ function UpdateSpotForm ({setShowModal}) {
           type="text"
           value={city}
           onChange={(e) => setCity(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -81,6 +106,7 @@ function UpdateSpotForm ({setShowModal}) {
           type="text"
           value={state}
           onChange={(e) => setState(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -89,6 +115,7 @@ function UpdateSpotForm ({setShowModal}) {
           type="text"
           value={country}
           onChange={(e) => setCountry(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -97,6 +124,7 @@ function UpdateSpotForm ({setShowModal}) {
           type="number"
           value={lat}
           onChange={(e) => setLat(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -105,6 +133,7 @@ function UpdateSpotForm ({setShowModal}) {
           type="number"
           value={lng}
           onChange={(e) => setLng(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -116,6 +145,7 @@ function UpdateSpotForm ({setShowModal}) {
           step="0.01"
           placeholder="100.00"
           onChange={(e) => setPrice(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -126,6 +156,7 @@ function UpdateSpotForm ({setShowModal}) {
           accept="image/png, image/gif, image/jpeg"
           value={previewImage}
           onChange={(e) => setPreviewImage(e.target.value)}
+          required
         />
       </label>
       <label >
@@ -134,6 +165,7 @@ function UpdateSpotForm ({setShowModal}) {
           type="text"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          required
         />
       </label>
       <button type="submit">Update Spot</button>

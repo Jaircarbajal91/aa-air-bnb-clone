@@ -14,19 +14,33 @@ function Card({ spot }) {
     history.push(`/spots/${spot.id}`)
   }
   const rating = spot.avgStarRating == 0 ? "New" : spot.avgStarRating
+  const getRandomInt = (max) => {
+    return Math.floor(Math.random() * max);
+  }
   return (
     <div id={`spot-${spot.id}`} className="spot-card-container"
       onClick={(e) => handleClick(e)}
     >
       <div className="card-container">
-        <img src={`${spot.previewImage}`} className="spot-img" />
-        <div>{spot.city} {spot.state}</div>
-        <div>
-          <i className="fa-solid fa-star"></i>
-          <p>{rating}</p>
+        {spot && (<img src={`${spot.previewImage}`} className="spot-img" />)}
+        <div className="spot-info-container">
+          <div className="spot-info-left">
+            <div style={{
+              fontSize: '.9rem'
+            }}>{spot.city}, {spot.state}</div>
+            <p style={{
+              fontSize: '.9rem',
+              color: 'grey'
+            }}>{getRandomInt(100)} miles away</p>
+            <div><strong>${spot.price}</strong> <span style={{
+              fontSize: '.9rem'
+            }}>night</span></div>
+          </div>
+          <div className="spot-info-right">
+            <i className="fa-solid fa-star"></i>
+            <div className="spot-rating">{rating}</div>
+          </div>
         </div>
-        <p>79 miles away</p>
-        <p><strong>${spot.price}</strong> night</p>
       </div>
     </div>
   )

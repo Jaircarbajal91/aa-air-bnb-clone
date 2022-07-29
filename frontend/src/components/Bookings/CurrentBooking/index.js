@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import { getAllUserBookingsThunk } from "../../../store/bookings"
 import { Modal } from "../../../context/Modal"
-import DeleteBooking from "../../DeleteBooking"
+import DeleteBooking from "../DeleteBooking"
 import UpdateBookingForm from "../UpdateBooking"
 
 function CurrentBooking() {
@@ -60,9 +60,9 @@ function CurrentBooking() {
               <h1>Your reservation is confirmed</h1>
               <p>{`You're going to ${spot.city}!`}</p>
             </div>
-            <img style={{
+            {spot && (<img style={{
               maxWidth: '20em'
-            }} src={spot.previewImage} />
+            }} src={spot.previewImage} />)}
             <div className="confirmation-description">
               <p>{spot.name}</p>
               <p>{spot.description}</p>

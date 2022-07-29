@@ -11,10 +11,12 @@ function SpotCards() {
     dispatch(getAllSpots());
   }, [dispatch])
   return (
-    <div className="spots-cards-container">
-      {spots?.map(spot => (
-        <Card key={spot.id} spot={spot} />
-      ))}
+    <div className="spots-container">
+      <div className="spots-cards-container">
+        {spots?.map(spot => (
+          <Card key={spot.id} spot={spot} />
+        ))}
+      </div>
     </div>
   )
 }

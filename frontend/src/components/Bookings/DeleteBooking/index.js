@@ -1,5 +1,5 @@
 import { useHistory } from "react-router-dom";
-import { deleteBookingThunk } from "../../store/bookings";
+import { deleteBookingThunk } from "../../../store/bookings";
 import { useDispatch } from "react-redux";
 function DeleteBooking({booking, setShowDelete}) {
   const dispatch = useDispatch()

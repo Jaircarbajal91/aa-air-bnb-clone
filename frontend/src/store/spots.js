@@ -65,16 +65,24 @@ export const getSpotDetails = (id) => async dispatch => {
 };
 
 export const createNewSpot = spot => async dispatch => {
+  console.log('in thunk')
   const response = await csrfFetch('/api/spots/auth', {
     method: "POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify(spot)
   })
+  console.log("here above!!!!!", response)
   if (response.ok) {
     const newSpot = await response.json()
     dispatch(createSingleSpot(newSpot))
     return newSpot;
   }
-  return response
+  console.log("getting errors")
+  const errors = await response.json()
+  console.log(errors.errors)
+  return errors
 }
 
 export const updateSpot = spot => async dispatch => {
@@ -90,7 +98,8 @@ export const updateSpot = spot => async dispatch => {
     dispatch(updateSpotAction(spot))
     return spot;
   }
-  return response
+  const errors = await response.json()
+  return errors
 }
 
 export const deleteSpot = id => async dispatch => {
@@ -119,7 +128,7 @@ const spotsReducer = (state = {}, action) => {
       return newState
     }
     case GET_SPOT_DETAILS: {
-      let newState = {...state}
+      let newState = { ...state }
       newState.selectedSpot = {}
       newState.selectedSpot[action.spot.id] = action.spot
       const images = action.spot.Images
@@ -131,7 +140,7 @@ const spotsReducer = (state = {}, action) => {
       return newState
     }
     case DELETE_SPOT: {
-      const newState = {...state}
+      const newState = { ...state }
       delete newState[action.id]
       return newState
     }
@@ -140,7 +149,7 @@ const spotsReducer = (state = {}, action) => {
       newState[action.spot.id] = action.spot
       return newState;
     }
-    case CREAT_NEW_SPOT:{
+    case CREAT_NEW_SPOT: {
       let newState = { ...state };
       newState[action.spot.id] = action.spot
       return newState;

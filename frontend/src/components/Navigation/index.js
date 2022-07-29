@@ -11,24 +11,6 @@ import name from './images/jairbnb.svg'
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector(state => state.session.user);
   const history = useHistory()
-  let sessionLinks;
-  if (sessionUser) {
-    sessionLinks = (
-      <div className='right-profile-container'>
-        <div className='host-hover-border'>
-          <NavLink className='become-host-link' to="/spots/create">Become a Host</NavLink>
-        </div>
-        <ProfileButton user={sessionUser} />
-      </div>
-    );
-  } else {
-    sessionLinks = (
-      <>
-        <LoginFormModal />
-        <NavLink to="/signup">Sign Up</NavLink>
-      </>
-    );
-  }
 
   return (
     <nav className='main-navbar'>
@@ -38,7 +20,11 @@ function Navigation({ isLoaded }) {
           marginLeft: '.7em'
         }} className='svg-logo-name' src={name} />
       </div>
-      {isLoaded && sessionLinks}
+      {isLoaded && (
+        <div className='right-profile-container'>
+          <ProfileButton user={sessionUser} isLoaded={isLoaded} />
+        </div>
+      )}
     </nav>
   );
 }

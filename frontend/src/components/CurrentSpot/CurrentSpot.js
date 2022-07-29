@@ -62,12 +62,12 @@ function CurrentSpot() {
           <button onClick={() => setShowDelete(true)}>Delete Spot</button>
           {showUpdate && (
             <Modal onClose={() => setShowUpdate(false)}>
-              <UpdateSpotForm spotId={spotId} setShowModal={setShowModal} />
+              <UpdateSpotForm spotId={spotId} setShowUpdate={setShowUpdate} />
             </Modal>
           )}
           {showDelete && (
             <Modal onClose={() => setShowDelete(false)}>
-              <DeleteSpot spotId={spotId} setShowModal={setShowModal} />
+              <DeleteSpot spotId={spotId} setShowDelete={setShowDelete} />
             </Modal>
           )}
         </div>
