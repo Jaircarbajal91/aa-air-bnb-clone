@@ -135,7 +135,7 @@ const bookingsReducer = (state = null, action) => {
         newState.orderedBookingList = [...bookingsArr]
         return newState
       } else {
-        newState.message = action.bookings.message
+        newState.orderedBookingList = []
         return newState
       }
     }

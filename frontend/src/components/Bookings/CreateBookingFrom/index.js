@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react"
-import { createBookingThunk } from "../../../store/bookings";
-import { useDispatch } from "react-redux";
+import { createBookingThunk, getAllBookingsForSpotAction } from "../../../store/bookings";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom"
 
-function CreateBookingForm({ spot, bookings }) {
+function CreateBookingForm({ spot }) {
   const dispatch = useDispatch()
   const history = useHistory()
   let today = new Date()
   let week = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
   let tomorrow = new Date(today)
-  tomorrow.setDate(tomorrow.getDate() + 1)
+  today.setDate(today.getDate() + 1)
+  tomorrow.setDate(tomorrow.getDate() + 2)
 
   const getDate = (today) => {
     let result;
@@ -22,12 +23,17 @@ function CreateBookingForm({ spot, bookings }) {
   today = getDate(today)
   week = getDate(week)
   tomorrow = getDate(tomorrow)
-
+  const bookings = useSelector(state => state.bookings.orderedBookingList)
   const [startDate, setStartDate] = useState(today)
   const [endDate, setEndDate] = useState(week)
   const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [isLoaded, setIsLoaded] = useState(false);
   const [errors, setErrors] = useState([])
   const { price, avgStarRating, numReviews } = spot
+
+  useEffect(() => {
+    dispatch(getAllBookingsForSpotAction(spot.id))
+  }, [])
 
   useEffect(() => {
     let newErrors = []
@@ -43,8 +49,14 @@ function CreateBookingForm({ spot, bookings }) {
         }
         if ((endDate >= start && endDate <= end)) {
           newErrors.push("End date conflicts with an existing booking")
+          break
         }
       }
+    }
+    const date1 = new Date(startDate).getTime()
+    const date2 = new Date(endDate).getTime()
+    if (date2 < date1) {
+        newErrors.push("Check out date cannot come before check in date")
     }
 
     setErrors(newErrors)

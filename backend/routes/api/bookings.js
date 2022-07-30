@@ -69,7 +69,7 @@ router.get('/auth', requireAuth, async (req, res) => {
 
 
 router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
-  const spot = await Spot.findByPk(req.params.spotId)
+  const spot = await Spot.findByPk(Number(req.params.spotId))
 
   if (!spot) {
     return res.status(404).json({
@@ -103,7 +103,7 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
     attributes: ['startDate', 'endDate'],
     raw: true,
     where: {
-      spotId: req.params.spotId
+      spotId: Number(req.params.spotId)
     }
   })
 
@@ -122,14 +122,14 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
   }
 
   if ('endDate' in err.errors || 'startDate' in err.errors) {
-    const err = new Error('Address already exists')
-    err.status = 400
+    err.errors = 'Address already exists'
+    err.statusCode = 400
     err.errors = [err.message]
     next(err)
   }
 
   const booking = await Booking.create({
-    spotId: req.params.spotId,
+    spotId: Number(req.params.spotId),
     userId: req.user.id,
     startDate,
     endDate

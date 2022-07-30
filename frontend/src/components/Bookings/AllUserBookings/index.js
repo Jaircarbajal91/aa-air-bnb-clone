@@ -8,17 +8,10 @@ function UserBookings() {
   const dispatch = useDispatch()
   const [isLoaded, setIsLoaded] = useState(false)
   useEffect(() => {
-    const getBookings = async () => {
-      if (bookings === undefined || bookings.length) {
-        const bookingsArr = await dispatch(getAllUserBookingsThunk())
-        setIsLoaded(true)
-      } else {
-        setIsLoaded(true)
-      }
-    }
-    getBookings()
+    dispatch(getAllUserBookingsThunk())
+    setIsLoaded(true)
   }, [dispatch])
-  return (
+  return isLoaded && (
     <div>
       <table>
         <thead>
@@ -30,7 +23,7 @@ function UserBookings() {
           </tr>
         </thead>
         <tbody>
-          {isLoaded && !!bookings.length && bookings.map(booking => (
+          {isLoaded && !!bookings?.length && bookings.map(booking => (
             <tr key={booking.id}>
               <Listing booking={booking} />
             </tr>
