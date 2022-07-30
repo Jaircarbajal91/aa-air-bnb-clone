@@ -33,7 +33,7 @@ function CreateBookingForm({ spot }) {
 
   useEffect(() => {
     dispatch(getAllBookingsForSpotAction(spot.id))
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     let newErrors = []
