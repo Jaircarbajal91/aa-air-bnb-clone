@@ -23,7 +23,7 @@ function CreateBookingForm({ spot }) {
   today = getDate(today)
   week = getDate(week)
   tomorrow = getDate(tomorrow)
-  const bookings = useSelector(state => state.bookings.orderedBookingList)
+  const bookings = useSelector(state => state.bookings?.orderedBookingList)
   const [startDate, setStartDate] = useState(today)
   const [endDate, setEndDate] = useState(week)
   const [hasSubmitted, setHasSubmitted] = useState(false)

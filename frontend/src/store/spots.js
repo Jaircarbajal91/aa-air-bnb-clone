@@ -132,6 +132,7 @@ const spotsReducer = (state = {}, action) => {
       images.forEach((image, i) => {
         newState.selectedSpot[action.spot.id].images[i + 1] = image.url
       })
+      newState.orderedSpotsList = [action.spot]
       delete newState.selectedSpot[action.spot.id].Images
       return newState
     }
