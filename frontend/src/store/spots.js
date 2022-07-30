@@ -7,35 +7,31 @@ const DELETE_SPOT = 'spots/deleteSpot';
 const GET_SPOT_DETAILS = 'spots/getSpotDetails';
 
 
+
 const getSingleSpot = spot => {
   return {
     type: GET_SPOT_DETAILS,
     spot
   };
 };
-
 const getSpots = spots => {
   return {
     type: GET_ALL_SPOTS,
     spots
   };
 };
-
-
 const createSingleSpot = spot => {
   return {
     type: CREAT_NEW_SPOT,
     spot
   };
 };
-
 const updateSpotAction = spot => {
   return {
     type: UPDATE_SPOT,
     spot
   };
 };
-
 const deleteSpotAction = id => {
   return {
     type: DELETE_SPOT,

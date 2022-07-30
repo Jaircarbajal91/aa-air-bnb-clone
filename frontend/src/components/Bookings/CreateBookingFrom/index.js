@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { createBookingThunk, getAllBookingsForSpotAction } from "../../../store/bookings";
+import { createBookingThunk, getAllBookingsForSpotThunk } from "../../../store/bookings";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom"
 
@@ -7,11 +7,11 @@ function CreateBookingForm({ spot }) {
   const dispatch = useDispatch()
   const history = useHistory()
   let today = new Date()
-  let week = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
   let tomorrow = new Date(today)
-  today.setDate(today.getDate() + 1)
-  tomorrow.setDate(tomorrow.getDate() + 2)
-
+  today.setDate(today.getDate() + 2)
+  let week = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+  tomorrow.setDate(tomorrow.getDate() + 3)
+  const sessionUser = useSelector((state) => state.session.user);
   const getDate = (today) => {
     let result;
     let month = (today.getMonth() + 1) < 10 ? `0${(today.getMonth() + 1)}` : (today.getMonth() + 1)
@@ -32,22 +32,33 @@ function CreateBookingForm({ spot }) {
   const { price, avgStarRating, numReviews } = spot
 
   useEffect(() => {
-    dispatch(getAllBookingsForSpotAction(spot.id))
+    if (bookings?.length) {
+      for (let booking of bookings) {
+        if (booking.spotId !== spot.id) {
+          dispatch(getAllBookingsForSpotThunk(spot.id))
+        }
+      }
+    } else {
+      dispatch(getAllBookingsForSpotThunk(spot.id))
+    }
   }, [dispatch])
 
   useEffect(() => {
     let newErrors = []
-
     const allDates = bookings
     if (allDates?.length) {
       for (let dates of allDates) {
         let start = dates.startDate
         let end = dates.endDate
-        if ((startDate >= start && startDate <= end)) {
+        let formattedStart = new Date(start).getTime()
+        let formattedEnd = new Date(end).getTime()
+        let formattedStartDate = new Date(startDate).getTime()
+        let formattedEndDate = new Date(endDate).getTime()
+        if ((formattedStartDate >= formattedStart && formattedStartDate <= formattedEnd)) {
           newErrors.push("Start date conflicts with an existing booking")
           break;
         }
-        if ((endDate >= start && endDate <= end)) {
+        if ((formattedEndDate >= formattedStart && formattedEndDate <= formattedEnd)) {
           newErrors.push("End date conflicts with an existing booking")
           break
         }
@@ -56,7 +67,7 @@ function CreateBookingForm({ spot }) {
     const date1 = new Date(startDate).getTime()
     const date2 = new Date(endDate).getTime()
     if (date2 < date1) {
-        newErrors.push("Check out date cannot come before check in date")
+      newErrors.push("Check out date cannot come before check in date")
     }
 
     setErrors(newErrors)
@@ -70,6 +81,7 @@ function CreateBookingForm({ spot }) {
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if ((sessionUser)) 
     setHasSubmitted(true)
     if (errors.length > 0) return;
     const booking = await dispatch(createBookingThunk(spot.id, { startDate, endDate }))

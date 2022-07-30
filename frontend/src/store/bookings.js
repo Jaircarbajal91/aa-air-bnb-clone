@@ -5,6 +5,7 @@ const GET_ALL_BOOKINGS_SPOT = 'bookings/getAllBookingsForSpot';
 const CREATE_BOOKING = 'bookings/createBooking';
 const UPDATE_BOOKING = 'bookings/updateBooking';
 const DELETE_BOOKING = 'booking/deleteBooking'
+const LOG_OUT_BOOKINGS = 'booking/logoutBookings'
 
 
 export const getAllUserBookingAction = bookings => {
@@ -37,6 +38,11 @@ export const deleteBookingAction = id => {
     id
   }
 }
+export const logoutBookingsAction = () => {
+  return {
+    type: LOG_OUT_BOOKINGS
+  }
+}
 
 
 export const getAllUserBookingsThunk = () => async dispatch => {
@@ -65,7 +71,7 @@ export const getAllBookingsForSpotThunk = id => async dispatch => {
     dispatch(getAllBookingsForSpotAction(bookings))
     return bookings
   }
-  return response
+  return response;
 }
 export const createBookingThunk = (id, booking) => async dispatch => {
   const response = await csrfFetch(`/api/bookings/auth/${id}`, {
@@ -148,6 +154,10 @@ const bookingsReducer = (state = null, action) => {
     case CREATE_BOOKING: {
       const newState = { ...state };
       newState[action.booking.id] = action.booking
+      return newState;
+    }
+    case LOG_OUT_BOOKINGS: {
+      const newState = null
       return newState;
     }
     default:

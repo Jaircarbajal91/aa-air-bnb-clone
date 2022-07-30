@@ -21,7 +21,7 @@ router.get('/auth/:spotId', requireAuth, async (req, res) => {
 
   let spotBookings = await Booking.scope(['nonOwner']).findAll({
     where: {
-        spotId: req.params.spotId,
+        spotId: spot.id,
     }
   })
 
@@ -31,7 +31,6 @@ router.get('/auth/:spotId', requireAuth, async (req, res) => {
       statusCode: 204
     })
   }
-
   if (spot.ownerId === req.user.id) {
     spotBookings = await Booking.findAll({
       include: {
@@ -39,7 +38,7 @@ router.get('/auth/:spotId', requireAuth, async (req, res) => {
         attributes: ['id', 'firstName', 'lastName']
       },
       where: {
-          spotId: req.params.spotId,
+          spotId: spot.id,
       }
     })
   }
@@ -69,7 +68,7 @@ router.get('/auth', requireAuth, async (req, res) => {
 
 
 router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
-  const spot = await Spot.findByPk(Number(req.params.spotId))
+  const spot = await Spot.findByPk(req.params.spotId)
 
   if (!spot) {
     return res.status(404).json({
@@ -98,17 +97,15 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
     })
   }
 
-
   const allDates = await Booking.findAll({
     attributes: ['startDate', 'endDate'],
     raw: true,
     where: {
-      spotId: Number(req.params.spotId)
+      spotId: spot.id
     }
   })
 
   err.message = "Sorry, this spot is already booked for the specified dates"
-  err.statusCode = 403
   err.errors = {}
   for (let dates of allDates) {
     let start = dates.startDate
@@ -122,14 +119,15 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
   }
 
   if ('endDate' in err.errors || 'startDate' in err.errors) {
-    err.errors = 'Address already exists'
-    err.statusCode = 400
-    err.errors = [err.message]
-    next(err)
+    return res.status(400).json({
+      "message": "Can't book a spot in the past",
+      "statusCode": 400,
+      "errors": err.errors
+    })
   }
 
   const booking = await Booking.create({
-    spotId: Number(req.params.spotId),
+    spotId: spot.id,
     userId: req.user.id,
     startDate,
     endDate

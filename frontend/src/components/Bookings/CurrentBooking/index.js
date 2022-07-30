@@ -66,8 +66,8 @@ function CurrentBooking() {
       <div className="confirmation-container">
         <div className="confirmation-right-container">
           <div className="confirmation-header">
-            <h1>Your reservation is confirmed</h1>
-            <p>{`You're going to ${spot?.city}!`}</p>
+            <h1>{changeable ? "Your reservation is confirmed" : "We hope you enjoyed your stay!"}</h1>
+            <p>{changeable && `You're going to ${spot?.city}!`}</p>
           </div>
           {spot && (<img style={{
             maxWidth: '20em'

@@ -6,11 +6,15 @@ import icon from '../Navigation/images/icon.svg'
 import hamburger from '../Navigation/images/hamburgerIcon.svg'
 import LoginFormModal from "../LoginFormModal";
 import { logInAsDemo } from "../../store/session";
+import { logoutBookingsAction } from "../../store/bookings";
+import { useHistory } from "react-router-dom";
+import { logoutSpotsAction } from "../../store/spots";
 import './ProfileButton.css'
 
 
 function ProfileButton({ user, isLoaded }) {
   const dispatch = useDispatch();
+  const history = useHistory()
   const [showMenu, setShowMenu] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const openMenu = () => {
@@ -38,6 +42,8 @@ function ProfileButton({ user, isLoaded }) {
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout());
+    dispatch(logoutBookingsAction())
+    history.push("/")
   };
   return (
     <>
