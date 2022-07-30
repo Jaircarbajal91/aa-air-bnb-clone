@@ -66,7 +66,7 @@ function CreateBookingForm({ spot }) {
     }
 
     setErrors(newErrors)
-  }, [startDate, endDate, dispatch])
+  }, [startDate, endDate])
 
   useEffect(() => {
     if (bookings?.length) {
@@ -78,14 +78,14 @@ function CreateBookingForm({ spot }) {
     } else {
       dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true))
     }
-  }, [dispatch])
+  }, [dispatch, isLoaded])
 
   let reviews;
   if (numReviews === 0) reviews = ``
   else if (numReviews === 1) reviews = `1 review`
   else reviews = `${numReviews} reviews`
 
-  const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
+  const rating = spot?.avgStarRating === 0 ? "New" : spot?.avgStarRating
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (errors.length > 0) return;
@@ -100,7 +100,7 @@ function CreateBookingForm({ spot }) {
         newErrors.push(errors.errors[error])
       }
       setErrors(newErrors)
-      history.push(`/spots/${spotId}`)
+      // history.push(`/spots/${spotId}`)
     }
 
   }
@@ -129,7 +129,7 @@ function CreateBookingForm({ spot }) {
       >
       </input>
       <button type="submit">Reserve</button>
-      {hasSubmitted && errors.length > 0 && (
+      {errors.length > 0 && (
         <ul>
           {errors.map(error => (
             <li key={error}>{error}</li>
