@@ -4,17 +4,16 @@ import { getAllUserBookingsThunk } from "../../../store/bookings"
 import Listing from "../Listings"
 
 function UserBookings() {
-  const bookings = useSelector(state => state.bookings?.orderedBookingList)
+  const bookings = useSelector(state => state.bookings)
+  const bookingsArr = bookings?.orderedBookingList
   const dispatch = useDispatch()
   const [isLoaded, setIsLoaded] = useState(false)
-  const [hasBookings, setHasBookings] = useState(false)
   useEffect(() => {
     const getUserBookings = async () => {
       try {
-        if (bookings === undefined) {
+        if (bookings === null || bookingsArr === undefined) {
           await dispatch(getAllUserBookingsThunk())
-        } else if (bookings.length && bookings[0]?.Spot === undefined) {
-          console.log(bookings)
+        } else if (bookingsArr?.length && bookingsArr[0]?.Spot === undefined) {
           await dispatch(getAllUserBookingsThunk())
         } else {
           await dispatch(getAllUserBookingsThunk())
@@ -25,19 +24,11 @@ function UserBookings() {
     }
     getUserBookings()
     setIsLoaded(true)
-    if (bookings?.length) {
-      setHasBookings(true)
-    }
   }, [dispatch])
 
   return isLoaded && (
     <div>
-      {!hasBookings && (
-        <div>
-          You currently have no bookings :(
-        </div>
-      )}
-      {hasBookings && (<table>
+      <table>
         <thead>
           <tr>
             <th>Name</th>
@@ -47,13 +38,13 @@ function UserBookings() {
           </tr>
         </thead>
         <tbody>
-          {isLoaded && bookings[0]?.Spot && !!bookings?.length && bookings.map(booking => (
+          {bookingsArr?.[0]?.Spot && bookingsArr?.length > 0 && bookingsArr.map(booking => (
             <tr key={booking.id}>
               <Listing booking={booking} />
             </tr>
           ))}
         </tbody>
-      </table>)}
+      </table>
     </div>
   )
 }

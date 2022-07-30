@@ -102,13 +102,13 @@ function CurrentBooking() {
         </div>
         {booking?.userId === sessionUser.id && changeable && (
           <div>
-            <button onClick={() => setShowUpdate(true)}>Change Reservaion</button>
+            {/* <button onClick={() => setShowUpdate(true)}>Change Reservaion</button> */}
             <button onClick={() => setShowDelete(true)}>Cancel Reservaion</button>
-            {showUpdate && (
+            {/* {showUpdate && (
               <Modal onClose={() => setShowUpdate(false)}>
                 <UpdateBookingForm booking={booking} setShowUpdate={setShowUpdate} />
               </Modal>
-            )}
+            )} */}
             {showDelete && (
               <Modal onClose={() => setShowDelete(false)}>
                 <DeleteBooking setDeleted={setDeleted} booking={booking} setShowDelete={setShowDelete} />

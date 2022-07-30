@@ -2,8 +2,10 @@ import { useEffect, useState } from "react"
 import { createBookingThunk, getAllBookingsForSpotThunk } from "../../../store/bookings";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom"
+import { useParams } from 'react-router-dom'
 
 function CreateBookingForm({ spot }) {
+  const { spotId } = useParams()
   const dispatch = useDispatch()
   const history = useHistory()
   let today = new Date()
@@ -32,22 +34,10 @@ function CreateBookingForm({ spot }) {
   const { price, avgStarRating, numReviews } = spot
 
   useEffect(() => {
-    if (bookings?.length) {
-      for (let booking of bookings) {
-        if (booking.spotId !== spot.id) {
-          dispatch(getAllBookingsForSpotThunk(spot.id))
-        }
-      }
-    } else {
-      dispatch(getAllBookingsForSpotThunk(spot.id))
-    }
-  }, [dispatch])
-
-  useEffect(() => {
     let newErrors = []
-    const allDates = bookings
-    if (allDates?.length) {
-      for (let dates of allDates) {
+
+    if (bookings?.length && isLoaded) {
+      for (let dates of bookings) {
         let start = dates.startDate
         let end = dates.endDate
         let formattedStart = new Date(start).getTime()
@@ -55,6 +45,9 @@ function CreateBookingForm({ spot }) {
         let formattedStartDate = new Date(startDate).getTime()
         let formattedEndDate = new Date(endDate).getTime()
         if ((formattedStartDate >= formattedStart && formattedStartDate <= formattedEnd)) {
+          console.log(start)
+          console.log(startDate)
+          console.log(bookings)
           newErrors.push("Start date conflicts with an existing booking")
           break;
         }
@@ -64,6 +57,8 @@ function CreateBookingForm({ spot }) {
         }
       }
     }
+
+
     const date1 = new Date(startDate).getTime()
     const date2 = new Date(endDate).getTime()
     if (date2 < date1) {
@@ -71,7 +66,19 @@ function CreateBookingForm({ spot }) {
     }
 
     setErrors(newErrors)
-  }, [startDate, endDate])
+  }, [startDate, endDate, dispatch])
+
+  useEffect(() => {
+    if (bookings?.length) {
+      for (let booking of bookings) {
+        if (booking.spotId !== spotId) {
+          dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true))
+        }
+      }
+    } else {
+      dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true))
+    }
+  }, [dispatch])
 
   let reviews;
   if (numReviews === 0) reviews = ``
@@ -81,14 +88,24 @@ function CreateBookingForm({ spot }) {
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if ((sessionUser)) 
-    setHasSubmitted(true)
     if (errors.length > 0) return;
-    const booking = await dispatch(createBookingThunk(spot.id, { startDate, endDate }))
-    history.push(`/bookings/${booking.id}`)
+    setHasSubmitted(true)
+    try {
+      const booking = await dispatch(createBookingThunk(spot.id, { startDate, endDate }))
+      history.push(`/bookings/${booking.id}`)
+    } catch (err) {
+      const errors = await err.json()
+      const newErrors = [];
+      for (let error in errors.errors) {
+        newErrors.push(errors.errors[error])
+      }
+      setErrors(newErrors)
+      history.push(`/spots/${spotId}`)
+    }
+
   }
 
-  return (
+  return isLoaded && (
     <form
       onSubmit={handleSubmit}
     >

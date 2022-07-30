@@ -89,8 +89,10 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
   if (!startDate || !endDate || (startDate > endDate)) {
     return res.status(400).json(err)
   }
-
-  if (new Date(endDate) < new Date()) {
+  const date1 = new Date(endDate).getTime()
+  const date2 = new Date().getTime()
+  if (date1 < date2) {
+    console.log(endDate)
     return res.status(400).json({
       "message": "Can't book a spot in the past",
       "statusCode": 400
@@ -110,10 +112,16 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
   for (let dates of allDates) {
     let start = dates.startDate
     let end = dates.endDate
-    if ((startDate >= start && startDate <= end)) {
+    console.log(start)
+    console.log(startDate)
+    let formattedStart = new Date(start).getTime()
+    let formattedEnd = new Date(end).getTime()
+    let formattedStartDate = new Date(startDate).getTime()
+    let formattedEndDate = new Date(endDate).getTime()
+    if ((formattedStartDate >= formattedStart && formattedStartDate <= formattedEnd)) {
       err.errors.startDate = "Start date conflicts with an existing booking"
     }
-    if ((endDate >= start && endDate <= end)) {
+    if ((formattedEndDate >= formattedStart && formattedEndDate <= formattedEnd)) {
       err.errors.endDate = "End date conflicts with an existing booking"
     }
   }
