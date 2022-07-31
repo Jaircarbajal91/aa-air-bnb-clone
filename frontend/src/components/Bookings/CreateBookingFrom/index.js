@@ -71,6 +71,7 @@ function CreateBookingForm({ spot }) {
         for (let booking of bookings) {
           if (booking.spotId !== spotId) {
             dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true))
+            break;
           }
         }
       } else {
