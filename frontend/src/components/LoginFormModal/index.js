@@ -3,6 +3,7 @@ import { Modal } from '../../context/Modal';
 import LoginForm from './LoginForm';
 import { logInAsDemo } from '../../store/session'
 import { useDispatch } from 'react-redux'
+import './LoginModal.css'
 
 
   function LoginFormModal({showLoginModal, setShowLoginModal}) {
@@ -13,7 +14,7 @@ import { useDispatch } from 'react-redux'
     return (
       <>
         {showLoginModal && (
-          <Modal onClose={() => setShowLoginModal(false)}>
+          <Modal className='login-modal' onClose={() => setShowLoginModal(false)}>
             <LoginForm setShowLoginModal={setShowLoginModal}/>
           </Modal>
         )}

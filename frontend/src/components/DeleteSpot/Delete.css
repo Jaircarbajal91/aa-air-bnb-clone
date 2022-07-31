@@ -1,0 +1,34 @@
+.delete-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5em;
+  min-height: 6em;
+}
+
+strong {
+  font-weight: 700;
+}
+
+.delete-button {
+  background: linear-gradient(0.25turn, #E61E4D, #D70666);
+  color: white;
+  border: none;
+  height: 2.6em;
+  border-radius: .5em;
+  min-width: 9em;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-right: 2em;
+  margin-left: 2em;
+}
+
+.delete-button:active {
+  transform: scale(.97);
+}
+
+
+.delete-buttons {
+  margin-top: 1.5em;
+  display: flex;
+}

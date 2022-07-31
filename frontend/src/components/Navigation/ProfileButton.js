@@ -5,6 +5,7 @@ import * as sessionActions from '../../store/session';
 import icon from '../Navigation/images/icon.svg'
 import hamburger from '../Navigation/images/hamburgerIcon.svg'
 import LoginFormModal from "../LoginFormModal";
+import SignUpFormModal from "../SignupFormPage/SignUpModal";
 import { logInAsDemo } from "../../store/session";
 import { logoutBookingsAction } from "../../store/bookings";
 import { useHistory } from "react-router-dom";
@@ -17,6 +18,7 @@ function ProfileButton({ user, isLoaded }) {
   const history = useHistory()
   const [showMenu, setShowMenu] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
   const openMenu = () => {
     if (showMenu) return;
     setShowMenu(true);
@@ -48,6 +50,7 @@ function ProfileButton({ user, isLoaded }) {
   return (
     <>
       {showLoginModal && (<LoginFormModal showLoginModal={showLoginModal} setShowLoginModal={setShowLoginModal} />)}
+      {showSignUpModal && (<SignUpFormModal showSignUpModal={showSignUpModal} setShowSignUpModal={setShowSignUpModal} />)}
       <div className='right-profile-container'>
         <div className='host-hover-border'>
           <NavLink className='become-host-link' to="/spots/create">Become a Host</NavLink>
@@ -75,7 +78,7 @@ function ProfileButton({ user, isLoaded }) {
               <li>
                 <NavLink className='profile-list-item' onClick={() => handleDemo()} to=''>Demo Login</NavLink>
               </li>
-              <li><NavLink className='profile-list-item' to="/signup">Sign Up</NavLink></li>
+              <li><NavLink onClick={() => setShowSignUpModal(true)} className='profile-list-item' to="">Sign Up</NavLink></li>
             </ul>
           )}
         </div>

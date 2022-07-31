@@ -79,10 +79,10 @@ router.get('/', async (req, res) => {
 
 
   if (Number.isNaN(page)) page = 0;
-  if (Number.isNaN(size)) size = 20;
+  if (Number.isNaN(size)) size = 100;
 
   if (page > 10) page = 10
-  if (size > 20) size = 20
+  if (size > 100) size = 100
 
   if (page < 0) err.errors.page = "Page must be greater than or equal to 0"
   if (size < 0) err.errors.size = "Size must be greater than or equal to 0"
@@ -165,7 +165,7 @@ router.get('/', async (req, res) => {
         model: Review
       }
     ],
-    limit: pagination.size || 20,
+    limit: pagination.size || 100,
     offset: pagination.size * pagination.page
   })
 
@@ -197,7 +197,7 @@ router.get('/', async (req, res) => {
   res.json({
     Spots: spots,
     page: pagination.page,
-    size: pagination.size || 20,
+    size: pagination.size || 100,
   })
 })
 

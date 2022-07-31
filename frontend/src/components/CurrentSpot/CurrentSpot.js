@@ -74,7 +74,8 @@ function CurrentSpot() {
             </Modal>
           )}
           {showDelete && (
-            <Modal onClose={() => setShowDelete(false)}>
+            <Modal onClose={() => setShowDelete(false)} >
+
               <DeleteSpot spotId={spotId} setShowDelete={setShowDelete} />
             </Modal>
           )}
