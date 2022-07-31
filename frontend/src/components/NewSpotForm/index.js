@@ -12,8 +12,8 @@ function NewSpotForm() {
   const [city, setCity] = useState("")
   const [state, setState] = useState("")
   const [country, setCountry] = useState("")
-  const [lat, setLat] = useState(0)
-  const [lng, setLng] = useState(0)
+  const [lat, setLat] = useState("")
+  const [lng, setLng] = useState("")
   const [price, setPrice] = useState("")
   const [description, setDescription] = useState("")
   const [previewImage, setPreviewImage] = useState("")
@@ -76,6 +76,9 @@ function NewSpotForm() {
       onSubmit={handleSubmit}
       className="new-spot-form"
     >
+      <div>
+        <h3>Become a Host</h3>
+      </div>
       {hasSubmitted && errors.length > 0 && (
         <ul>
           {errors.map(error => (
@@ -83,73 +86,84 @@ function NewSpotForm() {
           ))}
         </ul>
       )}
-      <label >
-        Name:
+      <div className="create-spot-input-wrapper">
         <input
           type="text"
+          placeholder="Name of Spot"
+          className="form-input first create"
+          maxLength='50'
+          minLength='1'
           value={name}
           onChange={(e) => setName(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Address:
         <input
           type="text"
+          placeholder="Address"
+          className="form-input none create"
+          maxLength='50'
+          minLength='1'
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           required
         />
-      </label>
-      <label >
-        City:
         <input
           type="text"
+          placeholder="City"
+          className="form-input none create"
+          maxLength='20'
+          minLength='1'
           value={city}
           onChange={(e) => setCity(e.target.value)}
           required
         />
-      </label>
-      <label >
-        State:
         <input
           type="text"
+          placeholder="State"
+          className="form-input none create"
+          maxLength='2'
+          minLength='1'
           value={state}
           onChange={(e) => setState(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Country:
         <input
           type="text"
+          placeholder="Country"
+          className="form-input none create"
+          maxLength='50'
+          minLength='1'
           value={country}
           onChange={(e) => setCountry(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Latitude:
         <input
           type="number"
+          placeholder="Latitude"
+          className="form-input none create"
+          min='-90'
+          max='90'
+          step="0.01"
           value={lat}
           onChange={(e) => setLat(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Longitude:
         <input
           type="number"
+          placeholder="Logitude"
+          className="form-input none create"
+          min='-180'
+          max='180'
+          step="0.01"
           value={lng}
           onChange={(e) => setLng(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Price per night:
         <input
           type="number"
+          placeholder="Price"
+          className="form-input none create"
+          pattern="^\d+(?:\.\d{1,2})?$"
           value={price}
           min="0.00"
           step="0.01"
@@ -157,25 +171,26 @@ function NewSpotForm() {
           onChange={(e) => setPrice(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Preview Image:
         <input
           type="url"
+          name="preview-image"
+          className="form-input none create"
+          placeholder="Image URL"
           value={previewImage}
           onChange={(e) => setPreviewImage(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Description:
         <textarea
           type="text"
+          placeholder="Description"
+          className="form-input last desc create"
+          maxLength='50'
+          minLength='5'
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
         />
-      </label>
+      </div>
       <button type="submit">Create Spot</button>
     </form>
   )

@@ -40,7 +40,7 @@ h3.signup-welcome-h3 {
   font-weight: 500;
 }
 
-.signup-submit-button {
+.submit-button.signup {
   background: linear-gradient(0.25turn, #E61E4D, #D70666);
   color: white;
   border: none;
@@ -51,18 +51,18 @@ h3.signup-welcome-h3 {
   transition: all 0.2s ease-in-out;
 }
 
-.signup-submit-button:active {
+.submit-button.signup:active {
   transform: scale(.97);
 }
 
-.signup-form-input {
+.form-input {
   min-height: 3em;
   min-width: 100%;
   box-sizing: border-box;
   padding-left: 1rem;
 }
 
-.signup-form-input.firstname {
+.form-input.first {
   border-radius: .5em .5em 0px 0px;
   border-left: 1px solid #d1cfcf;
   border-right: 1px solid #d1cfcf;
@@ -70,7 +70,7 @@ h3.signup-welcome-h3 {
   border-bottom: none;
 }
 
-.signup-form-input.confirm {
+.form-input.last {
   border-radius: 0px 0px .5em .5em ;
   border-left: 1px solid #d1cfcf;
   border-right: 1px solid #d1cfcf;
@@ -79,7 +79,7 @@ h3.signup-welcome-h3 {
   margin-bottom: 0;
 }
 
-.signup-form-input.none {
+.form-input.none {
   border-left: 1px solid #d1cfcf;
   border-right: 1px solid #d1cfcf;
   border-bottom: none;

@@ -2,4 +2,41 @@ form.update-spot-form {
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 35em;
+  padding: 1.8em;
+  max-width: 33em;
+}
+
+
+.submit-button.update:active {
+  transform: scale(.97);
+}
+
+.submit-button.update {
+  background: linear-gradient(0.25turn, #E61E4D, #D70666);
+  color: white;
+  border: none;
+  height: 2.6em;
+  border-radius: .5em;
+  margin-top: 2em;
+  min-width: 39.4em;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.submit-button.update:active {
+  transform: scale(.97);
+}
+
+.form-input.last.desc {
+  resize: none;
+  min-height: 5rem;
+}
+.form-input.last.desc::placeholder {
+  line-height: 4rem;
+}
+
+.form-input.last.desc:focus {
+  outline: none !important;
+  box-shadow: 0 0 5px #719ECE;
 }

@@ -39,7 +39,7 @@ input.login-input:placeholder-shown {
   padding-left: 1rem;
 }
 
-.login-input:focus {
+input:focus {
   outline: none !important;
   border: 10px solid black;
   box-shadow: 0 0 5px #719ECE;

@@ -1,7 +1,7 @@
 import { useParams } from 'react-router-dom'
 import { useSelector, dispatch, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
-import {updateSpot, getSpotDetails } from '../../store/spots'
+import { updateSpot, getSpotDetails } from '../../store/spots'
 import { Modal } from '../../context/Modal'
 import UpdateSpotForm from '../UpdateSpotForm/UpdateSpotForm'
 import DeleteSpot from '../DeleteSpot/DeleteSpot'
@@ -41,9 +41,14 @@ function CurrentSpot() {
 
   useEffect(() => {
     const getSpotBookings = async () => {
-      if (bookings === undefined) {
-        const res = await dispatch(getAllBookingsForSpotThunk(spotId))
-        setBookingsExist(true)
+      try {
+        if (bookings === undefined) {
+          const res = await dispatch(getAllBookingsForSpotThunk(spotId))
+          setBookingsExist(true)
+        }
+      } catch (err) {
+        const errors = await err.json()
+        
       }
     }
     getSpotBookings()
@@ -81,7 +86,7 @@ function CurrentSpot() {
           )}
         </div>
       )}
-      {spotExists && <CreateBookingForm spot={spot} bookings={bookings}/>}
+      {spotExists && <CreateBookingForm spot={spot} bookings={bookings} />}
     </div>
   )
 }

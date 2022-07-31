@@ -73,7 +73,10 @@ function CreateBookingForm({ spot }) {
         }
       }
     } else {
-      dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true))
+      dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true)).catch(async (err) => {
+        const errors = await err.json()
+        setErrors(errors.errors)
+      })
     }
   }, [dispatch, isLoaded])
 

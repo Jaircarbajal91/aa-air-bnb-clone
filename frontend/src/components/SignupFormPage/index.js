@@ -46,7 +46,7 @@ function SignupFormPage({ setShowSignUpModal }) {
             type="text"
             value={firstName}
             placeholder='First Name'
-            className='signup-form-input firstname'
+            className='form-input first'
             onChange={(e) => setFirstName(e.target.value)}
             required
           />
@@ -54,14 +54,14 @@ function SignupFormPage({ setShowSignUpModal }) {
             type="text"
             value={lastName}
             placeholder='Last Name'
-            className='signup-form-input none'
+            className='form-input none'
             onChange={(e) => setLastName(e.target.value)}
             required
           />
           <input
             type="text"
             value={email}
-            className='signup-form-input none'
+            className='form-input none'
             placeholder='Email'
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -69,7 +69,7 @@ function SignupFormPage({ setShowSignUpModal }) {
           <input
             type="text"
             value={username}
-            className='signup-form-input none'
+            className='form-input none'
             placeholder='Username'
             onChange={(e) => setUsername(e.target.value)}
             required
@@ -77,7 +77,7 @@ function SignupFormPage({ setShowSignUpModal }) {
           <input
             type="password"
             value={password}
-            className='signup-form-input none'
+            className='form-input none'
             placeholder='Password'
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -85,7 +85,7 @@ function SignupFormPage({ setShowSignUpModal }) {
           <input
             type="password"
             value={confirmPassword}
-            className='signup-form-input confirm'
+            className='form-input last'
             placeholder='Confirmed Password'
             onChange={(e) => setConfirmPassword(e.target.value)}
             required
@@ -97,7 +97,7 @@ function SignupFormPage({ setShowSignUpModal }) {
           </div>
         </div>
       </div>
-        <button className="signup-submit-button" type="submit">Continue</button>
+        <button className="signup submit-button" type="submit">Continue</button>
     </form>
   );
 }

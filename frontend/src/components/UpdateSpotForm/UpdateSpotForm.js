@@ -12,8 +12,8 @@ function UpdateSpotForm({ setShowUpdate, setHasUpdated }) {
   const [city, setCity] = useState("")
   const [state, setState] = useState("")
   const [country, setCountry] = useState("")
-  const [lat, setLat] = useState(0)
-  const [lng, setLng] = useState(0)
+  const [lat, setLat] = useState("")
+  const [lng, setLng] = useState("")
   const [price, setPrice] = useState("")
   const [description, setDescription] = useState("")
   const [previewImage, setPreviewImage] = useState("")
@@ -25,8 +25,8 @@ function UpdateSpotForm({ setShowUpdate, setHasUpdated }) {
   useEffect(() => {
     const newErrors = []
     if (name.length > 50) newErrors.push("Name must be less than 50 characters")
-    if (Number(lat) > 90 || Number(lat) < -90)  newErrors.push("Latitude is not valid")
-    if (Number(lng) > 180 || Number(lng) < -180)  newErrors.push("Longitude is not valid")
+    if (Number(lat) > 90 || Number(lat) < -90) newErrors.push("Latitude is not valid")
+    if (Number(lng) > 180 || Number(lng) < -180) newErrors.push("Longitude is not valid")
 
     setErrors(newErrors)
 
@@ -66,7 +66,9 @@ function UpdateSpotForm({ setShowUpdate, setHasUpdated }) {
       onSubmit={handleSubmit}
       className="update-spot-form"
     >
-      <h3>Update Spot Form</h3>
+      <div className="update-form header">
+        <h3>Update Spot Form</h3>
+      </div>
       {hasSubmitted && errors.length > 0 && (
         <ul>
           {errors.map(error => (
@@ -74,102 +76,111 @@ function UpdateSpotForm({ setShowUpdate, setHasUpdated }) {
           ))}
         </ul>
       )}
-      <label >
-        Name:
+      <div className="update-input-wrapper">
         <input
           type="text"
+          placeholder="Name of Spot"
+          className="form-input first update"
           value={name}
+          maxLength='50'
+          minLength='1'
           onChange={(e) => setName(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Address:
         <input
           type="text"
+          placeholder="Address"
+          className="form-input none update"
+          maxLength='50'
+          minLength='1'
           value={address}
           onChange={(e) => setAddress(e.target.value)}
           required
         />
-      </label>
-      <label >
-        City:
         <input
           type="text"
+          placeholder="City"
+          className="form-input none update"
+          maxLength='20'
+          minLength='1'
           value={city}
           onChange={(e) => setCity(e.target.value)}
           required
         />
-      </label>
-      <label >
-        State:
         <input
           type="text"
+          placeholder="State"
+          className="form-input none update"
+          maxLength='2'
+          minLength='1'
           value={state}
           onChange={(e) => setState(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Country:
         <input
           type="text"
+          placeholder="Country"
+          className="form-input none update"
+          maxLength='50'
+          minLength='1'
           value={country}
           onChange={(e) => setCountry(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Latitude:
         <input
           type="number"
+          className="form-input none update"
           value={lat}
+          min='-90'
+          max='90'
+          step="0.01"
+          placeholder="Latitude"
           onChange={(e) => setLat(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Longitude:
         <input
           type="number"
+          className="form-input none update"
           value={lng}
+          min='-180'
+          max='180'
+          step="0.01"
+          placeholder="Longitude"
           onChange={(e) => setLng(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Price per night:
         <input
           type="number"
+          className="form-input none update"
           value={price}
+          pattern="^\d+(?:\.\d{1,2})?$"
           min="0.00"
           step="0.01"
-          placeholder="100.00"
+          placeholder="Price"
           onChange={(e) => setPrice(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Preview Image:
         <input
           type="url"
           name="preview-image"
-          accept="image/png, image/gif, image/jpeg"
+          className="form-input none update"
+          placeholder="Image URL"
           value={previewImage}
           onChange={(e) => setPreviewImage(e.target.value)}
           required
         />
-      </label>
-      <label >
-        Description:
         <textarea
           type="text"
           value={description}
+          className="form-input last desc update"
+          placeholder="Description"
+          maxLength='50'
+          minLength='5'
           onChange={(e) => setDescription(e.target.value)}
           required
         />
-      </label>
-      <button type="submit">Update Spot</button>
+      </div>
+      <button className="submit-button update" type="submit">Update Spot</button>
     </form>
   )
 }
