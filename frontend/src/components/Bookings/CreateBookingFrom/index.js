@@ -66,17 +66,19 @@ function CreateBookingForm({ spot }) {
   }, [startDate, endDate])
 
   useEffect(() => {
-    if (bookings?.length) {
-      for (let booking of bookings) {
-        if (booking.spotId !== spotId) {
-          dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true))
+    if (sessionUser) {
+      if (bookings?.length) {
+        for (let booking of bookings) {
+          if (booking.spotId !== spotId) {
+            dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true))
+          }
         }
+      } else {
+        dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true)).catch(async (err) => {
+          const errors = await err.json()
+          setErrors(errors.errors)
+        })
       }
-    } else {
-      dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true)).catch(async (err) => {
-        const errors = await err.json()
-        setErrors(errors.errors)
-      })
     }
   }, [dispatch, isLoaded])
 
@@ -128,7 +130,9 @@ function CreateBookingForm({ spot }) {
         onChange={(e) => setEndDate(e.target.value)}
       >
       </input>
-      <button type="submit">Reserve</button>
+      <button
+      disabled={sessionUser === null}
+       type="submit">Reserve</button>
       {errors.length > 0 && (
         <ul>
           {errors.map(error => (

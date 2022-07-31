@@ -20,6 +20,8 @@ function CurrentSpot() {
   const [showUpdate, setShowUpdate] = useState(false);
   const [spotExists, setSpotExists] = useState(false)
   const [hasUpdated, setHasUpdated] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [isAuth, setIsAuth] = useState(true)
   const [bookingsExist, setBookingsExist] = useState(false)
   const [spot, setSpot] = useState(paramSpot)
 
@@ -41,24 +43,29 @@ function CurrentSpot() {
 
   useEffect(() => {
     const getSpotBookings = async () => {
-      try {
-        if (bookings === undefined) {
-          const res = await dispatch(getAllBookingsForSpotThunk(spotId))
-          setBookingsExist(true)
+      if (sessionUser) {
+        try {
+          if (bookings === undefined) {
+            const res = await dispatch(getAllBookingsForSpotThunk(spotId))
+            setBookingsExist(true)
+          }
+        } catch (err) {
+          const errors = await err.json()
+          if (errors?.errors[0] === "Unauthorized") {
+            setIsAuth(false)
+          }
         }
-      } catch (err) {
-        const errors = await err.json()
-        
       }
     }
     getSpotBookings()
+    setIsLoaded(true)
   }, [dispatch, bookings])
 
   useEffect(() => {
     if (hasUpdated) history.push(`/spot/${spotId}`)
   }, [hasUpdated])
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
-  return (
+  return isLoaded && (
     <div className='current-spot'>
       <p>{spot?.description}: {spot?.name}</p>
       <div>
@@ -85,6 +92,9 @@ function CurrentSpot() {
             </Modal>
           )}
         </div>
+      )}
+      {sessionUser === null && (
+        <div>Please log in to set a reservation</div>
       )}
       {spotExists && <CreateBookingForm spot={spot} bookings={bookings} />}
     </div>
