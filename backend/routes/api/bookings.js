@@ -87,7 +87,6 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
   const date1 = new Date(endDate).getTime()
   const date2 = new Date().getTime()
   if (date1 < date2) {
-    console.log(endDate)
     return res.status(400).json({
       "message": "Can't book a spot in the past",
       "statusCode": 400
@@ -107,8 +106,6 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
   for (let dates of allDates) {
     let start = dates.startDate
     let end = dates.endDate
-    console.log(start)
-    console.log(startDate)
     let formattedStart = new Date(start).getTime()
     let formattedEnd = new Date(end).getTime()
     let formattedStartDate = new Date(startDate).getTime()

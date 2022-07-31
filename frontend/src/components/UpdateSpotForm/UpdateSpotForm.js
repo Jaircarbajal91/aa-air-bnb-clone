@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { updateSpot } from "../../store/spots";
 import './UpdateSpot.css'
 
-function UpdateSpotForm({ setShowUpdate }) {
+function UpdateSpotForm({ setShowUpdate, setHasUpdated }) {
   const { spotId } = useParams()
   const sessionUser = useSelector(state => state.session.user)
   const [name, setName] = useState("")
@@ -57,6 +57,7 @@ function UpdateSpotForm({ setShowUpdate }) {
     }
 
     const response = await dispatch(updateSpot(updatedSpot))
+    setHasUpdated(true);
     setShowUpdate(false)
     history.push(`/spots/${spotId}`)
   }

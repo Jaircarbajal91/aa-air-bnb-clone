@@ -7,15 +7,19 @@ import UpdateSpotForm from '../UpdateSpotForm/UpdateSpotForm'
 import DeleteSpot from '../DeleteSpot/DeleteSpot'
 import CreateBookingForm from '../Bookings/CreateBookingFrom'
 import { getAllBookingsForSpotThunk } from '../../store/bookings'
+import { useHistory } from 'react-router-dom'
 import './CurrentSpot.css'
+
 
 function CurrentSpot() {
   const { spotId } = useParams()
+  const history = useHistory()
   const paramSpot = useSelector(state => state.selectedSpot?.selectedSpot[spotId])
   const [showModal, setShowModal] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
   const [spotExists, setSpotExists] = useState(false)
+  const [hasUpdated, setHasUpdated] = useState(false);
   const [bookingsExist, setBookingsExist] = useState(false)
   const [spot, setSpot] = useState(paramSpot)
 
@@ -44,6 +48,10 @@ function CurrentSpot() {
     }
     getSpotBookings()
   }, [dispatch, bookings])
+
+  useEffect(() => {
+    if (hasUpdated) history.push(`/spot/${spotId}`)
+  }, [hasUpdated])
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return (
     <div className='current-spot'>
@@ -62,7 +70,7 @@ function CurrentSpot() {
           <button onClick={() => setShowDelete(true)}>Delete Spot</button>
           {showUpdate && (
             <Modal onClose={() => setShowUpdate(false)}>
-              <UpdateSpotForm spotId={spotId} setShowUpdate={setShowUpdate} />
+              <UpdateSpotForm setHasUpdated={setHasUpdated} spotId={spotId} setShowUpdate={setShowUpdate} />
             </Modal>
           )}
           {showDelete && (

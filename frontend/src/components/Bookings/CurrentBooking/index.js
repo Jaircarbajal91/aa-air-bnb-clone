@@ -54,7 +54,6 @@ function CurrentBooking() {
       }
     }
     getBookings()
-    console.log(bookings)
   }, [dispatch, bookings, booking?.endDate, booking?.startDate, spot?.price])
 
 

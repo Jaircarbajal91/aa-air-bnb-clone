@@ -45,9 +45,6 @@ function CreateBookingForm({ spot }) {
         let formattedStartDate = new Date(startDate).getTime()
         let formattedEndDate = new Date(endDate).getTime()
         if ((formattedStartDate >= formattedStart && formattedStartDate <= formattedEnd)) {
-          console.log(start)
-          console.log(startDate)
-          console.log(bookings)
           newErrors.push("Start date conflicts with an existing booking")
           break;
         }
