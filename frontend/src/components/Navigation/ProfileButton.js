@@ -24,9 +24,18 @@ function ProfileButton({ user, isLoaded }) {
     setShowMenu(true);
   };
 
-  async function handleDemo() {
-    const demo = await dispatch(logInAsDemo())
-  }
+
+  const handleDemo = () => {
+    const credential = 'demo@user.io'
+    const password = 'password'
+    return dispatch(sessionActions.login({ credential, password }))
+      .then(() => {
+        setShowLoginModal(false)
+        history.push('/')
+      })
+  };
+
+
   useEffect(() => {
     if (!showMenu) return;
 

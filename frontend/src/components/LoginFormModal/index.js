@@ -8,9 +8,7 @@ import './LoginModal.css'
 
   function LoginFormModal({showLoginModal, setShowLoginModal}) {
     const [showModal, setShowModal] = useState(false);
-    const dispatch = useDispatch()
 
-    //comment
     return (
       <>
         {showLoginModal && (
