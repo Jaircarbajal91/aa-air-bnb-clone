@@ -22,7 +22,6 @@ function CurrentSpot() {
   const [spotExists, setSpotExists] = useState(false);
   const [hasUpdated, setHasUpdated] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [isAuth, setIsAuth] = useState(true)
   const [bookingsExist, setBookingsExist] = useState(false)
 
 
@@ -64,8 +63,10 @@ function CurrentSpot() {
     // }
     // getSpotBookings()
     if (sessionUser) {
-      spotBookings = dispatch(getAllBookingsForSpotThunk(spotId)).then(() => {
-        setIsLoaded(true)
+      spotBookings = dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true))
+      .catch(async (err) => {
+        const errors = await err.json()
+        console.log(errors)
       })
     }
 

@@ -74,7 +74,7 @@ function CreateBookingForm({ spot }) {
             break;
           }
         }
-      } else {
+      } else if (bookings === undefined) {
         dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true)).catch(async (err) => {
           const errors = await err.json()
           setErrors(errors.errors)
