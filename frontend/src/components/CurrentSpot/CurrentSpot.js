@@ -43,6 +43,7 @@ function CurrentSpot() {
       }
     }
     checkSpot()
+    setIsLoaded(true)
   }, [dispatch, spot])
 
   useEffect(() => {
