@@ -57,7 +57,8 @@ export const getAllUserBookingsThunk = () => async dispatch => {
     dispatch(getAllUserBookingAction(bookings))
     return bookings
   }
-  return response
+  const errors = await response.json()
+  return errors;
 }
 export const getAllBookingsForSpotThunk = id => async dispatch => {
   const response = await csrfFetch(`/api/bookings/auth/${id}`, {
@@ -71,7 +72,8 @@ export const getAllBookingsForSpotThunk = id => async dispatch => {
     dispatch(getAllBookingsForSpotAction(bookings))
     return bookings
   }
-  return response;
+  const errors = await response.json()
+  return errors;
 }
 export const createBookingThunk = (id, booking) => async dispatch => {
   const response = await csrfFetch(`/api/bookings/auth/${id}`, {
@@ -148,6 +150,7 @@ const bookingsReducer = (state = null, action) => {
     case DELETE_BOOKING: {
       const newState = { ...state }
       delete newState[action.id]
+      newState.orderedBookingList = [...state.orderedBookingList]
       return newState
     }
     case UPDATE_BOOKING:

@@ -25,28 +25,36 @@ function CurrentBooking() {
   const spot = booking?.Spot
   useEffect(() => {
     const getBookings = async () => {
-      if (bookings === null || spot === undefined) {
-        await dispatch(getAllUserBookingsThunk())
-      } else {
-        setIsLoaded(true)
-        let start = new Date(booking.startDate)
-        let end = new Date(booking.endDate)
-        let startDate = new Date(start.getTime() + start.getTimezoneOffset() * 60000)
-        let endDate = new Date(end.getTime() + end.getTimezoneOffset() * 60000)
-        setCheckIn(new Date(startDate).toDateString())
-        setCheckOut(new Date(endDate).toDateString())
+      try {
+        if (bookings === null || spot === undefined) {
+          await dispatch(getAllUserBookingsThunk())
+        } else {
+          setIsLoaded(true)
+          let start = new Date(booking.startDate)
+          let end = new Date(booking.endDate)
+          let startDate = new Date(start.getTime() + start.getTimezoneOffset() * 60000)
+          let endDate = new Date(end.getTime() + end.getTimezoneOffset() * 60000)
+          setCheckIn(new Date(startDate).toDateString())
+          setCheckOut(new Date(endDate).toDateString())
 
-        const Difference_In_Time = end.getTime() - start.getTime();
-        const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-        setTotal(Difference_In_Days * spot?.price)
+          const Difference_In_Time = end.getTime() - start.getTime();
+          const Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
+          setTotal(Difference_In_Days * spot?.price)
 
-        const date = new Date(startDate).getTime()
-        const today = new Date().getTime()
+          const date = new Date(startDate).getTime()
+          const today = new Date().getTime()
 
-        if (date < today) setChangeable(false)
+          if (date < today) setChangeable(false)
+        }
+      } catch (err) {
+        const error = await err.json()
+        if (error.message === "You have no bookings yet"){
+          history.push('/bookings')
+        }
       }
     }
     getBookings()
+    console.log(bookings)
   }, [dispatch, bookings, booking?.endDate, booking?.startDate, spot?.price])
 
 

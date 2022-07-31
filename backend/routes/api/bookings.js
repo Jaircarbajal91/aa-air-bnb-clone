@@ -57,12 +57,7 @@ router.get('/auth', requireAuth, async (req, res) => {
       userId: req.user.id
     }
   })
-  if (bookings.length === 0) {
-    return res.status(404).json({
-      message: "You have no bookings yet",
-      statusCode: 404
-    })
-  }
+
   res.json({Bookings: bookings});
 })
 

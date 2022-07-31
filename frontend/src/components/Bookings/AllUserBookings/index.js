@@ -20,15 +20,19 @@ function UserBookings() {
         }
       } catch (err) {
         const errors = await err.json()
+        if (errors.message) setIsLoaded(true)
       }
     }
     getUserBookings()
     setIsLoaded(true)
   }, [dispatch])
-
+  
   return isLoaded && (
     <div>
-      <table>
+      {bookings.orderedBookingList.length === 0 && (
+        <div>Looks like you currently don't have any bookings :(</div>
+      )}
+      {bookingsArr?.[0]?.Spot && bookingsArr?.length > 0 && (<table>
         <thead>
           <tr>
             <th>Name</th>
@@ -38,13 +42,13 @@ function UserBookings() {
           </tr>
         </thead>
         <tbody>
-          {bookingsArr?.[0]?.Spot && bookingsArr?.length > 0 && bookingsArr.map(booking => (
+          {bookingsArr.map(booking => (
             <tr key={booking.id}>
               <Listing booking={booking} />
             </tr>
           ))}
         </tbody>
-      </table>
+      </table>)}
     </div>
   )
 }
