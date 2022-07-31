@@ -14,19 +14,23 @@ import './CurrentSpot.css'
 function CurrentSpot() {
   const { spotId } = useParams()
   const history = useHistory()
-  const paramSpot = useSelector(state => state.selectedSpot?.selectedSpot[spotId])
+  const spotParam = useSelector(state => state.selectedSpot?.selectedSpot[spotId])
   const [showModal, setShowModal] = useState(false);
+  const [spot, setSpot] = useState(spotParam)
   const [showDelete, setShowDelete] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
-  const [spotExists, setSpotExists] = useState(false)
+  const [spotExists, setSpotExists] = useState(false);
   const [hasUpdated, setHasUpdated] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isAuth, setIsAuth] = useState(true)
   const [bookingsExist, setBookingsExist] = useState(false)
-  const [spot, setSpot] = useState(paramSpot)
+
 
   const sessionUser = useSelector(state => state.session.user)
   const bookings = useSelector(state => state.bookings?.orderedBookingList)
+
+  let spotBookings;
+
   const dispatch = useDispatch()
   useEffect(() => {
     const checkSpot = async () => {
@@ -42,29 +46,35 @@ function CurrentSpot() {
   }, [dispatch, spot])
 
   useEffect(() => {
-    const getSpotBookings = async () => {
-      if (sessionUser) {
-        try {
-          if (bookings === undefined) {
-            const res = await dispatch(getAllBookingsForSpotThunk(spotId))
-            setBookingsExist(true)
-          }
-        } catch (err) {
-          const errors = await err.json()
-          if (errors?.errors[0] === "Unauthorized") {
-            setIsAuth(false)
-          }
-        }
-      }
+    // const getSpotBookings = async () => {
+    //   if (sessionUser) {
+    //     try {
+    //       if (bookings === undefined) {
+    //         const res = await dispatch(getAllBookingsForSpotThunk(spotId))
+    //         setBookingsExist(true)
+    //       }
+    //     } catch (err) {
+    //       const errors = await err.json()
+    //       if (errors?.errors[0] === "Unauthorized") {
+    //         setIsAuth(false)
+    //       }
+    //     }
+    //   }
+    // }
+    // getSpotBookings()
+    if (sessionUser) {
+      spotBookings = dispatch(getAllBookingsForSpotThunk(spotId)).then(() => {
+        setIsLoaded(true)
+      })
     }
-    getSpotBookings()
-    setIsLoaded(true)
-  }, [dispatch, bookings])
+
+  }, [dispatch, sessionUser])
 
   useEffect(() => {
     if (hasUpdated) history.push(`/spot/${spotId}`)
   }, [hasUpdated])
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
+
   return isLoaded && (
     <div className='current-spot'>
       <p>{spot?.description}: {spot?.name}</p>

@@ -9,14 +9,19 @@ import CurrentSpot from "./components/CurrentSpot/CurrentSpot";
 import NewSpotForm from "./components/NewSpotForm";
 import UserBookings from "./components/Bookings/AllUserBookings";
 import CurrentBooking from "./components/Bookings/CurrentBooking";
+import { getAllSpots } from "./store/spots";
 
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
   useEffect(() => {
     dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
+
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(getAllSpots())
+  }, [dispatch])
 
   return (
     <>
