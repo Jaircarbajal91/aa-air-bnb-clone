@@ -67,6 +67,8 @@ function CurrentSpot() {
         const errors = await err.json()
         console.log(errors)
       })
+    } else {
+      setIsLoaded(true)
     }
 
   }, [dispatch, sessionUser])
