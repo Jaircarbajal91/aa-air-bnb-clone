@@ -55,6 +55,10 @@ module.exports = {
       previewImage: {
         type: Sequelize.STRING
       },
+      references: {
+        model: 'Bookings',
+        key: 'id'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,
