@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from "react-router-dom";
-import * as sessionActions from '../../store/session';
+import { login } from "../../store/session";
 import icon from '../Navigation/images/icon.svg'
 import hamburger from '../Navigation/images/hamburgerIcon.svg'
 import LoginFormModal from "../LoginFormModal";
@@ -10,7 +10,6 @@ import { logInAsDemo } from "../../store/session";
 import { logoutBookingsAction } from "../../store/bookings";
 import { useHistory } from "react-router-dom";
 import { logoutSpotsAction } from "../../store/spots";
-import * as sessionActions from "../../store/session";
 import './ProfileButton.css'
 
 
@@ -27,7 +26,7 @@ function ProfileButton({ user, isLoaded }) {
 
 
   const handleDemo = () => {
-    dispatch(sessionActions.login({
+    dispatch(login({
       credential: 'demo@user.io',
       password: 'password'
     })
