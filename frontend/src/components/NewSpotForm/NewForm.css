@@ -2,5 +2,58 @@ form.new-spot-form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  
+  width: 60%;
+  padding: 2em;
+}
+
+.host-page-container{
+  display: flex;
+  position: fixed;
+  left: 0;
+  top: 7.3%;
+  min-width: 100vw;
+  min-height: 100vh;
+  z-index: -1;
+}
+
+.host-page-left-conatiner{
+  min-width: 50%;
+  min-height: 100%;
+  background: linear-gradient(0.5turn, #CE277A, #451DA0);
+  display: flex;
+  align-items: center;
+}
+
+.welcome-message {
+  position: relative;
+  bottom: 7%;
+  padding-left: 1.4em;
+  color: white;
+  font-size: 3rem;
+}
+
+.host-page-right-container {
+  min-width: 50%;
+  min-height: 100%;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 10em;
+}
+
+.create.submit-button {
+  background: linear-gradient(0.25turn, #E61E4D, #D70666);
+  color: white;
+  border: none;
+  height: 2.6em;
+  border-radius: .5em;
+  min-width: 100%;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-top: 2em;
+}
+
+.create.submit-button:active {
+  transform: scale(.97);
 }

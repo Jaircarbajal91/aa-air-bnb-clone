@@ -34,7 +34,7 @@ function NewSpotForm() {
       }
     }
     if (name.length > 50) newErrors.push("Name must be less than 50 characters")
-    if (Number(lat) > 90 || Number(lat) < -90)  newErrors.push("Latitude is not valid")
+    if (Number(lat) > 90 || Number(lat) < -90) newErrors.push("Latitude is not valid")
     if (Number(lng) > 180 || Number(lng) < -180) newErrors.push("Longitude is not valid")
     setErrors(newErrors)
   }, [name, address, lat, lng])
@@ -71,128 +71,139 @@ function NewSpotForm() {
     history.push('/')
     // setErrors(newErrors.errors)
   }
+
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="new-spot-form"
-    >
-      <div>
-        <h3>Become a Host</h3>
+    <div className="host-page-container">
+      <div className="host-page-left-conatiner">
+        <h1 className="welcome-message">Welcome back!</h1>
       </div>
-      {hasSubmitted && errors.length > 0 && (
-        <ul>
-          {errors.map(error => (
-            <li key={error}>{error}</li>
-          ))}
-        </ul>
-      )}
-      <div className="create-spot-input-wrapper">
-        <input
-          type="text"
-          placeholder="Name of Spot"
-          className="form-input first create"
-          maxLength='50'
-          minLength='1'
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Address"
-          className="form-input none create"
-          maxLength='50'
-          minLength='1'
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="City"
-          className="form-input none create"
-          maxLength='20'
-          minLength='1'
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="State"
-          className="form-input none create"
-          maxLength='2'
-          minLength='1'
-          value={state}
-          onChange={(e) => setState(e.target.value)}
-          required
-        />
-        <input
-          type="text"
-          placeholder="Country"
-          className="form-input none create"
-          maxLength='50'
-          minLength='1'
-          value={country}
-          onChange={(e) => setCountry(e.target.value)}
-          required
-        />
-        <input
-          type="number"
-          placeholder="Latitude"
-          className="form-input none create"
-          min='-90'
-          max='90'
-          step="0.01"
-          value={lat}
-          onChange={(e) => setLat(e.target.value)}
-          required
-        />
-        <input
-          type="number"
-          placeholder="Logitude"
-          className="form-input none create"
-          min='-180'
-          max='180'
-          step="0.01"
-          value={lng}
-          onChange={(e) => setLng(e.target.value)}
-          required
-        />
-        <input
-          type="number"
-          placeholder="Price"
-          className="form-input none create"
-          pattern="^\d+(?:\.\d{1,2})?$"
-          value={price}
-          min="0.00"
-          step="0.01"
-          placeholder="100.00"
-          onChange={(e) => setPrice(e.target.value)}
-          required
-        />
-        <input
-          type="url"
-          name="preview-image"
-          className="form-input none create"
-          placeholder="Image URL"
-          value={previewImage}
-          onChange={(e) => setPreviewImage(e.target.value)}
-          required
-        />
-        <textarea
-          type="text"
-          placeholder="Description"
-          className="form-input last desc create"
-          maxLength='50'
-          minLength='5'
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          required
-        />
+      <div className="host-page-right-container">
+        <div className="create-errors-container">
+          {hasSubmitted && errors.length > 0 && (
+            <ul className="errors-list">
+              {errors.map(error => (
+                <li key={error}>{error}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <form
+          onSubmit={handleSubmit}
+          className="new-spot-form"
+        >
+          <div className="create-spot-title-container">
+            <h3 className="create-spot-title">Host your Spot!</h3>
+          </div>
+
+          <div className="create-spot-input-wrapper">
+            <input
+              type="text"
+              placeholder="Name of Spot"
+              className="form-input first create"
+              maxLength='50'
+              minLength='1'
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Address"
+              className="form-input none create"
+              maxLength='50'
+              minLength='1'
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="City"
+              className="form-input none create"
+              maxLength='20'
+              minLength='1'
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="State"
+              className="form-input none create"
+              maxLength='2'
+              minLength='1'
+              value={state}
+              onChange={(e) => setState(e.target.value)}
+              required
+            />
+            <input
+              type="text"
+              placeholder="Country"
+              className="form-input none create"
+              maxLength='50'
+              minLength='1'
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              required
+            />
+            <input
+              type="number"
+              placeholder="Latitude"
+              className="form-input none create"
+              min='-90'
+              max='90'
+              step="0.01"
+              value={lat}
+              onChange={(e) => setLat(e.target.value)}
+              required
+            />
+            <input
+              type="number"
+              placeholder="Logitude"
+              className="form-input none create"
+              min='-180'
+              max='180'
+              step="0.01"
+              value={lng}
+              onChange={(e) => setLng(e.target.value)}
+              required
+            />
+            <input
+              type="number"
+              placeholder="Price"
+              className="form-input none create"
+              pattern="^\d+(?:\.\d{1,2})?$"
+              value={price}
+              min="0.00"
+              step="0.01"
+              placeholder="100.00"
+              onChange={(e) => setPrice(e.target.value)}
+              required
+            />
+            <input
+              type="url"
+              name="preview-image"
+              className="form-input none create"
+              placeholder="Image URL"
+              value={previewImage}
+              onChange={(e) => setPreviewImage(e.target.value)}
+              required
+            />
+            <textarea
+              type="text"
+              placeholder="Description"
+              className="form-input last desc create"
+              maxLength='50'
+              minLength='5'
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              required
+            />
+          </div>
+          <button className="create submit-button" type="submit">Create Spot</button>
+        </form>
       </div>
-      <button type="submit">Create Spot</button>
-    </form>
+    </div>
   )
 }
 

@@ -35,11 +35,10 @@ function CurrentSpot() {
     if (sessionUser) {
       dispatch(getAllBookingsForSpotThunk(spotId))
     }
-  }, [dispatch])
-
+  }, [dispatch, isLoaded])
 
   let currentRender;
-  if (sessionUser && bookings && isLoaded) {
+  if (sessionUser && Array.isArray(bookings) && isLoaded) {
     currentRender = (
       <CreateBookingForm spot={spot} bookings={bookings} />
     )
@@ -52,16 +51,16 @@ function CurrentSpot() {
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return isLoaded && (
     <div className='current-spot'>
-      <p>{spot?.description}: {spot?.name}</p>
+      <p>{spot.description}: {spot.name}</p>
       <div>
         <i className="fa-solid fa-star"></i>
         <p>{rating}</p>
       </div>
-      <p>{spot?.city}, {spot?.state} {spot?.country}</p>
+      <p>{spot.city}, {spot.state} {spot.country}</p>
       {spot && (<div>
         <img className='preview-image' src={`${spot.previewImage}`} />
       </div>)}
-      {spot?.Owner.id === sessionUser?.id && (
+      {spot.Owner.id === sessionUser?.id && (
         <div>
           <button onClick={() => setShowUpdate(true)}>Edit Spot</button>
           <button onClick={() => setShowDelete(true)}>Delete Spot</button>
