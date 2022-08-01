@@ -52,9 +52,12 @@ function ProfileButton({ user, isLoaded }) {
 
   const logout = (e) => {
     e.preventDefault();
-    dispatch(sessionActions.logout());
-    dispatch(logoutBookingsAction())
-    history.push("/")
+    dispatch(sessionActions.logout())
+    .then(() => {
+      dispatch(logoutBookingsAction())
+    })
+    .then(() => history.push("/"))
+
   };
   return (
     <>
