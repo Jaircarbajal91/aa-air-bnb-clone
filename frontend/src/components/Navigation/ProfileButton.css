@@ -91,3 +91,11 @@ div.profile-dropdown {
   right: 6%;
   z-index: 2;
 }
+.hover-link {
+  margin-left: -2em;
+}
+
+.hover-link:hover {
+  margin-left: -2em;
+  background-color: rgb(216, 207, 207);
+}

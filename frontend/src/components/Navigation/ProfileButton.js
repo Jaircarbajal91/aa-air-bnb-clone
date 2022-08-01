@@ -82,20 +82,20 @@ function ProfileButton({ user, isLoaded }) {
         <div className="profile-dropdown">
           {isLoaded && sessionUser && (
             <ul className="profile-list">
-              <li className="profile-list-item">{user.username}</li>
-              <li><NavLink className="menu-my-bookings" activeClassName="active" to="/bookings">My Bookings</NavLink></li>
-              <li className="profile-list-item" onClick={logout}>Log Out</li>
+              <li className="profile-list-item hover-link">{user.username}</li>
+              <li className="hover-link"><NavLink className="menu-my-bookings" activeClassName="active" to="/bookings">My Bookings</NavLink></li>
+              <li className="profile-list-item hover-link" onClick={logout}>Log Out</li>
             </ul>
           )}
           {isLoaded && !sessionUser && (
             <ul className="profile-list">
-              <li>
+              <li className="hover-link">
                 <NavLink className='profile-list-item' onClick={() => setShowLoginModal(true)} to=''>Login</NavLink>
               </li>
-              <li>
+              <li className="hover-link">
                 <NavLink className='profile-list-item' onClick={() => handleDemo()} to=''>Demo Login</NavLink>
               </li>
-              <li><NavLink onClick={() => setShowSignUpModal(true)} className='profile-list-item' to="">Sign Up</NavLink></li>
+              <li className="hover-link"><NavLink onClick={() => setShowSignUpModal(true)} className='profile-list-item' to="">Sign Up</NavLink></li>
             </ul>
           )}
         </div>
