@@ -9,7 +9,6 @@ function LoginForm({ setShowLoginModal }) {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
 
-// comment
   const handleSubmit = (e) => {
     e.preventDefault();
     setErrors([]);
