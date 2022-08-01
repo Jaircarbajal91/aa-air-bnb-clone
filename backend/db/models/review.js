@@ -34,14 +34,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-<<<<<<< Updated upstream
-    stars: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-=======
     stars:{
       type: DataTypes.DECIMAL,
->>>>>>> Stashed changes
     },
     imageId: {
       type: DataTypes.INTEGER

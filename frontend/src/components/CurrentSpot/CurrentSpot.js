@@ -28,10 +28,9 @@ function CurrentSpot() {
 
   const dispatch = useDispatch()
   useEffect(() => {
-    const newSpot = dispatch(getSpotDetails(spotId)).then((res) => setIsLoaded(true))
-  }, [dispatch, isLoaded])
+    dispatch(getSpotDetails(spotId)).then((res) => setIsLoaded(true))
+  }, [dispatch])
 
-  console.log(bookings)
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return isLoaded && (
     <div className='current-spot'>
