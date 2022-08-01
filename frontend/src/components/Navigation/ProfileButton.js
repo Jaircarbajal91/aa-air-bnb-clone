@@ -82,7 +82,7 @@ function ProfileButton({ user, isLoaded }) {
         <div className="profile-dropdown">
           {isLoaded && sessionUser && (
             <ul className="profile-list">
-              <li className="profile-list-item hover-link">{user.username}</li>
+              <li className="profile-list-item user-name-li">{user.username}</li>
               <li className="hover-link"><NavLink className="menu-my-bookings" activeClassName="active" to="/bookings">My Bookings</NavLink></li>
               <li className="profile-list-item hover-link" onClick={logout}>Log Out</li>
             </ul>

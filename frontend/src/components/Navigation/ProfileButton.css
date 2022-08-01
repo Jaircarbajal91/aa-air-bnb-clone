@@ -99,3 +99,7 @@ div.profile-dropdown {
   margin-left: -2em;
   background-color: rgb(216, 207, 207);
 }
+
+.user-name-li {
+  margin-left: -2em;
+}
