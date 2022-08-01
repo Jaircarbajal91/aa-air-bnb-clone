@@ -27,3 +27,11 @@
 3. Create a .env in the backend directory following the example file
 4. Run `npx dotenv sequelize db:migrate` and `npx dotenv sequelize db:seed:all` in the backend dir to initialise the db
 5. Run `npm start` first in the backend, then the frontend directories. The app is available at `localhost:3000`.
+
+# Challenges
+Working with Redux and React for the first time was tricky. Keeping state up to date was not easy and I ran into many bugs that I'll look to avoid on my next project. Running into bugs when your app is on Heroku is always a blast 😛
+
+# Improvements
+1. Make the front end UI cleaner and add media queries so it can be viewed on different screen sizes.
+2. Only use Redux as a last resort. I'd prefer if my app didn't need to send a request to my backend so much. I'd much rather use React Context if its the better tool.
+3. Add more seeder data.
