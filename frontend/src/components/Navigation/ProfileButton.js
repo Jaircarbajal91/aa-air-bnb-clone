@@ -10,6 +10,7 @@ import { logInAsDemo } from "../../store/session";
 import { logoutBookingsAction } from "../../store/bookings";
 import { useHistory } from "react-router-dom";
 import { logoutSpotsAction } from "../../store/spots";
+import * as sessionActions from "../../store/session";
 import './ProfileButton.css'
 
 
@@ -26,9 +27,10 @@ function ProfileButton({ user, isLoaded }) {
 
 
   const handleDemo = () => {
-    const credential = 'demo@user.io'
-    const password = 'password'
-    return dispatch(sessionActions.login({ credential, password }))
+    dispatch(sessionActions.login({
+      credential: 'demo@user.io',
+      password: 'password'
+    })
       .then(() => {
         setShowLoginModal(false)
         history.push('/')
