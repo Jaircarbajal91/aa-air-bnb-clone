@@ -30,7 +30,7 @@ function UserBookings() {
   return isLoaded && (
     <div>
       {bookings?.orderedBookingList.length === 0 && (
-        <div>Looks like you currently don't have any bookings :(</div>
+        <div>Looks like you currently don't have any bookings</div>
       )}
       {bookingsArr?.[0]?.Spot && bookingsArr?.length > 0 && (<table>
         <thead>
