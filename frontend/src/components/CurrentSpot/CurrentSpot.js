@@ -23,8 +23,8 @@ function CurrentSpot() {
 
 
   const sessionUser = useSelector(state => state.session.user)
-  const bookings = useSelector(state => state.bookings?.orderedBookingList)
   const spot = useSelector(state => state.spots.selectedSpot?.[spotId])
+  const bookings = useSelector(state => state.bookings?.orderedBookingList)
 
   const dispatch = useDispatch()
   useEffect(() => {
@@ -32,10 +32,22 @@ function CurrentSpot() {
   }, [dispatch])
 
   useEffect(() => {
-    setIsLoaded(false)
-    dispatch(getSpotDetails(spotId)).then((res) => setIsLoaded(true))
-  }, [hasUpdated])
+    if (sessionUser) {
+      dispatch(getAllBookingsForSpotThunk(spotId))
+    }
+  }, [dispatch])
 
+
+  let currentRender;
+  if (sessionUser) {
+    currentRender = (
+      <CreateBookingForm spot={spot} bookings={bookings} />
+    )
+  } else {
+    currentRender = (
+      <div>Please log in to set a reservation</div>
+    )
+  }
 
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return isLoaded && (
@@ -66,11 +78,7 @@ function CurrentSpot() {
           )}
         </div>
       )}
-      {!sessionUser ? (
-        <div>Please log in to set a reservation</div>
-      ) : (
-        <CreateBookingForm spot={spot} bookings={bookings} />
-      )}
+      {currentRender}
     </div>
   )
 }

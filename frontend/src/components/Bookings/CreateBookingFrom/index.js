@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom"
 import { useParams } from 'react-router-dom'
 
-function CreateBookingForm({ spot }) {
+function CreateBookingForm({ spot, bookings }) {
   const { spotId } = useParams()
   const dispatch = useDispatch()
   const history = useHistory()
@@ -25,18 +25,16 @@ function CreateBookingForm({ spot }) {
   today = getDate(today)
   week = getDate(week)
   tomorrow = getDate(tomorrow)
-  const bookings = useSelector(state => state.bookings?.orderedBookingList)
   const [startDate, setStartDate] = useState(today)
   const [endDate, setEndDate] = useState(week)
   const [hasSubmitted, setHasSubmitted] = useState(false)
-  const [isLoaded, setIsLoaded] = useState(false);
   const [errors, setErrors] = useState([])
   const { price, avgStarRating, numReviews } = spot
 
   useEffect(() => {
     let newErrors = []
 
-    if (bookings?.length && isLoaded) {
+    if (bookings.length) {
       for (let dates of bookings) {
         let start = dates.startDate
         let end = dates.endDate
@@ -64,23 +62,23 @@ function CreateBookingForm({ spot }) {
     setErrors(newErrors)
   }, [startDate, endDate])
 
-  useEffect(() => {
-    if (sessionUser) {
-      if (bookings?.length) {
-        for (let booking of bookings) {
-          if (booking.spotId !== spotId) {
-            dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true))
-            break;
-          }
-        }
-      } else if (bookings === undefined) {
-        dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true)).catch(async (err) => {
-          const errors = await err.json()
-          setErrors(errors.errors)
-        })
-      }
-    }
-  }, [dispatch, isLoaded])
+  // useEffect(() => {
+  //   if (sessionUser) {
+  //     if (bookings.length) {
+  //       for (let booking of bookings) {
+  //         if (booking.spotId !== spotId) {
+  //           dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true))
+  //           break;
+  //         }
+  //       }
+  //     } else if (bookings === undefined) {
+  //       dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true)).catch(async (err) => {
+  //         const errors = await err.json()
+  //         setErrors(errors.errors)
+  //       })
+  //     }
+  //   }
+  // }, [dispatch, isLoaded])
 
   let reviews;
   if (numReviews === 0) reviews = ``
@@ -107,7 +105,7 @@ function CreateBookingForm({ spot }) {
 
   }
 
-  return isLoaded && (
+  return (
     <form
       onSubmit={handleSubmit}
     >
