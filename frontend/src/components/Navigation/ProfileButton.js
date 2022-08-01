@@ -57,6 +57,10 @@ function ProfileButton({ user, isLoaded }) {
       dispatch(logoutBookingsAction())
     })
     .then(() => history.push("/"))
+    .catch(async (err) => {
+      const errors = err.json()
+      console.log(errors)
+    })
 
   };
   return (
