@@ -10,7 +10,6 @@ function Card({ spot }) {
   const history = useHistory();
   const [review, setReview] = useState("")
   async function handleClick(e) {
-    const clickedSpot = await dispatch(getSpotDetails(spot.id))
     history.push(`/spots/${spot.id}`)
   }
   const rating = spot.avgStarRating == 0 ? "New" : spot.avgStarRating
