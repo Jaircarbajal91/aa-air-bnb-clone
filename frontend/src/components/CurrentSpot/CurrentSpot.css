@@ -3,7 +3,6 @@ img.preview-image{
   height: 285px;
 }
 .current-spot-container {
-  background-color: red;
   min-width: 100vw;
   height: 100vh;
   position: fixed;
@@ -14,14 +13,12 @@ img.preview-image{
 }
 
 .current-spot-wrapper {
-  background-color: purple;
   display: flex;
   flex-direction: column;
   min-width: 1120px;
 }
 
 .current-spot-img-container {
-  background-color: green;
   display: flex;
   height: 541px;
   border-radius: .7em;
