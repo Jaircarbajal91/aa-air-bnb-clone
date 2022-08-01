@@ -43,7 +43,7 @@ function CurrentSpot() {
     }
     checkSpot()
   }, [dispatch, spot])
-
+//
   useEffect(() => {
     // const getSpotBookings = async () => {
     //   if (sessionUser) {
