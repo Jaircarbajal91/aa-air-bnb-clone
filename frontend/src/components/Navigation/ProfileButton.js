@@ -58,6 +58,7 @@ function ProfileButton({ user, isLoaded }) {
     })
     .then(() => history.push("/"))
     .catch(async (err) => {
+      console.log(err)
       const errors = err.json()
       console.log(errors)
     })
