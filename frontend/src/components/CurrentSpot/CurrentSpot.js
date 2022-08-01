@@ -31,6 +31,14 @@ function CurrentSpot() {
     dispatch(getSpotDetails(spotId)).then((res) => setIsLoaded(true))
   }, [dispatch])
 
+  useEffect(() => {
+    setIsLoaded(false)
+    if (hasUpdated) {
+      dispatch(getSpotDetails(spotId)).then((res) => setIsLoaded(true))
+    }
+  }, [hasUpdated])
+
+
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return isLoaded && (
     <div className='current-spot'>

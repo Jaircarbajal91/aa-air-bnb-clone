@@ -19,10 +19,6 @@ function App() {
 
   }, [dispatch]);
 
-  useEffect(() => {
-    dispatch(getAllSpots())
-  }, [dispatch])
-
   return (
     <>
       <Navigation isLoaded={isLoaded} />
