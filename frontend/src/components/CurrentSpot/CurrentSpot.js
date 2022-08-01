@@ -33,9 +33,7 @@ function CurrentSpot() {
 
   useEffect(() => {
     setIsLoaded(false)
-    if (hasUpdated) {
-      dispatch(getSpotDetails(spotId)).then((res) => setIsLoaded(true))
-    }
+    dispatch(getSpotDetails(spotId)).then((res) => setIsLoaded(true))
   }, [hasUpdated])
 
 

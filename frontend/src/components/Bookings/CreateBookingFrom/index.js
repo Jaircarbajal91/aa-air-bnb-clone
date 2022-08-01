@@ -55,7 +55,6 @@ function CreateBookingForm({ spot }) {
       }
     }
 
-
     const date1 = new Date(startDate).getTime()
     const date2 = new Date(endDate).getTime()
     if (date2 < date1) {
