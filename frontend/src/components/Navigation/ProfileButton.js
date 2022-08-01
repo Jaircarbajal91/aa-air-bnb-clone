@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from "react-router-dom";
 import { login } from "../../store/session";
+import * as sessionActions from '../../store/session'
 import icon from '../Navigation/images/icon.svg'
 import hamburger from '../Navigation/images/hamburgerIcon.svg'
 import LoginFormModal from "../LoginFormModal";
@@ -26,10 +27,8 @@ function ProfileButton({ user, isLoaded }) {
 
 
   const handleDemo = () => {
-    dispatch(login({
-      credential: 'demo@user.io',
-      password: 'password'
-    })
+    const user = { credential: 'demo@user.io', password: 'password' }
+    dispatch(login(user))
       .then(() => {
         setShowLoginModal(false)
         history.push('/')
