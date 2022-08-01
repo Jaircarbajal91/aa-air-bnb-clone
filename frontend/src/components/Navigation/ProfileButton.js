@@ -11,7 +11,6 @@ import { logInAsDemo } from "../../store/session";
 import { logoutBookingsAction } from "../../store/bookings";
 import { useHistory } from "react-router-dom";
 import { logoutSpotsAction } from "../../store/spots";
-import { getAllSpots } from "../../store/spots";
 import './ProfileButton.css'
 
 
@@ -31,7 +30,6 @@ function ProfileButton({ user, isLoaded }) {
     const user = { credential: 'demo@user.io', password: 'password' }
     dispatch(login(user))
       .then(() => {
-        dispatch(getAllSpots())
         setShowLoginModal(false)
         history.push('/')
       })
