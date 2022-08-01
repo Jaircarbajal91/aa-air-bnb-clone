@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { useEffect, useState } from "react"
 import { getAllUserBookingsThunk } from "../../../store/bookings"
 import Listing from "../Listings"
+import './AllUserBookings.css'
 
 function UserBookings() {
   const bookings = useSelector(state => state.bookings)
@@ -28,27 +29,31 @@ function UserBookings() {
   }, [dispatch])
 
   return isLoaded && (
-    <div>
+    <div className="table-outer-container">
       {bookings?.orderedBookingList.length === 0 && (
         <div>Looks like you currently don't have any bookings</div>
       )}
-      {bookingsArr?.[0]?.Spot && bookingsArr?.length > 0 && (<table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Location</th>
-            <th>Dates Booked</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {bookingsArr.map(booking => (
-            <tr key={booking.id}>
-              <Listing booking={booking} />
-            </tr>
-          ))}
-        </tbody>
-      </table>)}
+      {bookingsArr?.[0]?.Spot && bookingsArr?.length > 0 && (
+        <div className="table-inner-container">
+          <table>
+            <thead className="table-head">
+              <tr className="table-row">
+                <th className="table-header">Name</th>
+                <th className="table-header">Location</th>
+                <th className="table-header">Dates Booked</th>
+                <th className="table-header">Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bookingsArr.map(booking => (
+                <tr key={booking.id}>
+                  <Listing booking={booking} />
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   )
 }

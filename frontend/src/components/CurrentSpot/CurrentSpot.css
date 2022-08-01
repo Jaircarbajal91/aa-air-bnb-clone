@@ -1,7 +1,3 @@
-img.preview-image{
-  width: 300px;
-  height: 285px;
-}
 .current-spot-container {
   min-width: 100vw;
   height: 100vh;
@@ -10,30 +6,140 @@ img.preview-image{
   top: 7.3%;
   display: flex;
   justify-content: center;
+  z-index: -1;
 }
 
 .current-spot-wrapper {
   display: flex;
   flex-direction: column;
   min-width: 1120px;
+  overflow: hidden;
 }
 
 .current-spot-img-container {
+  border-radius: 5em;
   display: flex;
   height: 541px;
+  max-width: 1120px;
   border-radius: .7em;
 }
 
 .current-spot-left-container {
-  width: 50%;
-  height: 100%;
+  border-radius: 5em;
+  min-width: 50%;
+  max-width: 50%;
+  min-height: 100%;
+  min-height: 100%;
 }
 
 .current-spot-right-container {
-  width: 50%;
+  display: flex;
+  flex-wrap: wrap;
+  min-width: 50%;
+  max-height: 100%;
+  border-radius: 10em
+}
+
+.preview-image-main{
+  border-radius: .7em 0px 0px .7em;
   height: 100%;
+  width: 100%;
 }
 
 .preview-image {
+  max-width: 100%;
+  min-height: 100%;
+}
+.preview-image.top {
+  border-radius:  0px .7em 0px 0px;
+}
+.preview-image.bottom {
+  border-radius:  0px 0px .7em 0px;
+}
 
+.upper-left-img {
+  max-width: 50%;
+  max-height: 50%;
+}
+.upper-right-img {
+  max-width: 50%;
+  max-height: 50%;
+}
+.bottom-left-img{
+  max-width: 50%;
+  max-height: 50%;
+}
+.bottom-right-img{
+  max-width: 50%;
+  max-height: 50%;
+}
+.current-spot-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.current-spot-bottom-container{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.spot-left-container {
+  display: flex;
+  align-items: center;
+}
+.current-spot-title{
+  font-size: 2rem;
+  font-weight: 500;
+  padding: 0;
+  margin-bottom: 0;
+}
+#spot-star{
+  position: relative;
+  right: 15px;
+}
+
+.current-spot-rating{
+  margin-right: 10px;
+  margin-left: -8px;
+  text-decoration: underline;
+}
+.current-spot-location {
+  text-decoration: underline;
+}
+
+.spot-edit-button {
+  background: linear-gradient(0.25turn, #E61E4D, #D70666);
+  color: white;
+  border: none;
+  border-radius: .5em;
+  min-width: 40%;
+  min-height: 2.2em;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-top: 4.5em;
+}
+.spot-delete-button {
+  background: linear-gradient(0.25turn, #E61E4D, #D70666);
+  color: white;
+  border: none;
+  min-height: 2.2em;
+  border-radius: .5em;
+  min-width: 40%;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-top: 4.5em;
+}
+
+.booking-container {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+
+}
+
+.current-spot-buttons {
+  display: flex;
+  min-width: 30%;
+  justify-content: space-around;
+  margin-top: -3.5em;
 }

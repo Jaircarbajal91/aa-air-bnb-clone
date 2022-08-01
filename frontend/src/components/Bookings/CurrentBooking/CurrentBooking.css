@@ -1,0 +1,63 @@
+.confirmation-container {
+  display: flex;
+  align-items: center;
+  min-width: 100vw;
+  min-height: 100%;
+
+}
+
+.confirmation-right-container {
+  padding: .2em;
+  border-radius: .7em;
+  margin-top: -1em;
+  font-size: 1.1rem;
+}
+.confirmation-header {
+
+}
+.confirmation-description {
+  text-align: center;
+  padding: 1em;
+  background-color: rgb(242, 238, 238);
+  border-radius: .7em .7em 0px 0px;
+}
+.confirmation-booking {
+  background-color: rgb(242, 238, 238);
+  border-radius: 0px 0px .7em .7em;
+  display: flex;
+  justify-content: space-between;
+  padding: 1em;
+}
+.confirmation-left-itinerary {
+  text-align: start;
+  font-size: 1.2rem;
+}
+.confirmation-right-itinerary {
+  text-align: end;
+  font-size: 1.2rem;
+}
+
+.confirmation-left-container {
+  display: flex;
+  flex-direction: column;
+  min-width: 50%;
+  align-items: center;
+  text-align: center;
+  margin-top: -14em;
+}
+
+.confirmation-button {
+  background: linear-gradient(0.25turn, #E61E4D, #D70666);
+  color: white;
+  border: none;
+  height: 2.6em;
+  border-radius: .5em;
+  min-width: 16em;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-top: 2em;
+}
+
+.confirmation-button:active {
+  transform: scale(.97);
+}

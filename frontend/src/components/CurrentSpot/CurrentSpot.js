@@ -17,7 +17,7 @@ function CurrentSpot() {
   const [showModal, setShowModal] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
-  const [hasUpdated, setHasUpdated] = useState(false);
+  const [hasUdpated, setHasUpdate] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [bookingsExist, setBookingsExist] = useState(false)
 
@@ -44,54 +44,56 @@ function CurrentSpot() {
       <div className='current-spot-wrapper'>
         <div className='current-spot-content'>
           <div className='current-spot-top-container'>
-            <p className='current-spot-title'>{spot.description}: {spot.name}</p>
+            <h2 className='current-spot-title'>{spot.description}: {spot.name}</h2>
           </div>
           <div className='current-spot-bottom-container'>
-            <i className="fa-solid fa-star"></i>
+            <div className='spot-left-container'>
+            <i id="spot-star" className="fa-solid fa-star"></i>
             <p className='current-spot-rating'>{rating}</p>
             <p className='current-spot-location'>{spot.city}, {spot.state} {spot.country}</p>
+            </div>
+            {spot.Owner.id === sessionUser?.id && (
+              <div className='current-spot-buttons'>
+                <button
+                  className='spot-edit-button'
+                  onClick={() => setShowUpdate(true)}>Edit Spot</button>
+                <button
+                  className='spot-delete-button'
+                  onClick={() => setShowDelete(true)}>Delete Spot</button>
+                {showUpdate && (
+                  <Modal onClose={() => setShowUpdate(false)}>
+                    <UpdateSpotForm spotId={spotId} setShowUpdate={setShowUpdate} />
+                  </Modal>
+                )}
+                {showDelete && (
+                  <Modal onClose={() => setShowDelete(false)} >
+
+                    <DeleteSpot spotId={spotId} setShowDelete={setShowDelete} />
+                  </Modal>
+                )}
+              </div>
+            )}
           </div>
         </div>
         {spot && (
           <div className='current-spot-img-container'>
             <div className='current-spot-left-container'>
-              <img className='preview-image-1' src={`${spot.previewImage}`} />
+              <img className='preview-image-main' src={`${spot.previewImage}`} />
             </div>
             <div className='current-spot-right-container'>
               <div className='upper-left-img'>
                 <img className='preview-image' src={`${spot.previewImage}`} />
               </div>
               <div className='upper-right-img'>
-                <img className='preview-image' src={`${spot.previewImage}`} />
+                <img className='preview-image top' src={`${spot.previewImage}`} />
               </div>
               <div className='bottom-left-img'>
                 <img className='preview-image' src={`${spot.previewImage}`} />
               </div>
               <div className='bottom-right-img'>
-                <img className='preview-image' src={`${spot.previewImage}`} />
+                <img className='preview-image bottom' src={`${spot.previewImage}`} />
               </div>
             </div>
-          </div>
-        )}
-        {spot.Owner.id === sessionUser?.id && (
-          <div className='current-spot-buttons'>
-            <button
-              className='spot-edit-button'
-              onClick={() => setShowUpdate(true)}>Edit Spot</button>
-            <button
-              className='spot-edit-button'
-              onClick={() => setShowDelete(true)}>Delete Spot</button>
-            {showUpdate && (
-              <Modal onClose={() => setShowUpdate(false)}>
-                <UpdateSpotForm setHasUpdated={setHasUpdated} spotId={spotId} setShowUpdate={setShowUpdate} />
-              </Modal>
-            )}
-            {showDelete && (
-              <Modal onClose={() => setShowDelete(false)} >
-
-                <DeleteSpot spotId={spotId} setShowDelete={setShowDelete} />
-              </Modal>
-            )}
           </div>
         )}
         <div className='booking-container'>

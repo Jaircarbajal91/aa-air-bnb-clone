@@ -1,0 +1,49 @@
+.table-head {
+
+}
+
+.table-outer-container {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: -1;
+}
+
+.table-inner-container {
+  display: flex;
+  justify-content: center;
+  min-width: 70%;
+  height: 30%;
+}
+.table-row {
+  min-width: 100%;
+}
+ table {
+  min-width: 110%;
+ }
+
+thead {
+  padding: 4em;
+}
+
+table, th, td {
+  border: 1px solid;
+  border-radius: .7em;
+}
+
+table {
+  border-collapse: collapse;
+}
+ td, th {
+  text-align: center;
+  padding: 15px;
+  text-align: left;
+ }
+.one:hover {
+  background-color: rgb(203, 218, 218);
+}

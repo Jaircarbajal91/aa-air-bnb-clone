@@ -20,7 +20,7 @@ div.profile-button-border {
 }
 
 div.profile-button-border:hover{
-  box-shadow: 1px 5px 5px rgb(195, 195, 195);
+  box-shadow: 1px 5px 5px rgb(195, 195, 195) !important;
 }
 
 /* .become-host-link {
@@ -89,4 +89,5 @@ div.profile-dropdown {
   position: absolute;
   top: 90%;
   right: 6%;
+  z-index: 2;
 }

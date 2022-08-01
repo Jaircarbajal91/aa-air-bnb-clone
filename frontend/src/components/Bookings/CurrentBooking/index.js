@@ -6,7 +6,7 @@ import { Modal } from "../../../context/Modal"
 import DeleteBooking from "../DeleteBooking"
 import UpdateBookingForm from "../UpdateBooking"
 import { deleteBookingThunk } from "../../../store/bookings";
-
+import './CurrentBooking.css'
 
 function CurrentBooking() {
   const { bookingId } = useParams()
@@ -107,11 +107,11 @@ function CurrentBooking() {
             <p>{changeable && `You're going to ${spot.city}!`}</p>
           </div>
           {spot && (<img style={{
-            maxWidth: '20em'
+            width: '40em',
+            borderRadius: '.7em'
           }} src={spot.previewImage} />)}
           <div className="confirmation-description">
-            <p>{spot.name}</p>
-            <p>{spot.description}</p>
+            <p>{spot.name} {spot.description}</p>
             <p>{spot.city}, {spot.state}</p>
           </div>
           <div className="confirmation-booking info">
@@ -136,23 +136,23 @@ function CurrentBooking() {
             <h3>Amount</h3>
             <p>{formatter.format(total)}</p>
           </div>
-        </div>
-        {booking.userId === sessionUser.id && changeable && (
-          <div>
-            {/* <button onClick={() => setShowUpdate(true)}>Change Reservaion</button> */}
-            <button onClick={() => setShowDelete(true)}>Cancel Reservaion</button>
-            {/* {showUpdate && (
+          {booking.userId === sessionUser.id && changeable && (
+            <div>
+              {/* <button onClick={() => setShowUpdate(true)}>Change Reservaion</button> */}
+              <button className="confirmation-button" onClick={() => setShowDelete(true)}>Cancel Reservaion</button>
+              {/* {showUpdate && (
               <Modal onClose={() => setShowUpdate(false)}>
                 <UpdateBookingForm booking={booking} setShowUpdate={setShowUpdate} />
               </Modal>
             )} */}
-            {showDelete && (
-              <Modal onClose={() => setShowDelete(false)}>
-                <DeleteBooking setDeleted={setDeleted} booking={booking} setShowDelete={setShowDelete} />
-              </Modal>
-            )}
-          </div>
-        )}
+              {showDelete && (
+                <Modal onClose={() => setShowDelete(false)}>
+                  <DeleteBooking setDeleted={setDeleted} booking={booking} setShowDelete={setShowDelete} />
+                </Modal>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

@@ -3,6 +3,7 @@ import { createBookingThunk, getAllBookingsForSpotThunk } from "../../../store/b
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom"
 import { useParams } from 'react-router-dom'
+import './CreateBooking.css'
 
 function CreateBookingForm({ spot, bookings }) {
   const { spotId } = useParams()
@@ -62,24 +63,6 @@ function CreateBookingForm({ spot, bookings }) {
     setErrors(newErrors)
   }, [startDate, endDate])
 
-  // useEffect(() => {
-  //   if (sessionUser) {
-  //     if (bookings.length) {
-  //       for (let booking of bookings) {
-  //         if (booking.spotId !== spotId) {
-  //           dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true))
-  //           break;
-  //         }
-  //       }
-  //     } else if (bookings === undefined) {
-  //       dispatch(getAllBookingsForSpotThunk(spotId)).then(() => setIsLoaded(true)).catch(async (err) => {
-  //         const errors = await err.json()
-  //         setErrors(errors.errors)
-  //       })
-  //     }
-  //   }
-  // }, [dispatch, isLoaded])
-
   let reviews;
   if (numReviews === 0) reviews = ``
   else if (numReviews === 1) reviews = `1 review`
@@ -106,40 +89,66 @@ function CreateBookingForm({ spot, bookings }) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-    >
-      <p><strong>${price}</strong> night</p>
-      <div>
-        <i className="fa-solid fa-star"></i>
-        <span> {rating}  {reviews}</span>
+    <div className="form-container">
+      <form
+        className="booking-form"
+        onSubmit={handleSubmit}
+      >
+        <div className="booking-content-wrapper">
+          <p className="price-wrapper"><strong>${price}</strong> night</p>
+          <div className="booking-rating-wrapper">
+            <i className="fa-solid fa-star"></i>
+            <span> {rating}  {reviews}</span>
+          </div>
+        </div>
+        <div>
+          <div className="booking-input-wrapper">
+            <div className="checkin-wrapper">
+              <div className="checkin">CHECK-IN</div>
+              <input type="date" id="start" name="trip-start"
+                value={startDate}
+                className="checkin"
+                min={today}
+                onChange={(e) => setStartDate(e.target.value)}
+              >
+              </input>
+            </div>
+            <div className="checkout-wrapper">
+              <div className="checkout">CHECK-OUT</div>
+              <input type="date" id="start" name="trip-start"
+                value={endDate}
+                className="checkout"
+                min={tomorrow}
+                onChange={(e) => setEndDate(e.target.value)}
+              >
+              </input>
+            </div>
+          </div>
+        </div>
+        <div className="booking-errors-container">
+        {errors.length > 0 && (
+          <ul className="errors-list">
+            {errors.map(error => (
+              <li key={error}>{error}</li>
+            ))}
+          </ul>
+        )}
       </div>
-      <label htmlFor="">CHECK-IN: </label>
-      <input type="date" id="start" name="trip-start"
-        value={startDate}
-        min={today}
-        onChange={(e) => setStartDate(e.target.value)}
-      >
-      </input>
-      <label htmlFor="">CHECKOUT: </label>
-      <input type="date" id="start" name="trip-start"
-        value={endDate}
-        min={tomorrow}
-        onChange={(e) => setEndDate(e.target.value)}
-      >
-      </input>
-      <button
-      disabled={sessionUser === null}
-       type="submit">Reserve</button>
-      {errors.length > 0 && (
-        <ul>
-          {errors.map(error => (
-            <li key={error}>{error}</li>
-          ))}
-        </ul>
+      {!sessionUser ? (
+        <div className="sub-text" style={{
+          fontSize: "1.5rem",
+          textAlign: 'center'
+        }}>Log in to reserve a spot</div>
+      ) : (
+        <button
+        className="submit-button booking"
+          disabled={sessionUser === null}
+          type="submit">Reserve</button>
       )}
-      <p>{sessionUser ? "You won't be charged yet" : "Please log in to reserve a date"}</p>
-    </form>
+        {/* <p className="booking-description">{sessionUser ? "You won't be charged yet" : "Please log in to reserve a date"}</p> */}
+      </form>
+
+    </div>
   )
 }
 

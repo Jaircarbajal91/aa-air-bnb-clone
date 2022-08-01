@@ -24,13 +24,13 @@ function Listing({ booking }) {
   return (
     <>
       <td
-        className="table-name"
+        className="table-name one"
         style={{
-          cursor: "pointer"
+          cursor: "pointer",
         }}
         onClick={handleClick}>
-        <img className="listing-preivew-image" src={`${previewImage}`} />
-        {name}
+        <img className="listing-preivew-image table-name one" src={`${previewImage}`} />
+        {`     ${name}`}
       </td>
       <td>{city}, {state}</td>
       <td>{startDate} - {endDate}</td>
