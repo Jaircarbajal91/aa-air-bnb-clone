@@ -5,6 +5,7 @@ import Card from "../Cards"
 import './SpotsCards.css'
 
 function SpotCards() {
+  
   const spots = useSelector(state => state.spots.orderedSpotsList)
   const [isLoaded, setIsLoaded] = useState(false);
   const dispatch = useDispatch();
