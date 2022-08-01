@@ -29,12 +29,8 @@ module.exports = {
         allowNull: false
       },
       stars: {
-<<<<<<< Updated upstream:backend/db/migrations/20220704173936-create-review.js
         type: Sequelize.INTEGER,
         allowNull: false
-=======
-        type: Sequelize.DECIMAL
->>>>>>> Stashed changes:backend/db/migrations/20220703162933-create-review.js
       },
       imageId: {
         type: Sequelize.INTEGER

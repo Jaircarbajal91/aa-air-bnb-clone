@@ -33,11 +33,11 @@ module.exports = {
         allowNull: false
       },
       lat: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.FLOAT(3, 15),
         allowNull: false
       },
       lng: {
-        type: Sequelize.DECIMAL,
+        type: Sequelize.FLOAT(3, 15),
         allowNull: false
       },
       price: {
@@ -55,10 +55,10 @@ module.exports = {
       previewImage: {
         type: Sequelize.STRING
       },
-      references: {
-        model: 'Bookings',
-        key: 'id'
-      },
+      // references: {
+      //   model: 'Bookings',
+      //   key: 'id'
+      // },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

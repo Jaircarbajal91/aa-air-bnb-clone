@@ -53,11 +53,11 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     },
     lat: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.FLOAT(3, 15),
       allowNull: false
     },
     lng: {
-      type: DataTypes.DECIMAL,
+      type: DataTypes.FLOAT(3, 15),
       allowNull: false
     },
     price: {

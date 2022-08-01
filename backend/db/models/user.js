@@ -5,8 +5,8 @@ const bcrypt = require('bcryptjs');
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     toSafeObject() {
-      const { id, username, email, firstName, lastName } = this; // context will be the User instance
-      return { id, username, email, firstName, lastName };
+      const { id, username, email } = this; // context will be the User instance
+      return { id, username, email };
     }
     //Define an instance method validatePassword in the user.js model file. It should accept a password string and return true if there is a match with the User instance's hashedPassword. If there is no match, it should return false.
     validatePassword(password) {
