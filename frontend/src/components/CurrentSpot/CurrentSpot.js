@@ -24,46 +24,16 @@ function CurrentSpot() {
 
   const sessionUser = useSelector(state => state.session.user)
   const bookings = useSelector(state => state.bookings?.orderedBookingList)
-  const spot = useSelector(state => state.selectedSpot?.[spotId])
+  const spot = useSelector(state => state.spots.selectedSpot?.[spotId])
 
-  let spotBookings;
   const dispatch = useDispatch()
 
   useEffect(() => {
-    const newSpot = dispatch(getSpotDetails(spotId))
-    .then((res) => {
-      console.log(res)
-      setIsLoaded(true)
-      // if (sessionUser) {
-      //   spotBookings = dispatch(getAllBookingsForSpotThunk(spotId))
-      //   .catch(async (err) => {
-      //     const errors = await err.json()
-      //     console.log(errors)
-      //   })
-      // }
-    })
+    const newSpot = dispatch(getSpotDetails(spotId)).then((res) => setIsLoaded(true))
   }, [dispatch, isLoaded])
 
-  // useEffect(() => {
-  //   const checkSpot = async () => {
-  //     if (spot === undefined) {
-  //       const res = await dispatch(getSpotDetails(spotId))
-  //       setSpot(res)
-  //       setSpotExists(true)
-  //     } else {
-  //       setSpotExists(true)
-  //     }
-  //   }
-  //   checkSpot()
-  // }, [dispatch, spot])
-
-  // useEffect(() => {
-
-  // }, [dispatch, sessionUser])
-
-
+  console.log(bookings)
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
-  console.log(isLoaded)
   return isLoaded && (
     <div className='current-spot'>
       <p>{spot?.description}: {spot?.name}</p>
@@ -92,10 +62,11 @@ function CurrentSpot() {
           )}
         </div>
       )}
-      {sessionUser === null && (
+      {!sessionUser ? (
         <div>Please log in to set a reservation</div>
+      ) : (
+        <CreateBookingForm spot={spot} bookings={bookings} />
       )}
-      {/* {spotExists && <CreateBookingForm spot={spot} bookings={bookings} />} */}
     </div>
   )
 }
