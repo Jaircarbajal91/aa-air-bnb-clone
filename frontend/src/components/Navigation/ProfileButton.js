@@ -54,6 +54,7 @@ function ProfileButton({ user, isLoaded }) {
     e.preventDefault();
     dispatch(sessionActions.logout())
     .then(() => {
+      
       dispatch(logoutBookingsAction())
     })
     .then(() => history.push("/"))
