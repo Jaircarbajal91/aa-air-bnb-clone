@@ -34,7 +34,7 @@ function CreateBookingForm({ spot, bookings }) {
   useEffect(() => {
     let newErrors = []
 
-    if (bookings?.length) {
+    if (bookings.length) {
       for (let dates of bookings) {
         let start = dates.startDate
         let end = dates.endDate

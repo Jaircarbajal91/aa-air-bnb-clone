@@ -39,7 +39,7 @@ function CurrentSpot() {
 
 
   let currentRender;
-  if (sessionUser) {
+  if (sessionUser && bookings && isLoaded) {
     currentRender = (
       <CreateBookingForm spot={spot} bookings={bookings} />
     )
