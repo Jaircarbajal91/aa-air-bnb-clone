@@ -2,3 +2,41 @@ img.preview-image{
   width: 300px;
   height: 285px;
 }
+.current-spot-container {
+  background-color: red;
+  min-width: 100vw;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 7.3%;
+  display: flex;
+  justify-content: center;
+}
+
+.current-spot-wrapper {
+  background-color: purple;
+  display: flex;
+  flex-direction: column;
+  min-width: 1120px;
+}
+
+.current-spot-img-container {
+  background-color: green;
+  display: flex;
+  height: 541px;
+  border-radius: .7em;
+}
+
+.current-spot-left-container {
+  width: 50%;
+  height: 100%;
+}
+
+.current-spot-right-container {
+  width: 50%;
+  height: 100%;
+}
+
+.preview-image {
+
+}

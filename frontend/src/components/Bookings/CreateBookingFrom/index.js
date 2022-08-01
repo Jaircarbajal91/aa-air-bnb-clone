@@ -34,7 +34,7 @@ function CreateBookingForm({ spot, bookings }) {
   useEffect(() => {
     let newErrors = []
 
-    if (bookings.length) {
+    if (bookings) {
       for (let dates of bookings) {
         let start = dates.startDate
         let end = dates.endDate
@@ -138,7 +138,7 @@ function CreateBookingForm({ spot, bookings }) {
           ))}
         </ul>
       )}
-      <p>You won't be charged yet</p>
+      <p>{sessionUser ? "You won't be charged yet" : "Please log in to reserve a date"}</p>
     </form>
   )
 }

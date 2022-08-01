@@ -37,47 +37,67 @@ function CurrentSpot() {
     }
   }, [dispatch, isLoaded])
 
-  let currentRender;
-  if (sessionUser && Array.isArray(bookings) && isLoaded) {
-    currentRender = (
-      <CreateBookingForm spot={spot} bookings={bookings} />
-    )
-  } else {
-    currentRender = (
-      <div>Please log in to set a reservation</div>
-    )
-  }
 
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return isLoaded && (
-    <div className='current-spot'>
-      <p>{spot.description}: {spot.name}</p>
-      <div>
-        <i className="fa-solid fa-star"></i>
-        <p>{rating}</p>
-      </div>
-      <p>{spot.city}, {spot.state} {spot.country}</p>
-      {spot && (<div>
-        <img className='preview-image' src={`${spot.previewImage}`} />
-      </div>)}
-      {spot.Owner.id === sessionUser?.id && (
-        <div>
-          <button onClick={() => setShowUpdate(true)}>Edit Spot</button>
-          <button onClick={() => setShowDelete(true)}>Delete Spot</button>
-          {showUpdate && (
-            <Modal onClose={() => setShowUpdate(false)}>
-              <UpdateSpotForm setHasUpdated={setHasUpdated} spotId={spotId} setShowUpdate={setShowUpdate} />
-            </Modal>
-          )}
-          {showDelete && (
-            <Modal onClose={() => setShowDelete(false)} >
-
-              <DeleteSpot spotId={spotId} setShowDelete={setShowDelete} />
-            </Modal>
-          )}
+    <div className='current-spot-container'>
+      <div className='current-spot-wrapper'>
+        <div className='current-spot-content'>
+          <div className='current-spot-top-container'>
+            <p className='current-spot-title'>{spot.description}: {spot.name}</p>
+          </div>
+          <div className='current-spot-bottom-container'>
+            <i className="fa-solid fa-star"></i>
+            <p className='current-spot-rating'>{rating}</p>
+            <p className='current-spot-location'>{spot.city}, {spot.state} {spot.country}</p>
+          </div>
         </div>
-      )}
-      {currentRender}
+        {spot && (
+          <div className='current-spot-img-container'>
+            <div className='current-spot-left-container'>
+              <img className='preview-image-1' src={`${spot.previewImage}`} />
+            </div>
+            <div className='current-spot-right-container'>
+              <div className='upper-left-img'>
+                <img className='preview-image' src={`${spot.previewImage}`} />
+              </div>
+              <div className='upper-right-img'>
+                <img className='preview-image' src={`${spot.previewImage}`} />
+              </div>
+              <div className='bottom-left-img'>
+                <img className='preview-image' src={`${spot.previewImage}`} />
+              </div>
+              <div className='bottom-right-img'>
+                <img className='preview-image' src={`${spot.previewImage}`} />
+              </div>
+            </div>
+          </div>
+        )}
+        {spot.Owner.id === sessionUser?.id && (
+          <div className='current-spot-buttons'>
+            <button
+              className='spot-edit-button'
+              onClick={() => setShowUpdate(true)}>Edit Spot</button>
+            <button
+              className='spot-edit-button'
+              onClick={() => setShowDelete(true)}>Delete Spot</button>
+            {showUpdate && (
+              <Modal onClose={() => setShowUpdate(false)}>
+                <UpdateSpotForm setHasUpdated={setHasUpdated} spotId={spotId} setShowUpdate={setShowUpdate} />
+              </Modal>
+            )}
+            {showDelete && (
+              <Modal onClose={() => setShowDelete(false)} >
+
+                <DeleteSpot spotId={spotId} setShowDelete={setShowDelete} />
+              </Modal>
+            )}
+          </div>
+        )}
+        <div className='booking-container'>
+          <CreateBookingForm spot={spot} bookings={bookings} />
+        </div>
+      </div>
     </div>
   )
 }
