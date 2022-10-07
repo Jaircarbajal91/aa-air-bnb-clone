@@ -53,26 +53,24 @@ function ProfileButton({ user, isLoaded }) {
   const logout = (e) => {
     e.preventDefault();
     dispatch(sessionActions.logout())
-    .then(() => {
-      dispatch(logoutBookingsAction())
-    })
-    .then(() => history.push("/"))
-    .catch(async (err) => {
-      console.log(err)
-      const errors = err.json()
-      console.log(errors)
-    })
+      .then(() => {
+        dispatch(logoutBookingsAction())
+      })
+      .then(() => history.push("/"))
+      .catch(async (err) => {
+        console.log(err)
+        const errors = err.json()
+        console.log(errors)
+      })
 
   };
   return (
     <>
       {showLoginModal && (<LoginFormModal showLoginModal={showLoginModal} setShowLoginModal={setShowLoginModal} />)}
       {showSignUpModal && (<SignUpFormModal showSignUpModal={showSignUpModal} setShowSignUpModal={setShowSignUpModal} />)}
-      <div className='right-profile-container'>
         <div className='host-hover-border'>
           <NavLink className='become-host-link' to="/spots/create">Become a Host</NavLink>
         </div>
-      </div>
       <div className="profile-button-border"
         onClick={openMenu}>
         <img className="hamburger-icon" src={hamburger} />
@@ -83,19 +81,15 @@ function ProfileButton({ user, isLoaded }) {
           {isLoaded && sessionUser && (
             <ul className="profile-list">
               <li className="profile-list-item user-name-li">{user.username}</li>
-              <li className="hover-link"><NavLink className="menu-my-bookings" activeClassName="active" to="/bookings">My Bookings</NavLink></li>
+              <NavLink className="menu-my-bookings hover-link" activeClassName="active" to="/bookings">My Bookings</NavLink>
               <li className="profile-list-item hover-link" onClick={logout}>Log Out</li>
             </ul>
           )}
           {isLoaded && !sessionUser && (
             <ul className="profile-list">
-              <li className="hover-link">
-                <NavLink className='profile-list-item' onClick={() => setShowLoginModal(true)} to=''>Login</NavLink>
-              </li>
-              <li className="hover-link">
-                <NavLink className='profile-list-item' onClick={() => handleDemo()} to=''>Demo Login</NavLink>
-              </li>
-              <li className="hover-link"><NavLink onClick={() => setShowSignUpModal(true)} className='profile-list-item' to="">Sign Up</NavLink></li>
+              <NavLink className='profile-list-item hover-link' onClick={() => setShowLoginModal(true)} to=''>Login</NavLink>
+              <NavLink className='profile-list-item hover-link' onClick={() => handleDemo()} to=''>Demo Login</NavLink>
+              <NavLink onClick={() => setShowSignUpModal(true)} className='profile-list-item hover-link' to="">Sign Up</NavLink>
             </ul>
           )}
         </div>

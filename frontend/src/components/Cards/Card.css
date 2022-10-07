@@ -9,6 +9,7 @@ div.spot-card-container {
   margin: .6em;
   width: 300px;
   min-height: 388px;
+  cursor: pointer;
 }
 
 div.spot-info-container{

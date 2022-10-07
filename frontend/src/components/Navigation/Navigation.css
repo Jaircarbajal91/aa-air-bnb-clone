@@ -2,10 +2,9 @@ div.svg-container{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 118px;
-  max-height: 64px;
-  margin-left: 3em;
   cursor: pointer;
+  position: relative;
+  left: 10.5em;
 }
 
 
@@ -21,6 +20,7 @@ img.svg-logo-name {
 
 nav.main-navbar {
   position: sticky;
+  width: 100%;
   background-color: #ffffff;
   top: 0%;
   display: flex;

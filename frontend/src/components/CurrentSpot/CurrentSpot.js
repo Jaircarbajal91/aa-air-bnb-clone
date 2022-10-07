@@ -48,9 +48,9 @@ function CurrentSpot() {
           </div>
           <div className='current-spot-bottom-container'>
             <div className='spot-left-container'>
-            <i id="spot-star" className="fa-solid fa-star"></i>
-            <p className='current-spot-rating'>{rating}</p>
-            <p className='current-spot-location'>{spot.city}, {spot.state} {spot.country}</p>
+              <i id="spot-star" className="fa-solid fa-star"></i>
+              <p className='current-spot-rating'>{rating}</p>
+              <p className='current-spot-location'>{spot.city}, {spot.state} {spot.country}</p>
             </div>
             {spot.Owner.id === sessionUser?.id && (
               <div className='current-spot-buttons'>
@@ -77,23 +77,11 @@ function CurrentSpot() {
         </div>
         {spot && (
           <div className='current-spot-img-container'>
-            <div className='current-spot-left-container'>
-              <img className='preview-image-main' src={`${spot.previewImage}`} />
-            </div>
-            <div className='current-spot-right-container'>
-              <div className='upper-left-img'>
-                <img className='preview-image' src={`${spot.previewImage}`} />
-              </div>
-              <div className='upper-right-img'>
-                <img className='preview-image top' src={`${spot.previewImage}`} />
-              </div>
-              <div className='bottom-left-img'>
-                <img className='preview-image' src={`${spot.previewImage}`} />
-              </div>
-              <div className='bottom-right-img'>
-                <img className='preview-image bottom' src={`${spot.previewImage}`} />
-              </div>
-            </div>
+            <img className='preview-image main' src={`${spot.previewImage}`} />
+            <img className='preview-image top left' src={`${spot.previewImage}`} />
+            <img className='preview-image top right' src={`${spot.previewImage}`} />
+            <img className='preview-image bottom left' src={`${spot.previewImage}`} />
+            <img className='preview-image bottom right' src={`${spot.previewImage}`} />
           </div>
         )}
         <div className='booking-container'>
