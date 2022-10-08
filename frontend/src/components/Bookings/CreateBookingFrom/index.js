@@ -93,7 +93,7 @@ function CreateBookingForm({ spot, bookings }) {
           </div>
           <div className="checkout-wrapper">
             <div className="checkout">CHECK-OUT</div>
-            <input type="date" id="start" name="trip-start"
+            <input type="date" id="end" name="trip-start"
               value={endDate}
               className="checkout"
               min={format(tomorrow, 'yyy-MM-dd')}

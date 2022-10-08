@@ -111,8 +111,10 @@
 }
 
 .booking-container {
+  margin-top: 2em;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .current-spot-buttons {
@@ -124,4 +126,22 @@
 
 .current-spot-buttons > button {
   min-width: 8em;
+}
+
+.bottom-owner-description-container {
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom-owner-description {
+  border-bottom: .1px solid rgb(210, 208, 208);
+  padding-bottom: 1em;
+  width: 100%;
+  font-weight: 500;
+}
+
+.spot.description {
+  text-transform: capitalize;
+  font-weight: 300;
 }

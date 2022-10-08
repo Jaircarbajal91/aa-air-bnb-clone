@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom'
-import { useSelector, dispatch, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { updateSpot, getSpotDetails } from '../../store/spots'
 import { Modal } from '../../context/Modal'
@@ -8,6 +8,8 @@ import DeleteSpot from '../DeleteSpot/DeleteSpot'
 import CreateBookingForm from '../Bookings/CreateBookingFrom'
 import { getAllBookingsForSpotThunk } from '../../store/bookings'
 import { useHistory } from 'react-router-dom'
+import { getSpotReviewsThunk } from '../../store/reviews'
+import Review from '../Reviews'
 import './CurrentSpot.css'
 
 
@@ -28,7 +30,7 @@ function CurrentSpot() {
 
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(getSpotDetails(spotId)).then((res) => setIsLoaded(true))
+    dispatch(getSpotDetails(spotId)).then(() => dispatch(getSpotReviewsThunk(spotId))).then((res) => setIsLoaded(true))
   }, [dispatch])
 
   useEffect(() => {
@@ -85,8 +87,15 @@ function CurrentSpot() {
           </div>
         )}
         <div className='booking-container'>
+          <div className='bottom-owner-description-container'>
+            <h2 className='bottom-owner-description'>{spot.name[0].toUpperCase() + spot.name.slice(1).toLowerCase()} hosted by {spot.Owner.firstName[0].toUpperCase() + spot.Owner.firstName.slice(1).toLowerCase()} {spot.Owner.lastName[0].toUpperCase() + spot.Owner.lastName.slice(1).toLowerCase()}</h2>
+            <div className='spot description'>
+              <span>{spot.description}</span>
+            </div>
+          </div>
           <CreateBookingForm spot={spot} bookings={bookings} />
         </div>
+        <Review spot={spot} />
       </div>
     </div>
   )
