@@ -18,7 +18,14 @@ function CreateBookingForm({ spot, bookings }) {
   const [tomorrow, setTomorrow] = useState(new Date(new Date(today).getTime() + 24 * 60 * 60 * 1000))
   const [startDate, setStartDate] = useState(format(today, 'yyy-MM-dd'))
   const [endDate, setEndDate] = useState(format(new Date(today).getTime() + 120 * 60 * 60 * 1000, 'yyy-MM-dd'))
+  const [timeDifference, setTimeDifference] = useState(new Date(endDate).getTime() - new Date(startDate).getTime())
+  const [daysCount, setDaysCount] = useState(timeDifference / (1000 * 3600 * 24))
   const { price, avgStarRating, numReviews } = spot
+  const [subTotal, setSubTotal] = useState(price * daysCount)
+  const [cleaningFee, setCleaningFee] = useState(Math.ceil(price / 5))
+  const [weeklyDiscount, setWeeklyDiscount] = useState(Math.ceil(subTotal / 7))
+  const [serviceFee, setServiceFee] = useState(Math.ceil(subTotal / 4))
+  const [total, setTotal] = useState(subTotal - weeklyDiscount + cleaningFee + serviceFee)
   const getDate = (today) => {
     let result;
     let month = (today.getMonth() + 1) < 10 ? `0${(today.getMonth() + 1)}` : (today.getMonth() + 1)
@@ -39,10 +46,14 @@ function CreateBookingForm({ spot, bookings }) {
     }
   }, [startDate])
 
-  let reviews;
-  if (numReviews === 0) reviews = ``
-  else if (numReviews === 1) reviews = `1 review`
-  else reviews = `${numReviews} reviews`
+  useEffect(() => {
+    setTimeDifference(new Date(endDate).getTime() - new Date(startDate).getTime())
+    setDaysCount(timeDifference / (1000 * 3600 * 24))
+    setSubTotal(price * daysCount)
+    setWeeklyDiscount(subTotal / 7)
+    setServiceFee(subTotal / 4)
+    setTotal(subTotal - weeklyDiscount + cleaningFee + serviceFee)
+  }, [startDate, endDate, timeDifference, daysCount, subTotal, weeklyDiscount, serviceFee])
 
   const rating = spot.avgStarRating === 0 ? "New" : spot.avgStarRating
   const handleSubmit = async (e) => {
@@ -65,6 +76,17 @@ function CreateBookingForm({ spot, bookings }) {
     e.preventDefault()
     setShowLoginModal(true)
   }
+
+  var formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+
+    // These options are needed to round to whole numbers if that's what you want.
+    //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+    maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+  });
+
+
   return (
 
     <div className="form-container">
@@ -72,12 +94,12 @@ function CreateBookingForm({ spot, bookings }) {
         className="booking-form"
         onSubmit={handleSubmit}
       >
-        {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} showLoginModal={showLoginModal}/>}
+        {showLoginModal && <LoginFormModal setShowLoginModal={setShowLoginModal} showLoginModal={showLoginModal} />}
         <div className="booking-content-wrapper">
-          <p className="price-wrapper"><strong>${price}</strong> night</p>
+          <span className="price-wrapper"><strong>${price}</strong> night</span>
           <div className="booking-rating-wrapper">
             <i className="fa-solid fa-star"></i>
-            <span> {rating}  {reviews}</span>
+            <span> {rating} · <u>{numReviews === 1 ? "review" : "reviews"}</u></span>
           </div>
         </div>
         <div className="booking-input-wrapper">
@@ -102,6 +124,13 @@ function CreateBookingForm({ spot, bookings }) {
             </input>
           </div>
         </div>
+        {sessionUser ? <button
+          className="submit-button booking"
+          onClick={handleSubmit}
+          type="submit">Reserve</button> :
+          <button onClick={showLogin} className="submit-button booking">Login to reserve a date</button>
+        }
+        <p className="no-charge">You won't be charged yet</p>
         <div className="booking-errors-container">
           {errors.length > 0 && (
             <ul className="errors-list">
@@ -111,12 +140,28 @@ function CreateBookingForm({ spot, bookings }) {
             </ul>
           )}
         </div>
-        {sessionUser ? <button
-          className="submit-button booking"
-          onClick={handleSubmit}
-          type="submit">Reserve</button> :
-          <button onClick={showLogin} className="submit-button booking">Login to reserve a date</button>
-          }
+        <div className="adjusted-pricing-container">
+          <div className="adjusted-pricing initial">
+            <u>{formatter.format(spot.price)} x {daysCount} {daysCount === 1 ? "night" : "nights"}</u>
+            <span>{formatter.format(subTotal)}</span>
+          </div>
+          <div className="adjusted-pricing discount">
+            <u>Weekly Discount</u>
+            <span>-{formatter.format(weeklyDiscount)}</span>
+          </div>
+          <div className="adjusted-pricing">
+            <u>Cleaning Fee</u>
+            <span>{formatter.format(cleaningFee)}</span>
+          </div>
+          <div className="adjusted-pricing last">
+            <u>Service fee</u>
+            <span>{formatter.format(serviceFee)}</span>
+          </div>
+          <div className="adjusted-pricing total">
+            <span>Total before taxes</span>
+            <span>{formatter.format(total)}</span>
+          </div>
+        </div>
         {/* <p className="booking-description">{sessionUser ? "You won't be charged yet" : "Please log in to reserve a date"}</p> */}
       </form>
 

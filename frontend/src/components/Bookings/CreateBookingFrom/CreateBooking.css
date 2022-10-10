@@ -25,7 +25,7 @@
   max-width: 95%;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  margin-top: 4.5em;
+  margin-top: 1em;
   /* margin-bottom: 1em; */
 }
 
@@ -33,7 +33,11 @@
   margin-top: 1em;
 }
 .booking-errors-container {
-  min-height: 1em;
+  min-height: 2em;
+}
+
+.booking-errors-container > ul > li {
+  color: red;
 }
 
 .booking.submit-button:active {
@@ -100,14 +104,36 @@ input.checkin {
   display: flex;
   justify-content: space-between;
   width: 95%;
+  min-height: 3em;
   align-items: center;
+  margin-bottom: 1em;
 }
+
 .price-wrapper {
-  margin-top: -.4em;
+  font-size: 1rem;
+  font-weight: 300;
+}
+
+.price-wrapper > strong {
+  font-size: 1.4rem;
+  font-weight: 600;
 }
 
 .booking-rating-wrapper {
-  margin-top: -1.5em;
+  display: flex;
+  align-items: center;
+  font-size: .9rem;
+  position: relative;
+  right: .4em;
+}
+
+.booking-rating-wrapper > i {
+  margin-right: .6em;
+}
+
+.no-charge {
+  font-size: .9rem;
+  font-weight: 200;
 }
 
 .checkin-wrapper {
@@ -136,4 +162,34 @@ input.checkin {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+}
+
+
+.adjusted-pricing-container {
+  width: 95%;
+  margin-bottom: 1em;
+  font-weight: 400;
+
+}
+
+.adjusted-pricing {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-bottom: 1.2em;
+}
+
+.adjusted-pricing.discount > span{
+  color: #008A03
+}
+
+.adjusted-pricing.total {
+  border-top: 1px solid rgb(206, 206, 206);
+  font-weight: 700;
+  padding-top: 1.6em;
+  margin-bottom: 0;
+}
+
+.adjusted-pricing.last {
+  padding-bottom: .8em;
 }

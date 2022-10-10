@@ -25,7 +25,7 @@ const reviewsReducer = (state = {}, action) => {
       action.reviews.Reviews.forEach(review => {
         newState[review.id] = review
       })
-      newState.orderedSpotsList = [ ...action.reviews.Reviews.sort((a, b) => b.createdAt - a.createdAt) ]
+      newState.orderedReviewsList = [ ...action.reviews.Reviews.sort((a, b) => b.createdAt - a.createdAt) ]
       return newState
     }
     default:

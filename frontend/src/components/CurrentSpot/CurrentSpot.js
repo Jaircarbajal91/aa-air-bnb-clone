@@ -9,7 +9,7 @@ import CreateBookingForm from '../Bookings/CreateBookingFrom'
 import { getAllBookingsForSpotThunk } from '../../store/bookings'
 import { useHistory } from 'react-router-dom'
 import { getSpotReviewsThunk } from '../../store/reviews'
-import Review from '../Reviews'
+import Reviews from '../Reviews'
 import './CurrentSpot.css'
 
 
@@ -27,6 +27,7 @@ function CurrentSpot() {
   const sessionUser = useSelector(state => state.session.user)
   const spot = useSelector(state => state.spots.selectedSpot?.[spotId])
   const bookings = useSelector(state => state.bookings?.orderedBookingList)
+  const reviews = useSelector(state => state.reviews.orderedReviewsList)
 
   const dispatch = useDispatch()
   useEffect(() => {
@@ -95,7 +96,14 @@ function CurrentSpot() {
           </div>
           <CreateBookingForm spot={spot} bookings={bookings} />
         </div>
-        <Review spot={spot} />
+        <div className='reviews-wrapper'>
+          <div className='reviews-content-container bottom'>
+            <i id="spot-star" className="fa-solid fa-star"></i>
+            <span className='current-spot-rating'>{rating} · </span>
+            <span className='current-spot-rating'>{reviews.length} {reviews.length === 1 ? "Review" : "Reviews"}</span>
+          </div>
+          {reviews.length > 0 && <Reviews spot={spot} reviews={reviews} />}
+        </div>
       </div>
     </div>
   )
