@@ -14,17 +14,19 @@ function Navigation({ isLoaded }) {
 
   return (
     <nav className='main-navbar'>
-      <div className='svg-container' onClick={() => history.push('/')}>
-        <img className='svg-logo' src={logo} />
-        <img style={{
-          marginLeft: '.7em'
-        }} className='svg-logo-name' src={name} />
-      </div>
-      {isLoaded && (
-        <div className='right-profile-container'>
-          <ProfileButton user={sessionUser} isLoaded={isLoaded} />
+      <div className='navbar-content-wrapper'>
+        <div className='svg-container' onClick={() => history.push('/')}>
+          <img className='svg-logo' src={logo} />
+          <img style={{
+            marginLeft: '.7em'
+          }} className='svg-logo-name' src={name} />
         </div>
-      )}
+        {isLoaded && (
+          <div className='right-profile-container'>
+            <ProfileButton user={sessionUser} isLoaded={isLoaded} />
+          </div>
+        )}
+      </div>
     </nav>
   );
 }

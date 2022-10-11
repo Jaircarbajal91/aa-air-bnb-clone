@@ -53,6 +53,9 @@ router.get('/:spotId', async (req, res) => {
       {
         model: Image,
         attributes: ['url']
+      },
+      {
+        model: User
       }
     ],
     where: {

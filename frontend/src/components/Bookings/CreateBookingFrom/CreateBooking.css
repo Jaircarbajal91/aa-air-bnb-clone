@@ -1,6 +1,6 @@
 .form-container {
   margin-top: 1em;
-  min-width: 24em;
+  min-width: 23em;
   min-height: 13em;
   border-radius: .7em;
   margin-bottom: 20px;
@@ -34,10 +34,14 @@
 }
 .booking-errors-container {
   min-height: 2em;
+  position: relative;
+  bottom: .4em;
 }
 
 .booking-errors-container > ul > li {
   color: red;
+  font-size: .8rem;
+  text-align: center;
 }
 
 .booking.submit-button:active {
@@ -131,6 +135,10 @@ input.checkin {
   margin-right: .6em;
 }
 
+.booking-rating-wrapper > span > u {
+  color: #717171;
+}
+
 .no-charge {
   font-size: .9rem;
   font-weight: 200;
@@ -192,4 +200,50 @@ input.checkin {
 
 .adjusted-pricing.last {
   padding-bottom: .8em;
+}
+
+.spot-description-extras > img {
+  max-width: 1.5em;
+}
+
+.spot-description-extras-container {
+  padding: 1.5em 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
+}
+
+.spot.description {
+  padding-bottom: 1.5em;
+  border-bottom: .1px solid rgb(210, 208, 208);
+}
+
+.spot-description-extras {
+  display: flex;
+  align-items: center;
+  gap: 1.5em;
+}
+
+.spot-description-content {
+  display: flex;
+  flex-direction: column;
+  gap: .2em;
+}
+
+
+.spot-description-content-top {
+  font-weight: 600;
+}
+
+.spot-description-content-bottom {
+  color: #717171;
+  font-size: .9rem;
+  font-weight: 300;
+}
+
+.spot-description-extras-wrapper {
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
 }

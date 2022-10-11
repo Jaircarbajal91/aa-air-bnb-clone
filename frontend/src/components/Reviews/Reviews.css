@@ -1,0 +1,7 @@
+.reviews-container {
+  width: 100%;
+  margin-bottom: 6em;
+  margin-top: 1.7em;
+  display: flex;
+  flex-wrap: wrap;
+}

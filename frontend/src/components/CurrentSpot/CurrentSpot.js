@@ -10,6 +10,9 @@ import { getAllBookingsForSpotThunk } from '../../store/bookings'
 import { useHistory } from 'react-router-dom'
 import { getSpotReviewsThunk } from '../../store/reviews'
 import Reviews from '../Reviews'
+import cancellation from '../Navigation/images/cancellation.svg'
+import superhost from '../Navigation/images/superhost.svg'
+import designedBy from '../Navigation/images/designedBy.svg'
 import './CurrentSpot.css'
 
 
@@ -22,12 +25,15 @@ function CurrentSpot() {
   const [hasUdpated, setHasUpdate] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [bookingsExist, setBookingsExist] = useState(false)
-
+  const [showReviewModal, setShowReviewModal] = useState(false)
 
   const sessionUser = useSelector(state => state.session.user)
   const spot = useSelector(state => state.spots.selectedSpot?.[spotId])
   const bookings = useSelector(state => state.bookings?.orderedBookingList)
   const reviews = useSelector(state => state.reviews.orderedReviewsList)
+
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
 
   const dispatch = useDispatch()
   useEffect(() => {
@@ -40,6 +46,10 @@ function CurrentSpot() {
     }
   }, [dispatch, isLoaded])
 
+  useEffect(() => {
+    setFirstName(spot?.Owner.firstName[0].toUpperCase() + spot?.Owner.firstName.substring(1).toLowerCase())
+    setLastName(spot?.Owner.lastName[0].toUpperCase() + spot?.Owner.lastName.substring(1).toLowerCase())
+  }, [spot])
 
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return isLoaded && (
@@ -52,8 +62,10 @@ function CurrentSpot() {
           <div className='current-spot-bottom-container'>
             <div className='spot-left-container'>
               <i id="spot-star" className="fa-solid fa-star"></i>
-              <p className='current-spot-rating'>{rating}</p>
-              <p className='current-spot-location'>{spot.city}, {spot.state} {spot.country}</p>
+              <span className='current-spot-rating'>{rating} · </span>
+              <u className='current-spot-rating'>{reviews.length} {reviews.length === 1 ? "review" : "reviews"}</u>
+              <span className='current-spot-rating'> · Superhost · </span>
+              <span className='current-spot-location'>{spot.city}, {spot.state}, {spot.country}</span>
             </div>
             {spot.Owner.id === sessionUser?.id && (
               <div className='current-spot-buttons'>
@@ -93,14 +105,41 @@ function CurrentSpot() {
             <div className='spot description'>
               <span>{spot.description}</span>
             </div>
+            <div className='spot-description-extras-wrapper'>
+              <div className='spot-description-extras-container'>
+                <div className='spot-description-extras'>
+                  <img src={designedBy} alt="designed-by-icon" />
+                  <div className='spot-description-content'>
+                    <span className='spot-description-content-top'>Designed by</span>
+                    <span className='spot-description-content-bottom'>{firstName} {lastName}</span>
+                  </div>
+                </div>
+                <div className='spot-description-extras'>
+                  <img src={superhost} alt="designed-by-icon" />
+                  <div className='spot-description-content'>
+                    <span className='spot-description-content-top'>{firstName} is a Superhost</span>
+                    <span className='spot-description-content-bottom'>Superhosts are experienced, highly rated hosts who are committed to providing great stays for guests.</span>
+                  </div>
+                </div>
+                <div className='spot-description-extras'>
+                  <img src={cancellation} alt="designed-by-icon" />
+                  <div className='spot-description-content'>
+                    <span className='spot-description-content-top'>Free cancellation for 48 hours.</span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
           <CreateBookingForm spot={spot} bookings={bookings} />
         </div>
         <div className='reviews-wrapper'>
-          <div className='reviews-content-container bottom'>
-            <i id="spot-star" className="fa-solid fa-star"></i>
-            <span className='current-spot-rating'>{rating} · </span>
-            <span className='current-spot-rating'>{reviews.length} {reviews.length === 1 ? "Review" : "Reviews"}</span>
+          <div className='reviews-content-wrapper'>
+            <div className='reviews-content-container bottom'>
+              <i id="spot-star" className="fa-solid fa-star"></i>
+              <span className='current-spot-rating'>{rating} · </span>
+              <span className='current-spot-rating'>{reviews.length} {reviews.length === 1 ? "Review" : "Reviews"}</span>
+            </div>
+            <button onClick={() => setShowReviewModal(true)}>Write a review</button>
           </div>
           {reviews.length > 0 && <Reviews spot={spot} reviews={reviews} />}
         </div>

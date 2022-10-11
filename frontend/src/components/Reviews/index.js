@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { getSpotDetails } from "../../store/spots"
 import Review from "./Review"
-import '../Reviews/Review.css'
+import '../Reviews/Reviews.css'
 
 function Reviews({spot, reviews}) {
   return (

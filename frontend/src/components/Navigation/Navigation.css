@@ -3,8 +3,6 @@ div.svg-container{
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-  position: relative;
-  left: 10.5em;
 }
 
 
@@ -24,10 +22,15 @@ nav.main-navbar {
   background-color: #ffffff;
   top: 0%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   border-bottom: 1px solid rgb(234, 229, 229);
   margin-bottom: 2em;
   height: 4em;
   z-index: 20;
+}
+.navbar-content-wrapper {
+  display: flex;
+  width: 70em;
+  justify-content: space-between;
 }

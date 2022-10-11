@@ -99,7 +99,7 @@ function CreateBookingForm({ spot, bookings }) {
           <span className="price-wrapper"><strong>${price}</strong> night</span>
           <div className="booking-rating-wrapper">
             <i className="fa-solid fa-star"></i>
-            <span> {rating} · <u>{numReviews === 1 ? "review" : "reviews"}</u></span>
+            <span> {rating} · <u>{numReviews} {numReviews === 1 ? "review" : "reviews"}</u></span>
           </div>
         </div>
         <div className="booking-input-wrapper">

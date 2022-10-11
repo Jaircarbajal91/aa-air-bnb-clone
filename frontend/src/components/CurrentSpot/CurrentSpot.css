@@ -66,6 +66,7 @@
 .spot-left-container {
   display: flex;
   align-items: center;
+  margin: .8em 0 2em 0;
 }
 .current-spot-title{
   font-size: 2rem;
@@ -73,18 +74,18 @@
   padding: 0;
   margin-bottom: 0;
 }
-#spot-star{
-  position: relative;
-  right: 15px;
-}
 
-.current-spot-rating{
-  margin-right: 10px;
-  margin-left: -8px;
-  text-decoration: underline;
-}
 .current-spot-location {
   text-decoration: underline;
+}
+
+.current-spot-rating {
+  margin-right: .3em;
+}
+
+.spot-left-container > i#spot-star {
+  margin: 0;
+  margin-right: .5em;
 }
 
 .spot-edit-button {
@@ -156,4 +157,11 @@
 .reviews-content-container.bottom > i {
   padding: 0;
   margin: 0;
+  margin-right: .5em;
+}
+
+.reviews-content-wrapper {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
 }
