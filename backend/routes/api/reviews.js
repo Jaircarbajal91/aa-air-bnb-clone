@@ -97,6 +97,7 @@ router.post('/auth/:spotId', requireAuth, async (req, res) => {
   }
 
   if (!review) err.errors.review = "Review text is required"
+  if (review.length < 10 || review.length > 400) err.errors.review = "Review length should be between 10 and 400 characters"
   if (!stars) err.errors.stars = "Stars must be an integer from 1 to 5"
   if (!review || !stars) {
     return res.status(400).json(err);
@@ -111,7 +112,13 @@ router.post('/auth/:spotId', requireAuth, async (req, res) => {
     userId: req.user.id,
     imageId: imageId || null
   })
-  res.json(newReview)
+  res.json({review:newReview, User: {
+    id: req.user.id,
+    username: req.user.username,
+    firstName: req.user.firstName,
+    lastName: req.user.lastName,
+    email: req.user.email,
+  }})
 })
 
 router.put('/auth/:reviewId', requireAuth, async (req, res) => {

@@ -13,6 +13,7 @@ import Reviews from '../Reviews'
 import cancellation from '../Navigation/images/cancellation.svg'
 import superhost from '../Navigation/images/superhost.svg'
 import designedBy from '../Navigation/images/designedBy.svg'
+import CreatReviewModal from '../CreateReviewModal'
 import './CurrentSpot.css'
 
 
@@ -54,6 +55,7 @@ function CurrentSpot() {
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return isLoaded && (
     <div className='current-spot-container'>
+      {showReviewModal && <CreatReviewModal spot={spot} setShowReviewModal={setShowReviewModal}/>}
       <div className='current-spot-wrapper'>
         <div className='current-spot-content'>
           <div className='current-spot-top-container'>
@@ -139,7 +141,7 @@ function CurrentSpot() {
               <span className='current-spot-rating'>{rating} · </span>
               <span className='current-spot-rating'>{reviews.length} {reviews.length === 1 ? "Review" : "Reviews"}</span>
             </div>
-            <button onClick={() => setShowReviewModal(true)}>Write a review</button>
+            <button className='write-review-button' onClick={() => setShowReviewModal(true)}>Write a review</button>
           </div>
           {reviews.length > 0 && <Reviews spot={spot} reviews={reviews} />}
         </div>

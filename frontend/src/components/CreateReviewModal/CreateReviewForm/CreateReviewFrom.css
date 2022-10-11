@@ -1,0 +1,81 @@
+.create-review-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2em;
+}
+
+.create-review-container>h3 {
+  margin-top: 0;
+  margin-bottom: .4em;
+  font-size: 1.6rem;
+  font-weight: 300;
+}
+
+.create-review-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.review-textarea-input {
+  min-width: 30em;
+  height: 11em;
+  font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  padding: .5em;
+  border-radius: .4em;
+  resize: none;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.review-textarea-input:focus {
+  outline: none;
+}
+
+.stars-wrapper {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 1em;
+}
+
+.stars-wrapper > span {
+  color: rgb(168, 167, 167);
+}
+
+.button.new-review {
+  background: linear-gradient(0.25turn, #E61E4D, #D70666);
+  color: white;
+  border: none;
+  height: 3em;
+  border-radius: .5em;
+  min-width: 16em;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-top: 2em;
+}
+
+
+.button.new-review:active {
+  transform: scale(.97);
+}
+
+span.review-length-overflow {
+  color: red;
+}
+
+.review-errors {
+  color: red;
+  font-size: .9rem;
+  margin-bottom: .2rem;
+  text-align: start;
+}
+
+.review-errors::before {
+  content: "•";
+  margin-right: .3em;
+}
+
+.review-errors-container {
+  margin-bottom: 1rem;
+}
