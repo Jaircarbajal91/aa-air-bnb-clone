@@ -2,9 +2,15 @@
   display: flex;
   flex-direction: column;
   gap: 1em;
+  box-shadow: 0 0 4px rgb(195 195 195);
+  position: relative;
+
+  border-radius: .7em;
+  padding: 1em;
+  box-sizing: border-box;
 }
 .review-container {
-  width: 50%;
+  width: 49%;
   height: 220px;
 }
 
@@ -32,4 +38,19 @@
 .review-date {
   color: #717171;
   font-size: .82rem;
+}
+
+.review-options {
+  display: flex;
+  gap: .7em;
+  position: absolute;
+  bottom: 1em;
+  right: 1em;
+}
+
+.review-options > span {
+  text-decoration: underline;
+  color: rgb(156, 155, 155);
+  cursor: pointer;
+  font-size: .9rem;
 }

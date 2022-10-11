@@ -3,7 +3,7 @@ import { format } from 'date-fns'
 import './Review.css'
 
 
-const Review = ({ review }) => {
+const Review = ({ review, sessionUser, setUpdateShowReviewModal, setReviewToUpdate }) => {
   const { User, createdAt } = review
   const { firstName } = User
   const formattedDate = format(new Date(createdAt), 'MMMM yyy')
@@ -20,6 +20,13 @@ const Review = ({ review }) => {
       <div className='review-content-container'>
         <span>{content}</span>
       </div>
+      {sessionUser && sessionUser.id === User.id && <div className='review-options'>
+        <span onClick={() => {
+          setUpdateShowReviewModal(true)
+          setReviewToUpdate(review)
+        }}>edit</span>
+        <span>delete</span>
+      </div>}
     </div>
   )
 }

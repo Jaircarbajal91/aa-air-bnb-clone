@@ -1,42 +1,41 @@
 import { useState, useEffect } from "react"
 import { useDispatch } from "react-redux"
-import { createReviewThunk } from "../../../store/reviews"
-import Stars from "../../Stars"
-import './CreateReviewFrom.css'
+import { updateReviewThunk } from "../../../../store/reviews"
+import Stars from "../../../Stars"
 
-const CreateReviewForm = ({ spot, setShowReviewModal, setNewReviewPosted }) => {
-  const [starRating, setStarRating] = useState(0)
-  const [review, setReview] = useState('')
+const UpdateReviewForm = ({ spot, setUpdateShowReviewModal, reviewToUpdate, setUpdateReviewPosted }) => {
+  console.log(reviewToUpdate.id)
+  const [starRating, setStarRating] = useState(reviewToUpdate.stars)
+  const [review, setReview] = useState(reviewToUpdate.review)
   const [errors, setErrors] = useState([])
   const [hasSubmitted, setHasSubmitted] = useState(false)
 
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (hasSubmitted) {
-      const newErrors = []
-      if (starRating === 0) newErrors.push("Please select a star rating")
-      if (review < 10 || review < 400) newErrors.push("Review length should be between 10 and 400 characters")
-      setErrors(newErrors)
-    }
+    const newErrors = []
+    if (starRating === 0) newErrors.push("Please select a star rating")
+    if (review.length < 10 || review.length > 400) newErrors.push("Review length should be between 10 and 400 characters")
+    setErrors(newErrors)
   }, [starRating, review, hasSubmitted])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setHasSubmitted(true)
     if (errors.length) return
-    const res = await dispatch(createReviewThunk({ review, stars: starRating }, spot.id))
+    const res = await dispatch(updateReviewThunk({ review, stars: starRating }, reviewToUpdate.id))
     if (res.message) {
+      console.log(res)
       setErrors([res.message])
     } else {
-      setShowReviewModal(false)
-      setNewReviewPosted(true)
-      setNewReviewPosted(false)
+      setUpdateShowReviewModal(false)
+      setUpdateReviewPosted(true)
+      setUpdateReviewPosted(false)
     }
   }
   return (
     <div className="create-review-container">
-      <h3>How was your stay?</h3>
+      <h3>Update your review</h3>
       <div className="review-errors-container">
         {errors.length > 0 && errors.map(error => (
           <div key={error} className="review-errors">{error}</div>
@@ -62,4 +61,4 @@ const CreateReviewForm = ({ spot, setShowReviewModal, setNewReviewPosted }) => {
   )
 }
 
-export default CreateReviewForm
+export default UpdateReviewForm

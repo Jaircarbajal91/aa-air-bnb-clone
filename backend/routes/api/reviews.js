@@ -119,8 +119,8 @@ router.post('/auth/:spotId', requireAuth, async (req, res) => {
 
 router.put('/auth/:reviewId', requireAuth, async (req, res) => {
   const reviewToUpdate = await Review.findByPk(req.params.reviewId);
-  const { review, stars, imageId } = req.body
-
+  const { review, stars } = req.body
+  const imageId = req.body.imageId
   if (!reviewToUpdate) {
     return res.status(404).json({
       "message": "Review couldn't be found",
@@ -135,7 +135,6 @@ router.put('/auth/:reviewId', requireAuth, async (req, res) => {
     })
   }
 
-
   const err = {
     "message": "Validation error",
     "statusCode": 400,
@@ -147,7 +146,7 @@ router.put('/auth/:reviewId', requireAuth, async (req, res) => {
     if (isNaN(imageId)) {
       err.errors.imageId = "Image Id should be a number"
     } else {
-      reviewToUpdate.imageId = imageId
+      reviewToUpdate.imageId = imageId || null
     }
   }
   if (!review || !stars || (imageId && isNaN(imageId))) {

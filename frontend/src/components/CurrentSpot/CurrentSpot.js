@@ -13,7 +13,8 @@ import Reviews from '../Reviews'
 import cancellation from '../Navigation/images/cancellation.svg'
 import superhost from '../Navigation/images/superhost.svg'
 import designedBy from '../Navigation/images/designedBy.svg'
-import CreatReviewModal from '../CreateReviewModal'
+import CreateReviewModal from '../Reviews/CreateReviewModal'
+import UpdateReviewModal from '../Reviews/UpdateReviewModal'
 import './CurrentSpot.css'
 
 
@@ -27,7 +28,10 @@ function CurrentSpot() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [bookingsExist, setBookingsExist] = useState(false)
   const [showReviewModal, setShowReviewModal] = useState(false)
+  const [showUpdateReviewModal, setUpdateShowReviewModal] = useState(false)
   const [newReviewPosted, setNewReviewPosted] = useState(false)
+  const [updateReviewPosted, setUpdateReviewPosted] = useState(false)
+  const [reviewToUpdate, setReviewToUpdate] = useState({review: ''})
   const sessionUser = useSelector(state => state.session.user)
   const spot = useSelector(state => state.spots.selectedSpot?.[spotId])
   const bookings = useSelector(state => state.bookings?.orderedBookingList)
@@ -39,7 +43,7 @@ function CurrentSpot() {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getSpotDetails(spotId)).then(() => dispatch(getSpotReviewsThunk(spotId))).then((res) => setIsLoaded(true))
-  }, [dispatch, newReviewPosted])
+  }, [dispatch, newReviewPosted, updateReviewPosted])
 
   useEffect(() => {
     if (sessionUser) {
@@ -55,7 +59,8 @@ function CurrentSpot() {
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return isLoaded && (
     <div className='current-spot-container'>
-      {showReviewModal && <CreatReviewModal setNewReviewPosted={setNewReviewPosted} spot={spot} setShowReviewModal={setShowReviewModal}/>}
+      {showReviewModal && <CreateReviewModal setNewReviewPosted={setNewReviewPosted} spot={spot} setShowReviewModal={setShowReviewModal}/>}
+      {showUpdateReviewModal && <UpdateReviewModal setUpdateReviewPosted={setUpdateReviewPosted} reviewToUpdate={reviewToUpdate} spot={spot} setUpdateShowReviewModal={setUpdateShowReviewModal}/>}
       <div className='current-spot-wrapper'>
         <div className='current-spot-content'>
           <div className='current-spot-top-container'>
@@ -141,9 +146,9 @@ function CurrentSpot() {
               <span className='current-spot-rating'>{rating} · </span>
               <span className='current-spot-rating'>{reviews.length} {reviews.length === 1 ? "Review" : "Reviews"}</span>
             </div>
-            <button className='write-review-button' onClick={() => setShowReviewModal(true)}>Write a review</button>
+            {sessionUser && <button className='write-review-button' onClick={() => setShowReviewModal(true)}>Write a review</button>}
           </div>
-          {reviews.length > 0 && <Reviews spot={spot} reviews={reviews} />}
+          {reviews.length > 0 && <Reviews setReviewToUpdate={setReviewToUpdate} setUpdateShowReviewModal={setUpdateShowReviewModal} sessionUser={sessionUser} spot={spot} reviews={reviews} />}
         </div>
       </div>
     </div>
