@@ -27,7 +27,7 @@ function CurrentSpot() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [bookingsExist, setBookingsExist] = useState(false)
   const [showReviewModal, setShowReviewModal] = useState(false)
-
+  const [newReviewPosted, setNewReviewPosted] = useState(false)
   const sessionUser = useSelector(state => state.session.user)
   const spot = useSelector(state => state.spots.selectedSpot?.[spotId])
   const bookings = useSelector(state => state.bookings?.orderedBookingList)
@@ -39,7 +39,7 @@ function CurrentSpot() {
   const dispatch = useDispatch()
   useEffect(() => {
     dispatch(getSpotDetails(spotId)).then(() => dispatch(getSpotReviewsThunk(spotId))).then((res) => setIsLoaded(true))
-  }, [dispatch])
+  }, [dispatch, newReviewPosted])
 
   useEffect(() => {
     if (sessionUser) {
@@ -55,7 +55,7 @@ function CurrentSpot() {
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return isLoaded && (
     <div className='current-spot-container'>
-      {showReviewModal && <CreatReviewModal spot={spot} setShowReviewModal={setShowReviewModal}/>}
+      {showReviewModal && <CreatReviewModal setNewReviewPosted={setNewReviewPosted} spot={spot} setShowReviewModal={setShowReviewModal}/>}
       <div className='current-spot-wrapper'>
         <div className='current-spot-content'>
           <div className='current-spot-top-container'>

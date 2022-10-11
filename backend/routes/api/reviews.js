@@ -10,7 +10,7 @@ const user = require('../../db/models/user');
 
 
 router.get('/auth', requireAuth, async (req, res) => {
-  const {id} = req.user;
+  const { id } = req.user;
 
   const reviews = await Review.findAll({
     include: [
@@ -37,7 +37,7 @@ router.get('/auth', requireAuth, async (req, res) => {
     })
 
   }
-  res.json({Reviews: reviews})
+  res.json({ Reviews: reviews })
 })
 
 router.get('/:spotId', async (req, res) => {
@@ -62,11 +62,12 @@ router.get('/:spotId', async (req, res) => {
       spotId: req.params.spotId
     }
   })
-  res.json({Reviews: reviews})
+  res.json({ Reviews: reviews })
 })
 
 router.post('/auth/:spotId', requireAuth, async (req, res) => {
-  const {review, stars, imageId} = req.body;
+  const { review, stars } = req.body;
+  const imageId = req.body.imageId
   const err = {
     "message": "Validation error",
     "statusCode": 400,
@@ -84,11 +85,12 @@ router.post('/auth/:spotId', requireAuth, async (req, res) => {
   const checkReview = await Review.findAll({
     where: {
       [Op.and]: [
-        { spotId: req.params.spotId},
+        { spotId: req.params.spotId },
         { userId: req.user.id }
       ]
     }
   })
+
   if (checkReview.length >= 1) {
     return res.status(403).json({
       "message": "User already has a review for this spot",
@@ -97,14 +99,11 @@ router.post('/auth/:spotId', requireAuth, async (req, res) => {
   }
 
   if (!review) err.errors.review = "Review text is required"
-  if (review.length < 10 || review.length > 400) err.errors.review = "Review length should be between 10 and 400 characters"
+  if (review.length < 10 || review.length > 400) err.errors.reviewLength = "Review length should be between 10 and 400 characters"
   if (!stars) err.errors.stars = "Stars must be an integer from 1 to 5"
   if (!review || !stars) {
     return res.status(400).json(err);
   }
-
-
-
   const newReview = await Review.create({
     review,
     stars,
@@ -112,18 +111,15 @@ router.post('/auth/:spotId', requireAuth, async (req, res) => {
     userId: req.user.id,
     imageId: imageId || null
   })
-  res.json({review:newReview, User: {
-    id: req.user.id,
-    username: req.user.username,
-    firstName: req.user.firstName,
-    lastName: req.user.lastName,
-    email: req.user.email,
-  }})
+
+  res.json({
+    review: newReview
+  })
 })
 
 router.put('/auth/:reviewId', requireAuth, async (req, res) => {
   const reviewToUpdate = await Review.findByPk(req.params.reviewId);
-  const {review, stars, imageId} = req.body
+  const { review, stars, imageId } = req.body
 
   if (!reviewToUpdate) {
     return res.status(404).json({

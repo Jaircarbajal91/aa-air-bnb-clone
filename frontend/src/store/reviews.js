@@ -23,21 +23,24 @@ export const getSpotReviewsThunk = id => async dispatch => {
   return response;
 };
 
-export const createReviewThunk = (review, id) => async dispatch => {
-  const res = await csrfFetch(`/api/reviews/auth/${id}`, {
-    method: 'POST',
-    headers: {
-      'Content-type': 'application/json'
-    },
-    body: JSON.stringify(review)
-  })
-  if (res.ok) {
-    const newReview = await res.json()
-    dispatch(createReviewAction(newReview))
-    return newReview
+export const createReviewThunk = ({review, stars}, id) => async dispatch => {
+  try {
+    const res = await csrfFetch(`/api/reviews/auth/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({review, stars})
+    })
+    if (res.ok) {
+      const newReview = await res.json()
+      dispatch(createReviewAction(newReview))
+      return newReview
+    }
+  } catch (err) {
+    const data = await err.json()
+    return data
   }
-  const data = await res.json()
-  return data
 }
 
 
@@ -53,9 +56,9 @@ const reviewsReducer = (state = {}, action) => {
     }
     case CREATE_SPOT_REVIEW: {
       const newState = { ...state }
-      console.log(action.review)
-      newState[action.review.review.id] = action.review
-      newState.orderedReviewsList.push(action.review.review)
+      // console.log(action.review)
+      // newState[action.review.review.id] = action.review
+      // newState.orderedReviewsList.push(action.review.review)
       return newState
     }
     default:

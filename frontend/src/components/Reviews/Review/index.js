@@ -7,7 +7,6 @@ const Review = ({ review }) => {
   const { User, createdAt } = review
   const { firstName } = User
   const formattedDate = format(new Date(createdAt), 'MMMM yyy')
-
   const content = review.review
   return (
     <div className='review-container'>

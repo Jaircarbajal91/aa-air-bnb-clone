@@ -4,7 +4,7 @@ import { createReviewThunk } from "../../../store/reviews"
 import Stars from "../../Stars"
 import './CreateReviewFrom.css'
 
-const CreateReviewForm = ({spot, setShowReviewModal}) => {
+const CreateReviewForm = ({ spot, setShowReviewModal, setNewReviewPosted }) => {
   const [starRating, setStarRating] = useState(0)
   const [review, setReview] = useState('')
   const [errors, setErrors] = useState([])
@@ -16,7 +16,7 @@ const CreateReviewForm = ({spot, setShowReviewModal}) => {
     if (hasSubmitted) {
       const newErrors = []
       if (starRating === 0) newErrors.push("Please select a star rating")
-      if (review < 10 || review < 400 ) newErrors.push("Review length should be between 10 and 400 characters")
+      if (review < 10 || review < 400) newErrors.push("Review length should be between 10 and 400 characters")
       setErrors(newErrors)
     }
   }, [starRating, review, hasSubmitted])
@@ -25,9 +25,14 @@ const CreateReviewForm = ({spot, setShowReviewModal}) => {
     e.preventDefault()
     setHasSubmitted(true)
     if (errors.length) return
-    const res = await dispatch(createReviewThunk({review, stars: starRating}, spot.id))
-    console.log(res)
-    setShowReviewModal(false)
+    const res = await dispatch(createReviewThunk({ review, stars: starRating }, spot.id))
+    if (res.message) {
+      setErrors([res.message])
+    } else {
+      setShowReviewModal(false)
+      setNewReviewPosted(true)
+      setNewReviewPosted(false)
+    }
   }
   return (
     <div className="create-review-container">
