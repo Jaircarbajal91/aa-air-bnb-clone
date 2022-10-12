@@ -1,0 +1,37 @@
+.delete-review-container {
+  padding: 1.5em;
+}
+
+.delete-review-container > h3 {
+  font-size: 1.5rem;
+  font-weight: 300;
+}
+
+.delete.button.container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 3em;
+}
+
+.delete.button.container > button {
+  background: linear-gradient(0.25turn, #E61E4D, #D70666);
+  color: white;
+  border: none;
+  height: 2.6em;
+  border-radius: .5em;
+  min-width: 10em;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  margin-top: 2em;
+  font-size: 1rem;
+  margin-top: .5em;
+}
+
+#no-button {
+  background: linear-gradient(0.25turn, #8b949e, #555a60);
+}
+
+.delete.button.container > button:active {
+  transform: scale(.97);
+}

@@ -30,7 +30,7 @@ function CurrentSpot() {
   const [bookingsExist, setBookingsExist] = useState(false)
   const [showReviewModal, setShowReviewModal] = useState(false)
   const [showUpdateReviewModal, setUpdateShowReviewModal] = useState(false)
-  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showDeleteModal, setShowDeleteModal] = useState(true)
   const [newReviewPosted, setNewReviewPosted] = useState(false)
   const [updateReviewPosted, setUpdateReviewPosted] = useState(false)
   const [deletedReviewPosted, setDeletedReviewPosted] = useState(false)
