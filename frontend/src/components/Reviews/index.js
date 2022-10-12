@@ -4,11 +4,11 @@ import { getSpotDetails } from "../../store/spots"
 import Review from "./Review"
 import '../Reviews/Reviews.css'
 
-function Reviews({sessionUser, spot, reviews, setUpdateShowReviewModal, setReviewToUpdate}) {
+function Reviews({sessionUser, spot, reviews, setUpdateShowReviewModal, setReviewToUpdate, setShowDeleteModal}) {
   return (
     <div className="reviews-container">
       {reviews.map(review => (
-        <Review key={review.id} setReviewToUpdate={setReviewToUpdate} setUpdateShowReviewModal={setUpdateShowReviewModal} sessionUser={sessionUser} review={review}/>
+        <Review key={review.id} setShowDeleteModal={setShowDeleteModal} setReviewToUpdate={setReviewToUpdate} setUpdateShowReviewModal={setUpdateShowReviewModal} sessionUser={sessionUser} review={review}/>
       ))}
     </div>
   )

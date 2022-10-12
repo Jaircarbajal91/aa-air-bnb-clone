@@ -4,7 +4,6 @@ import { updateReviewThunk } from "../../../../store/reviews"
 import Stars from "../../../Stars"
 
 const UpdateReviewForm = ({ spot, setUpdateShowReviewModal, reviewToUpdate, setUpdateReviewPosted }) => {
-  console.log(reviewToUpdate.id)
   const [starRating, setStarRating] = useState(reviewToUpdate.stars)
   const [review, setReview] = useState(reviewToUpdate.review)
   const [errors, setErrors] = useState([])
@@ -25,7 +24,6 @@ const UpdateReviewForm = ({ spot, setUpdateShowReviewModal, reviewToUpdate, setU
     if (errors.length) return
     const res = await dispatch(updateReviewThunk({ review, stars: starRating }, reviewToUpdate.id))
     if (res.message) {
-      console.log(res)
       setErrors([res.message])
     } else {
       setUpdateShowReviewModal(false)

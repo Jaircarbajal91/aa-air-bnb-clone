@@ -66,7 +66,7 @@ export const updateReviewThunk = ({ review, stars }, id) => async dispatch => {
     })
     if (res.ok) {
       const udpatedReview = await res.json()
-      dispatch(createReviewAction(udpatedReview))
+      dispatch(updateReviewAction(udpatedReview))
       return udpatedReview
     }
   } catch (err) {

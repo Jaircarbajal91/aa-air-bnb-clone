@@ -23,11 +23,14 @@ const CreateReviewForm = ({ spot, setShowReviewModal, setNewReviewPosted }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    setHasSubmitted(true)
     if (errors.length) return
     const res = await dispatch(createReviewThunk({ review, stars: starRating }, spot.id))
-    if (res.message) {
-      setErrors([res.message])
+    if (res.statusCode >= 400) {
+      if (res.message === 'User already has a review for this spot') {
+        setErrors(['User already has a review for this spot'])
+      } else {
+        setHasSubmitted(true)
+      }
     } else {
       setShowReviewModal(false)
       setNewReviewPosted(true)
