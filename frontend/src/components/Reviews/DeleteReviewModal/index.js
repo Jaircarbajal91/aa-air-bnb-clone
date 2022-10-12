@@ -14,7 +14,7 @@ const DeleteReviewModal = ({ setShowDeleteModal, reviewToUpdate, setDeletedRevie
   }
 
   return (
-    <Modal onClose={() => setShowDeleteModal(true)}>
+    <Modal onClose={() => setShowDeleteModal(false)}>
       <div className="delete-review-container">
         <h3>Are you sure you would like to delete this review?</h3>
         <div className="delete button container">
