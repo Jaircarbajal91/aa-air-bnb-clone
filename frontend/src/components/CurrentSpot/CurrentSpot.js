@@ -148,7 +148,7 @@ function CurrentSpot() {
             <div className='reviews-content-container bottom'>
               <i id="spot-star" className="fa-solid fa-star"></i>
               <span className='current-spot-rating'>{rating} · </span>
-              <span className='current-spot-rating'>{reviews.length} {reviews.length === 1 ? "Review" : "Reviews"}</span>
+              <span className='current-spot-rating'>{reviews.length} {reviews.length === 1 ? "review" : "reviews"}</span>
             </div>
             {sessionUser && <button className='write-review-button' onClick={() => setShowReviewModal(true)}>Write a review</button>}
           </div>

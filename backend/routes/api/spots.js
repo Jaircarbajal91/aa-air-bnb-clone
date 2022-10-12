@@ -6,7 +6,7 @@ const { Op, EmptyResultError } = require("sequelize");
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const user = require('../../db/models/user');
-
+const { multiplePublicFileUpload, singlePublicFileUpload, singleMulterUpload, multipleMulterUpload } = require('../../awsS3')
 
 router.get('/auth', requireAuth, async (req, res) => {
   const { id } = req.user
@@ -29,8 +29,7 @@ router.get('/:spotId', async (req, res) => {
   const images = await Image.findAll({
     where: {
       spotId: req.params.spotId
-    },
-    attributes: ['url']
+    }
   })
   const reviews = await Review.findAll({
     where: {
@@ -163,13 +162,16 @@ router.get('/', async (req, res) => {
     include: [
       {
         model: Review
+      },
+      {
+        model: Image
       }
     ],
     limit: pagination.size || 100,
     offset: pagination.size * pagination.page
   })
 
-  spots.forEach((spot, i) => {
+  spots.forEach(async (spot, i) => {
     let result = {}
     spot = spot.toJSON()
     let sum = 0;
@@ -201,9 +203,10 @@ router.get('/', async (req, res) => {
   })
 })
 
-router.post('/auth', requireAuth, async (req, res, next) => {
-  const { address, city, state, country, lat, lng, name, description, price, previewImage } = req.body;
-
+router.post('/auth', multipleMulterUpload("images"), requireAuth, async (req, res, next) => {
+  const { address, city, state, country, lat, lng, name, description, price } = req.body;
+  const spotImages = await multiplePublicFileUpload(req.files);
+  const previewImage = spotImages.shift()
   const error = {
     "message": "Validation Error",
     "statusCode": 400,
@@ -222,9 +225,8 @@ router.post('/auth', requireAuth, async (req, res, next) => {
   if (name?.length > 50) error.errors.name = "Name must be less than 50 characters"
   if (!description) error.errors.description = "Description is required"
   if (!price) error.errors.price = "Price per day is required"
-  if (!previewImage) error.errors.previewImage = "Preview Image is required"
 
-  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || (Number(lng) > 180 || Number(lng) < -180)) {
+  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || (Number(lng) > 180 || Number(lng) < -180)) {
     res.statusCode = 400;
     return res.json(error);
   }
@@ -242,7 +244,7 @@ router.post('/auth', requireAuth, async (req, res, next) => {
     next(err)
   }
 
-  const spot = await Spot.create({
+  let spot = await Spot.create({
     ownerId: req.user.id,
     address,
     city,
@@ -256,6 +258,22 @@ router.post('/auth', requireAuth, async (req, res, next) => {
     previewImage
   });
 
+  spot = spot.toJSON()
+  for (let i = 0; i < spotImages.length; i++) {
+    await Image.create({
+      url: spotImages[i],
+      spotId: spot.id,
+      imageableType: "Spot",
+      imageableId: i
+    })
+  }
+  let allSpotImagesArr = await Image.findAll({
+    where: {
+      spotId: spot.id
+    }
+  })
+  console.log(allSpotImagesArr)
+  spot.Images = allSpotImagesArr
   res.status(201).json(spot);
 })
 

@@ -16,6 +16,7 @@ const app = express();
 app.use(morgan('dev'));
 // middleware for parsing cookies
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 /** Only allow CORS in development using the cors middleware because the React frontend will be served from a different server than the Express server. CORS isn't needed in production since all of our React and Express resources will come from the same origin. */

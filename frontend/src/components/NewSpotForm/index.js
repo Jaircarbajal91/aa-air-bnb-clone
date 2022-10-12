@@ -16,8 +16,8 @@ function NewSpotForm() {
   const [lng, setLng] = useState("")
   const [price, setPrice] = useState("")
   const [description, setDescription] = useState("")
-  const [previewImage, setPreviewImage] = useState("")
   const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [images, setImages] = useState([]);
   const [errors, setErrors] = useState([])
   const history = useHistory()
   const dispatch = useDispatch()
@@ -62,15 +62,20 @@ function NewSpotForm() {
       country,
       lat,
       lng,
-      previewImage,
       price,
-      description
+      description,
+      images
     }
 
     const response = await dispatch(createNewSpot(newSpot))
     history.push('/')
     // setErrors(newErrors.errors)
   }
+
+  const updateFiles = (e) => {
+    const files = e.target.files;
+    setImages(files);
+  };
 
   return (
     <div className="host-page-container">
@@ -180,24 +185,21 @@ function NewSpotForm() {
               onChange={(e) => setPrice(e.target.value)}
               required
             />
-            <input
-              type="url"
-              name="preview-image"
-              className="form-input none create"
-              placeholder="Image URL"
-              value={previewImage}
-              onChange={(e) => setPreviewImage(e.target.value)}
-              required
-            />
             <textarea
               type="text"
               placeholder="Description"
-              className="form-input last desc create"
+              className="form-input none create"
               maxLength='50'
               minLength='5'
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
+            />
+            <input
+              type="file"
+              className="form-input last desc create"
+              multiple
+              onChange={updateFiles}
             />
           </div>
           <button className="create submit-button" type="submit">Create Spot</button>
