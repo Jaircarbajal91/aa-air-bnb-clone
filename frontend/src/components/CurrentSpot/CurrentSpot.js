@@ -24,7 +24,7 @@ function CurrentSpot() {
   const history = useHistory()
   const [showModal, setShowModal] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
-  const [showUpdate, setShowUpdate] = useState(false);
+  const [showUpdate, setShowUpdate] = useState(true);
   const [hasUdpated, setHasUpdate] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [bookingsExist, setBookingsExist] = useState(false)
@@ -34,6 +34,7 @@ function CurrentSpot() {
   const [newReviewPosted, setNewReviewPosted] = useState(false)
   const [updateReviewPosted, setUpdateReviewPosted] = useState(false)
   const [deletedReviewPosted, setDeletedReviewPosted] = useState(false)
+  const [spotImages, setSpotImages] = useState([])
   const [reviewToUpdate, setReviewToUpdate] = useState({review: ''})
   const sessionUser = useSelector(state => state.session.user)
   const spot = useSelector(state => state.spots.selectedSpot?.[spotId])
@@ -42,6 +43,7 @@ function CurrentSpot() {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
 
+  const classNameSetter = [1,2,3,4]
 
   const dispatch = useDispatch()
   useEffect(() => {
@@ -57,6 +59,7 @@ function CurrentSpot() {
   useEffect(() => {
     setFirstName(spot?.Owner.firstName[0].toUpperCase() + spot?.Owner.firstName.substring(1).toLowerCase())
     setLastName(spot?.Owner.lastName[0].toUpperCase() + spot?.Owner.lastName.substring(1).toLowerCase())
+    setSpotImages(spot?.Images)
   }, [spot])
 
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
@@ -88,7 +91,7 @@ function CurrentSpot() {
                   onClick={() => setShowDelete(true)}>Delete Spot</button>
                 {showUpdate && (
                   <Modal onClose={() => setShowUpdate(false)}>
-                    <UpdateSpotForm spotId={spotId} setShowUpdate={setShowUpdate} />
+                    <UpdateSpotForm spot={spot} spotId={spotId} setShowUpdate={setShowUpdate} />
                   </Modal>
                 )}
                 {showDelete && (
@@ -104,10 +107,21 @@ function CurrentSpot() {
         {spot && (
           <div className='current-spot-img-container'>
             <img className='preview-image main' src={`${spot.previewImage}`} />
-            <img className='preview-image top left' src={`${spot.previewImage}`} />
+            {classNameSetter.map((num, i) => {
+              let setClassName = ''
+              let counter = 0
+              if (i === 0) setClassName = 'preview-image top left'
+              if (i === 1) setClassName = 'preview-image top right'
+              if (i === 2) setClassName = 'preview-image bottom left'
+              if (i === 3) setClassName = 'preview-image bottom right'
+              return (
+                <img key={i} className={setClassName} src={spotImages[i] ? spotImages[i].url : spot.previewImage}/>
+              )
+            })}
+            {/* <img className='preview-image top left' src={`${spot.previewImage}`} />
             <img className='preview-image top right' src={`${spot.previewImage}`} />
             <img className='preview-image bottom left' src={`${spot.previewImage}`} />
-            <img className='preview-image bottom right' src={`${spot.previewImage}`} />
+            <img className='preview-image bottom right' src={`${spot.previewImage}`} /> */}
           </div>
         )}
         <div className='booking-container'>

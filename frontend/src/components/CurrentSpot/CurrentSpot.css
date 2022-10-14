@@ -15,6 +15,8 @@
 .current-spot-img-container {
   border-radius: 5em;
   display: grid;
+  grid-template-columns: auto auto 272px 272px;
+  grid-template-rows: auto;
   grid-template-areas:
             "main main upper-left upper-right"
             "main main bottom-left bottom-right";
@@ -28,7 +30,6 @@
   border-radius: .7em 0px 0px .7em;
   grid-area: main;
   height: 100%;
-  width: 100%;
 }
 
 .preview-image {

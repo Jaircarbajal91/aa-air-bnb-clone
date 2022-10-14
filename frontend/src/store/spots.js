@@ -141,13 +141,6 @@ const spotsReducer = (state = {}, action) => {
       let newState = { ...state }
       newState.selectedSpot = {}
       newState.selectedSpot[action.spot.id] = action.spot
-      const images = action.spot.Images
-      newState.selectedSpot[action.spot.id].images = {}
-      images.forEach((image, i) => {
-        newState.selectedSpot[action.spot.id].images[i + 1] = image.url
-      })
-      newState.orderedSpotsList = [action.spot]
-      delete newState.selectedSpot[action.spot.id].Images
       return newState
     }
     case DELETE_SPOT: {

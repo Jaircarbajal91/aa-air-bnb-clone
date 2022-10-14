@@ -16,7 +16,7 @@ import './ProfileButton.css'
 
 function ProfileButton({ user, isLoaded }) {
   const dispatch = useDispatch();
-  const history = useHistory()
+  const history = useHistory();
   const [showMenu, setShowMenu] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
@@ -24,7 +24,6 @@ function ProfileButton({ user, isLoaded }) {
     if (showMenu) return;
     setShowMenu(true);
   };
-
 
   const handleDemo = () => {
     const user = { credential: 'demo@user.io', password: 'password' }
@@ -68,32 +67,32 @@ function ProfileButton({ user, isLoaded }) {
     <>
       {showLoginModal && (<LoginFormModal showLoginModal={showLoginModal} setShowLoginModal={setShowLoginModal} />)}
       {showSignUpModal && (<SignUpFormModal showSignUpModal={showSignUpModal} setShowSignUpModal={setShowSignUpModal} />)}
-        <div className='host-hover-border'>
-          <NavLink className='become-host-link' to="/spots/create">Become a Host</NavLink>
-        </div>
+      <div className='host-hover-border'>
+        <NavLink className='become-host-link' to="/spots/create">Become a Host</NavLink>
+      </div>
       <div className="profile-button-border"
         onClick={openMenu}>
         <img className="hamburger-icon" src={hamburger} />
         <img className="profile-icon" src={icon} />
+        {showMenu && (
+          <div className="profile-dropdown">
+            {isLoaded && sessionUser && (
+              <ul className="profile-list">
+                <li className="profile-list-item user-name-li">{user.username}</li>
+                <NavLink className="menu-my-bookings hover-link" activeClassName="active" to="/bookings">My Bookings</NavLink>
+                <li className="profile-list-item hover-link" onClick={logout}>Log Out</li>
+              </ul>
+            )}
+            {isLoaded && !sessionUser && (
+              <ul className="profile-list">
+                <NavLink className='profile-list-item hover-link' onClick={() => setShowLoginModal(true)} to=''>Login</NavLink>
+                <NavLink className='profile-list-item hover-link' onClick={() => handleDemo()} to=''>Demo Login</NavLink>
+                <NavLink onClick={() => setShowSignUpModal(true)} className='profile-list-item hover-link' to="">Sign Up</NavLink>
+              </ul>
+            )}
+          </div>
+        )}
       </div>
-      {showMenu && (
-        <div className="profile-dropdown">
-          {isLoaded && sessionUser && (
-            <ul className="profile-list">
-              <li className="profile-list-item user-name-li">{user.username}</li>
-              <NavLink className="menu-my-bookings hover-link" activeClassName="active" to="/bookings">My Bookings</NavLink>
-              <li className="profile-list-item hover-link" onClick={logout}>Log Out</li>
-            </ul>
-          )}
-          {isLoaded && !sessionUser && (
-            <ul className="profile-list">
-              <NavLink className='profile-list-item hover-link' onClick={() => setShowLoginModal(true)} to=''>Login</NavLink>
-              <NavLink className='profile-list-item hover-link' onClick={() => handleDemo()} to=''>Demo Login</NavLink>
-              <NavLink onClick={() => setShowSignUpModal(true)} className='profile-list-item hover-link' to="">Sign Up</NavLink>
-            </ul>
-          )}
-        </div>
-      )}
     </>
   );
 }

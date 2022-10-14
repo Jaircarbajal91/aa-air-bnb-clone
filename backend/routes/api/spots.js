@@ -6,7 +6,7 @@ const { Op, EmptyResultError } = require("sequelize");
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const user = require('../../db/models/user');
-const { multiplePublicFileUpload, singlePublicFileUpload, singleMulterUpload, multipleMulterUpload } = require('../../awsS3')
+const { multiplePublicFileUpload, singlePublicFileUpload, singleMulterUpload, multipleMulterUpload, s3 } = require('../../awsS3')
 
 router.get('/auth', requireAuth, async (req, res) => {
   const { id } = req.user
@@ -225,9 +225,11 @@ router.post('/auth', multipleMulterUpload("images"), requireAuth, async (req, re
   if (name?.length > 50) error.errors.name = "Name must be less than 50 characters"
   if (!description) error.errors.description = "Description is required"
   if (!price) error.errors.price = "Price per day is required"
+  if (!previewImage) error.errors.previewImage = 'Preview image is required'
 
-  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || (Number(lng) > 180 || Number(lng) < -180)) {
+  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || (Number(lng) > 180 || Number(lng) < -180) || !previewImage) {
     res.statusCode = 400;
+    console.log(error.errors)
     return res.json(error);
   }
 
@@ -272,16 +274,47 @@ router.post('/auth', multipleMulterUpload("images"), requireAuth, async (req, re
       spotId: spot.id
     }
   })
-  console.log(allSpotImagesArr)
   spot.Images = allSpotImagesArr
   res.status(201).json(spot);
 })
 
-router.put('/auth/:spotId', requireAuth, async (req, res) => {
+router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (req, res) => {
   const { spotId } = req.params;
-  const { address, city, state, country, lat, lng, name, description, price, previewImage } = req.body;
+  const { address, city, state, country, lat, lng, name, description, price } = req.body;
   const spot = await Spot.findByPk(spotId);
 
+  const Images = await Image.findAll({
+    where: {
+      spotId
+    }
+  })
+  for (let image of Images) {
+    const jsonImage = image.toJSON()
+    const splitUrl = jsonImage.url.split('/')
+    const key = splitUrl[splitUrl.length - 1]
+    const params = {
+      Bucket: 'jair-bnb',
+      Key: key
+    };
+    s3.deleteObject(params, function(err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else     console.log(data);           // successful response
+    });
+    await image.destroy()
+  }
+  let splitUrl = spot.previewImage.split('/')
+  const key = splitUrl[splitUrl.length - 1]
+  const params = {
+    Bucket: 'jair-bnb',
+    Key: key
+  };
+  s3.deleteObject(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+  });
+
+  const spotImages = await multiplePublicFileUpload(req.files);
+  const previewImage = spotImages.shift()
   if (!spot) {
     return res.status(404).json({
       "message": "Spot couldn't be found",
@@ -332,6 +365,22 @@ router.put('/auth/:spotId', requireAuth, async (req, res) => {
   spot.previewImage = previewImage
   spot.country = country
 
+  spot = spot.toJSON()
+  for (let i = 0; i < spotImages.length; i++) {
+    await Image.create({
+      url: spotImages[i],
+      spotId,
+      imageableType: "Spot",
+      imageableId: i
+    })
+  }
+  let allSpotImagesArr = await Image.findAll({
+    where: {
+      spotId
+    }
+  })
+  spot.Images = allSpotImagesArr
+
   await spot.save()
   res.status(200).json(spot);
 })
@@ -351,6 +400,38 @@ router.delete('/auth/:spotId', requireAuth, async (req, res) => {
       "statusCode": 403
     })
   }
+  const Images = await Image.findAll({
+    where: {
+      spotId: req.params.spotId
+    }
+  })
+
+  for (let image of Images) {
+    const jsonImage = image.toJSON()
+    const splitUrl = jsonImage.url.split('/')
+    const key = splitUrl[splitUrl.length - 1]
+    const params = {
+      Bucket: 'jair-bnb',
+      Key: key
+    };
+    s3.deleteObject(params, function(err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else     console.log(data);           // successful response
+    });
+
+  }
+
+  let splitUrl = spot.previewImage.split('/')
+  const key = splitUrl[splitUrl.length - 1]
+  const params = {
+    Bucket: 'jair-bnb',
+    Key: key
+  };
+  s3.deleteObject(params, function(err, data) {
+    if (err) console.log(err, err.stack); // an error occurred
+    else     console.log(data);           // successful response
+  });
+
   await spot.destroy()
   res.status(200).json({
     "message": "Successfully deleted",

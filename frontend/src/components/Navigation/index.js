@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, Link, useHistory } from 'react-router-dom';
+import { NavLink, Link, useHistory, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import ProfileButton from './ProfileButton';
 import LoginFormModal from '../LoginFormModal';
@@ -11,10 +11,11 @@ import name from './images/jairbnb.svg'
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector(state => state.session.user);
   const history = useHistory()
+  const location = useLocation()
 
   return (
     <nav className='main-navbar'>
-      <div className='navbar-content-wrapper'>
+      <div className={location.pathname === '/' ? 'navbar-content-home' : 'navbar-content-wrapper'}>
         <div className='svg-container' onClick={() => history.push('/')}>
           <img className='svg-logo' src={logo} />
           <img style={{

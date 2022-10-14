@@ -2,8 +2,9 @@ form.update-spot-form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 35em;
+  min-height: fit-content;
   padding: 1.8em;
+  width: 25em;
   max-width: 33em;
 }
 
@@ -19,7 +20,7 @@ form.update-spot-form {
   height: 2.6em;
   border-radius: .5em;
   margin-top: 2em;
-  min-width: 39.4em;
+  min-width: 100%;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
 }
@@ -28,15 +29,21 @@ form.update-spot-form {
   transform: scale(.97);
 }
 
-.form-input.last.desc {
-  resize: none;
-  min-height: 5rem;
-}
-.form-input.last.desc::placeholder {
-  line-height: 4rem;
-}
 
 .form-input.last.desc:focus {
   outline: none !important;
   box-shadow: 0 0 5px #719ECE;
 }
+textarea.form-input.last.desc.update {
+  resize: none;
+  min-height: 6rem;
+  font-family: Circular, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", sans-serif;
+  padding: 1em;
+}
+
+span.add-images.update {
+  font-size: .9rem;
+  display: inline-block;
+  margin: 1em 0 .5em 0;
+}
+
