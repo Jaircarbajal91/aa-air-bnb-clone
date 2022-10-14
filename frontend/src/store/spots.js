@@ -96,12 +96,30 @@ export const createNewSpot = spot => async dispatch => {
 }
 
 export const updateSpot = spot => async dispatch => {
+  const { address, city, state, country, lat, lng, name, description, price, images } = spot;
+  const formData = new FormData();
+  formData.append("address", address);
+  formData.append("city", city);
+  formData.append("state", state);
+  formData.append("country", country);
+  formData.append("lat", lat);
+  formData.append("lng", lng);
+  formData.append("name", name);
+  formData.append("description", description);
+  formData.append("price", price);
+
+  if (images && images.length !== 0) {
+    for (var i = 0; i < images.length; i++) {
+      formData.append("images", images[i]);
+    }
+  }
+
   const response = await csrfFetch(`/api/spots/auth/${spot.id}`, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "multipart/form-data",
     },
-    body: JSON.stringify(spot)
+    body: formData,
   })
   if (response.ok) {
     const spot = await response.json()

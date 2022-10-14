@@ -21,7 +21,7 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
   const [errors, setErrors] = useState([])
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const [images, setImages] = useState([]);
-  const [previewImages, setPreviewImages] = useState(spot.Images.map(image => image.url))
+  const [previewImages, setPreviewImages] = useState([spot.previewImage, ...spot.Images.map(image => image.url)])
   const history = useHistory()
   const dispatch = useDispatch()
   useEffect(() => {
@@ -29,7 +29,6 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
     if (name.length > 50) newErrors.push("Name must be less than 50 characters")
     // if (Number(lat) > 90 || Number(lat) < -90) newErrors.push("Latitude is not valid")
     // if (Number(lng) > 180 || Number(lng) < -180) newErrors.push("Longitude is not valid")
-
     setErrors(newErrors)
 
   }, [name, lat, lng])
@@ -53,9 +52,9 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
       country,
       lat: 1,
       lng: 1,
-      previewImage,
       price,
-      description
+      description,
+      images
     }
 
     const response = await dispatch(updateSpot(updatedSpot))
@@ -242,8 +241,8 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
       <div className="preview-images-container update">
         {previewImages.length > 0 && previewImages.map((image, i) => (
           <div key={i} className="current-preview-image">
-            <img className="preview image" src={image} />
-            <img onClick={(e) => removePreviewImage(image, i)} className='remove-preivew-img icon' src={exit} alt="" />
+            <img className="preview image update" src={image} />
+            <img onClick={(e) => removePreviewImage(image, i)} className='remove-preivew-img icon update' src={exit} alt="" />
           </div>
         ))}
       </div>
