@@ -280,41 +280,46 @@ router.post('/auth', multipleMulterUpload("images"), requireAuth, async (req, re
 
 router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (req, res) => {
   const { spotId } = req.params;
-  const { address, city, state, country, lat, lng, name, description, price } = req.body;
-  const spot = await Spot.findByPk(spotId);
+  const { address, city, state, country, lat, lng, name, description, price, imagesToDelete } = req.body;
+  let spot = await Spot.findByPk(spotId);
 
-  const Images = await Image.findAll({
-    where: {
-      spotId
+  let previewImageDeleted = false;
+  if (imagesToDelete) {
+    for (let image of imagesToDelete) {
+      const imageToDelete = await Image.findOne({
+        where: {
+          url: image
+        }
+      })
+      if (imageToDelete) {
+        await imageToDelete.destroy()
+      }
+      const splitUrl = image.split('/')
+      const key = splitUrl[splitUrl.length - 1]
+      console.log(key)
+      const params = {
+        Bucket: 'jair-bnb',
+        Key: key
+      };
+      s3.deleteObject(params, function (err, data) {
+        if (err) console.log(err, err.stack); // an error occurred
+        else console.log(data);           // successful response
+      });
+      if (image === spot.previewImage) {
+        previewImageDeleted = true
+      }
     }
-  })
-  for (let image of Images) {
-    const jsonImage = image.toJSON()
-    const splitUrl = jsonImage.url.split('/')
-    const key = splitUrl[splitUrl.length - 1]
-    const params = {
-      Bucket: 'jair-bnb',
-      Key: key
-    };
-    s3.deleteObject(params, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else     console.log(data);           // successful response
-    });
-    await image.destroy()
   }
-  let splitUrl = spot.previewImage.split('/')
-  const key = splitUrl[splitUrl.length - 1]
-  const params = {
-    Bucket: 'jair-bnb',
-    Key: key
-  };
-  s3.deleteObject(params, function(err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
-  });
+
 
   const spotImages = await multiplePublicFileUpload(req.files);
-  const previewImage = spotImages.shift()
+  let newPreviewImage;
+  let previewImage = spot.previewImage
+  if (previewImageDeleted) {
+    console.log('Im here because preivew image was deleted and updated')
+    newPreviewImage = spotImages.shift()
+  }
+
   if (!spot) {
     return res.status(404).json({
       "message": "Spot couldn't be found",
@@ -353,7 +358,6 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
     return res.json(error);
   }
 
-
   spot.address = address
   spot.city = city
   spot.state = state
@@ -364,8 +368,9 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
   spot.price = price
   spot.previewImage = previewImage
   spot.country = country
+  previewImageDeleted ? spot.previewImage = newPreviewImage : spot.previewImage = previewImage
 
-  spot = spot.toJSON()
+
   for (let i = 0; i < spotImages.length; i++) {
     await Image.create({
       url: spotImages[i],
@@ -379,7 +384,6 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
       spotId
     }
   })
-  spot.Images = allSpotImagesArr
 
   await spot.save()
   res.status(200).json(spot);
@@ -414,9 +418,9 @@ router.delete('/auth/:spotId', requireAuth, async (req, res) => {
       Bucket: 'jair-bnb',
       Key: key
     };
-    s3.deleteObject(params, function(err, data) {
+    s3.deleteObject(params, function (err, data) {
       if (err) console.log(err, err.stack); // an error occurred
-      else     console.log(data);           // successful response
+      else console.log(data);           // successful response
     });
 
   }
@@ -427,9 +431,9 @@ router.delete('/auth/:spotId', requireAuth, async (req, res) => {
     Bucket: 'jair-bnb',
     Key: key
   };
-  s3.deleteObject(params, function(err, data) {
+  s3.deleteObject(params, function (err, data) {
     if (err) console.log(err, err.stack); // an error occurred
-    else     console.log(data);           // successful response
+    else console.log(data);           // successful response
   });
 
   await spot.destroy()

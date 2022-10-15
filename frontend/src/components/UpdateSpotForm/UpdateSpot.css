@@ -61,3 +61,10 @@ span.add-images.update {
   height: 5em;
   max-height: 5em;
 }
+
+.submit-button.update:disabled {
+  border: 1px solid #999999;
+  background: linear-gradient(0.25turn, #7b7b7b, #4c4b4b);
+  color: rgb(218, 217, 217);
+  cursor: not-allowed;
+}

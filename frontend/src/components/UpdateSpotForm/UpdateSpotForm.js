@@ -8,30 +8,36 @@ import './UpdateSpot.css'
 function UpdateSpotForm({ setShowUpdate, spot }) {
   const { spotId } = useParams()
   const sessionUser = useSelector(state => state.session.user)
-  const [name, setName] = useState("")
-  const [address, setAddress] = useState("")
-  const [city, setCity] = useState("")
-  const [state, setState] = useState("")
-  const [country, setCountry] = useState("")
-  const [lat, setLat] = useState("")
-  const [lng, setLng] = useState("")
-  const [price, setPrice] = useState("")
-  const [description, setDescription] = useState("")
-  const [previewImage, setPreviewImage] = useState("")
+  const [name, setName] = useState(spot.name)
+  const [address, setAddress] = useState(spot.address)
+  const [city, setCity] = useState(spot.city)
+  const [state, setState] = useState(spot.state)
+  const [country, setCountry] = useState(spot.country)
+  const [lat, setLat] = useState(spot.lat)
+  const [lng, setLng] = useState(spot.lng)
+  const [price, setPrice] = useState(spot.price)
+  const [description, setDescription] = useState(spot.description)
+  const [previewImage, setPreviewImage] = useState(spot.previewImage)
   const [errors, setErrors] = useState([])
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const [images, setImages] = useState([]);
+  const [isDisabled, setIsDisabled] = useState(true)
   const [previewImages, setPreviewImages] = useState([spot.previewImage, ...spot.Images.map(image => image.url)])
+  const [unmutablePreviewImages, setUnmutablePreview] = useState([spot.previewImage, ...spot.Images.map(image => image.url)])
+  const [imagesToDelete, setImagesToDelete] = useState([])
   const history = useHistory()
   const dispatch = useDispatch()
   useEffect(() => {
     const newErrors = []
     if (name.length > 50) newErrors.push("Name must be less than 50 characters")
+    if (previewImages.length < 5) newErrors.push("You need at least 5 images")
     // if (Number(lat) > 90 || Number(lat) < -90) newErrors.push("Latitude is not valid")
     // if (Number(lng) > 180 || Number(lng) < -180) newErrors.push("Longitude is not valid")
+    if (!newErrors.length) setIsDisabled(false)
+    else setIsDisabled(true)
     setErrors(newErrors)
 
-  }, [name, lat, lng])
+  }, [name, lat, lng, previewImages.length])
 
   if (sessionUser === null) {
     alert("must be logged in to edit a spot")
@@ -42,7 +48,7 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
     e.preventDefault()
     setHasSubmitted(true)
     if (errors.length > 0) return;
-
+    
     const updatedSpot = {
       id: spotId,
       name,
@@ -54,7 +60,8 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
       lng: 1,
       price,
       description,
-      images
+      images,
+      imagesToDelete
     }
 
     const response = await dispatch(updateSpot(updatedSpot))
@@ -63,10 +70,11 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
     history.push(`/spots/${spotId}`)
   }
 
-
   const removePreviewImage = (imageToRemove, idx) => {
     const newPreviewImages = [...previewImages]
-    newPreviewImages.splice(idx, 1)
+    const imageToDelete = newPreviewImages.splice(idx, 1)[0]
+    const imageFoundInUnmutable = unmutablePreviewImages.find(image => image === imageToDelete)
+    setImagesToDelete([...imagesToDelete, imageFoundInUnmutable])
     const newImages = [...images]
     newImages.splice(idx, 1)
     setPreviewImages(newPreviewImages)
@@ -102,7 +110,6 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
     const chosenFiles = Array.prototype.slice.call(e.target.files)
     updateImages(chosenFiles)
   }
-
 
   const checkKeyDown = (e) => {
     if (e.keyCode == 13) return false;
@@ -237,7 +244,7 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
           onChange={handleFileEvent}
         />
       </div>
-      <button className="submit-button update" type="submit">Update Spot</button>
+      <button disabled={isDisabled} className="submit-button update" type="submit">Update Spot</button>
       <div className="preview-images-container update">
         {previewImages.length > 0 && previewImages.map((image, i) => (
           <div key={i} className="current-preview-image">

@@ -24,7 +24,7 @@ function CurrentSpot() {
   const history = useHistory()
   const [showModal, setShowModal] = useState(false);
   const [showDelete, setShowDelete] = useState(false);
-  const [showUpdate, setShowUpdate] = useState(true);
+  const [showUpdate, setShowUpdate] = useState(false);
   const [hasUdpated, setHasUpdate] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [bookingsExist, setBookingsExist] = useState(false)
@@ -35,7 +35,7 @@ function CurrentSpot() {
   const [updateReviewPosted, setUpdateReviewPosted] = useState(false)
   const [deletedReviewPosted, setDeletedReviewPosted] = useState(false)
   const [spotImages, setSpotImages] = useState([])
-  const [reviewToUpdate, setReviewToUpdate] = useState({review: ''})
+  const [reviewToUpdate, setReviewToUpdate] = useState({ review: '' })
   const sessionUser = useSelector(state => state.session.user)
   const spot = useSelector(state => state.spots.selectedSpot?.[spotId])
   const bookings = useSelector(state => state.bookings?.orderedBookingList)
@@ -43,7 +43,7 @@ function CurrentSpot() {
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
 
-  const classNameSetter = [1,2,3,4]
+  const classNameSetter = [1, 2, 3, 4]
 
   const dispatch = useDispatch()
   useEffect(() => {
@@ -65,9 +65,9 @@ function CurrentSpot() {
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return isLoaded && (
     <div className='current-spot-container'>
-      {showReviewModal && <CreateReviewModal setNewReviewPosted={setNewReviewPosted} spot={spot} setShowReviewModal={setShowReviewModal}/>}
-      {showUpdateReviewModal && <UpdateReviewModal setUpdateReviewPosted={setUpdateReviewPosted} reviewToUpdate={reviewToUpdate} spot={spot} setUpdateShowReviewModal={setUpdateShowReviewModal}/>}
-      {showDeleteModal && <DeleteReviewModal setDeletedReviewPosted={setDeletedReviewPosted} reviewToUpdate={reviewToUpdate} setShowDeleteModal={setShowDeleteModal}/>}
+      {showReviewModal && <CreateReviewModal setNewReviewPosted={setNewReviewPosted} spot={spot} setShowReviewModal={setShowReviewModal} />}
+      {showUpdateReviewModal && <UpdateReviewModal setUpdateReviewPosted={setUpdateReviewPosted} reviewToUpdate={reviewToUpdate} spot={spot} setUpdateShowReviewModal={setUpdateShowReviewModal} />}
+      {showDeleteModal && <DeleteReviewModal setDeletedReviewPosted={setDeletedReviewPosted} reviewToUpdate={reviewToUpdate} setShowDeleteModal={setShowDeleteModal} />}
       <div className='current-spot-wrapper'>
         <div className='current-spot-content'>
           <div className='current-spot-top-container'>
@@ -106,7 +106,9 @@ function CurrentSpot() {
         </div>
         {spot && (
           <div className='current-spot-img-container'>
-            <img className='preview-image main' src={`${spot.previewImage}`} />
+            <div className='preview-image main container'>
+              <img className='preview-image main' src={`${spot.previewImage}`} />
+            </div>
             {classNameSetter.map((num, i) => {
               let setClassName = ''
               let counter = 0
@@ -115,7 +117,9 @@ function CurrentSpot() {
               if (i === 2) setClassName = 'preview-image bottom left'
               if (i === 3) setClassName = 'preview-image bottom right'
               return (
-                <img key={i} className={setClassName} src={spotImages[i] ? spotImages[i].url : spot.previewImage}/>
+                <div className={`${setClassName} container`}>
+                  <img key={i} className={setClassName} src={spotImages[i] ? spotImages[i].url : spot.previewImage} />
+                </div>
               )
             })}
             {/* <img className='preview-image top left' src={`${spot.previewImage}`} />

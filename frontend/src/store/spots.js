@@ -96,7 +96,7 @@ export const createNewSpot = spot => async dispatch => {
 }
 
 export const updateSpot = spot => async dispatch => {
-  const { address, city, state, country, lat, lng, name, description, price, images } = spot;
+  const { address, city, state, country, lat, lng, name, description, price, images, imagesToDelete } = spot;
   const formData = new FormData();
   formData.append("address", address);
   formData.append("city", city);
@@ -111,6 +111,12 @@ export const updateSpot = spot => async dispatch => {
   if (images && images.length !== 0) {
     for (var i = 0; i < images.length; i++) {
       formData.append("images", images[i]);
+    }
+  }
+
+  if (imagesToDelete && imagesToDelete.length !== 0) {
+    for (var i = 0; i < imagesToDelete.length; i++) {
+      formData.append("imagesToDelete", imagesToDelete[i]);
     }
   }
 

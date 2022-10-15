@@ -30,14 +30,13 @@ nav.main-navbar {
 }
 .navbar-content-wrapper {
   display: flex;
-  width: 70em;
+  width: 59%;
   justify-content: space-between;
 }
 
 .navbar-content-home {
   display: flex;
-  width: 1600px;
+  width: 81%;
   box-sizing: border-box;
-  padding: 0 1em;
   justify-content: space-between;
 }
