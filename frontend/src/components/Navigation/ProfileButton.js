@@ -68,7 +68,7 @@ function ProfileButton({ user, isLoaded }) {
       {showLoginModal && (<LoginFormModal showLoginModal={showLoginModal} setShowLoginModal={setShowLoginModal} />)}
       {showSignUpModal && (<SignUpFormModal showSignUpModal={showSignUpModal} setShowSignUpModal={setShowSignUpModal} />)}
       <div className='host-hover-border'>
-        <NavLink className='become-host-link' to="/spots/create">Become a Host</NavLink>
+        <div className='become-host-link' to="/spots/create">Become a Host</div>
       </div>
       <div className="profile-button-border"
         onClick={openMenu}>

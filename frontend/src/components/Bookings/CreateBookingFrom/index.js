@@ -26,6 +26,7 @@ function CreateBookingForm({ spot, bookings }) {
   const [weeklyDiscount, setWeeklyDiscount] = useState(Math.ceil(subTotal / 7))
   const [serviceFee, setServiceFee] = useState(Math.ceil(subTotal / 4))
   const [total, setTotal] = useState(subTotal - weeklyDiscount + cleaningFee + serviceFee)
+
   const getDate = (today) => {
     let result;
     let month = (today.getMonth() + 1) < 10 ? `0${(today.getMonth() + 1)}` : (today.getMonth() + 1)

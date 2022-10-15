@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import ProtectedRoute from "./components/ProtectedRoute";
 import { Route, Switch } from "react-router-dom";
 import SignupFormPage from "./components/SignupFormPage";
 import * as sessionActions from "./store/session";
@@ -37,18 +38,18 @@ function App() {
           <Route exact path="/signup">
             <SignupFormPage />
           </Route>
-          <Route exact path="/spots/create">
+          <ProtectedRoute exact path="/spots/create">
             <NewSpotForm />
-          </Route>
+          </ProtectedRoute>
           <Route exact path="/spots/:spotId">
             <CurrentSpot />
           </Route>
-          <Route exact path="/bookings">
+          <ProtectedRoute exact path="/bookings">
             <UserBookings />
-          </Route>
-          <Route exact path="/bookings/:bookingId">
+          </ProtectedRoute>
+          <ProtectedRoute exact path="/bookings/:bookingId">
             <CurrentBooking />
-          </Route>
+          </ProtectedRoute>
           <Route path="*">
             <div>Page Not Found</div>
           </Route>
