@@ -11,6 +11,7 @@ import { logInAsDemo } from "../../store/session";
 import { logoutBookingsAction } from "../../store/bookings";
 import { useHistory } from "react-router-dom";
 import { logoutSpotsAction } from "../../store/spots";
+import LoginRequestModal from "../LoginRequestModal.css";
 import './ProfileButton.css'
 
 
@@ -20,6 +21,7 @@ function ProfileButton({ user, isLoaded }) {
   const [showMenu, setShowMenu] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignUpModal, setShowSignUpModal] = useState(false);
+  const [showLoginRequestModal, setShowLoginRequestModal] = useState(false);
   const openMenu = () => {
     if (showMenu) return;
     setShowMenu(true);
@@ -63,12 +65,20 @@ function ProfileButton({ user, isLoaded }) {
       })
 
   };
+
   return (
     <>
       {showLoginModal && (<LoginFormModal showLoginModal={showLoginModal} setShowLoginModal={setShowLoginModal} />)}
       {showSignUpModal && (<SignUpFormModal showSignUpModal={showSignUpModal} setShowSignUpModal={setShowSignUpModal} />)}
+      {showLoginRequestModal && (<LoginRequestModal setShowLoginModal={setShowLoginModal} setShowLoginRequestModal={setShowLoginRequestModal} />)}
       <div className='host-hover-border'>
-        <div className='become-host-link' to="/spots/create">Become a Host</div>
+        <div className='become-host-link' onClick={() => {
+          if (sessionUser) {
+            history.push('/spots/create')
+            return
+          }
+          setShowLoginRequestModal(true)
+          }}>Become a Host</div>
       </div>
       <div className="profile-button-border"
         onClick={openMenu}>

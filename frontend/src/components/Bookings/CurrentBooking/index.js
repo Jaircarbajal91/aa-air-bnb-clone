@@ -63,6 +63,15 @@ function CurrentBooking() {
 
 
   useEffect(() => {
+    const start = new Date(startDate).getTime()
+    const today = new Date().getTime()
+    console.log(start < today)
+    if (start <= today) {
+      setChangeable(false)
+    }
+  }, [startDate])
+
+  useEffect(() => {
     if (deleted) {
       dispatch(deleteBookingThunk(bookingId))
         .then(() => history.push('/bookings'))
@@ -83,15 +92,17 @@ function CurrentBooking() {
         <div className="confirmation-right-container">
           {spot && (<img className="booking-spot-img" src={spot.previewImage} />)}
           <div className="confirmation-description">
-            <span>{spot.name} {spot.description}</span>
+            <span>{spot.name} {spot.description} </span>
             <span>{spot.city}, {spot.state}</span>
           </div>
           <div className="confirmation-booking info">
             <div className="confirmation-left-itinerary">
+              <h3 className="start date">Start Date</h3>
               <span>{startDate}</span>
               <span>Check-in time is 4PM - 9PM</span>
             </div>
             <div className="confirmation-right-itinerary">
+              <h3 className="end date">End Date</h3>
               <span>{endDate}</span>
               <span>Check out time is 11AM</span>
             </div>

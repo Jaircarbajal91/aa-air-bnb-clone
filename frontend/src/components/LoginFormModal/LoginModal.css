@@ -1,6 +1,7 @@
-.login-title-container{
+.login-title-container {
   display: flex;
   justify-content: center;
+  padding: 1em;
   align-items: center;
 }
 
@@ -22,6 +23,10 @@
   border-radius: .5em;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+}
+
+.login-button.demo {
+  background: linear-gradient(0.25turn, #ce7f09, #df8908);
 }
 
 .login-button:active {

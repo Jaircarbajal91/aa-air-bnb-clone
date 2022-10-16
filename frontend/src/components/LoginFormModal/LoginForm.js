@@ -22,6 +22,15 @@ function LoginForm({ setShowLoginModal }) {
       );
   };
 
+  const handleDemoLogin = async (e) => {
+    e.preventDefault()
+    setCredential('demo@user.io')
+    setPassword('password')
+    await dispatch(sessionActions.login({ credential: 'demo@user.io', password: "password" }))
+    setCredential('')
+    setPassword('')
+    setShowLoginModal(false)
+  }
 
   return (
     <form className="login-form" onSubmit={handleSubmit}>
@@ -58,7 +67,8 @@ function LoginForm({ setShowLoginModal }) {
         </ul>
       )}
       </div>
-      <button className="login-button" type="submit">Continue</button>
+      <button className="login-button" type="submit">Log in</button>
+      <button onClick={handleDemoLogin} className='login-button demo'>Demo User</button>
     </form>
   );
 }

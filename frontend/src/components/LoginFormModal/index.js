@@ -6,18 +6,14 @@ import { useDispatch } from 'react-redux'
 import './LoginModal.css'
 
 
-  function LoginFormModal({showLoginModal, setShowLoginModal}) {
-    const [showModal, setShowModal] = useState(false);
+function LoginFormModal({ showLoginModal, setShowLoginModal }) {
+  const [showModal, setShowModal] = useState(false);
 
-    return (
-      <>
-        {showLoginModal && (
-          <Modal className='login-modal' onClose={() => setShowLoginModal(false)}>
-            <LoginForm setShowLoginModal={setShowLoginModal}/>
-          </Modal>
-        )}
-      </>
-    );
-  }
+  return (
+    <Modal className='login-modal' onClose={() => setShowLoginModal(false)}>
+      <LoginForm setShowLoginModal={setShowLoginModal} />
+    </Modal>
+  );
+}
 
 export default LoginFormModal;

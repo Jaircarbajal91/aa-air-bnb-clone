@@ -14,7 +14,7 @@ function CreateBookingForm({ spot, bookings }) {
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const [errors, setErrors] = useState([])
   const [showLoginModal, setShowLoginModal] = useState(false)
-  const [today, setToday] = useState(new Date(new Date() - new Date().getTimezoneOffset()))
+  const [today, setToday] = useState(new Date(new Date((new Date().getTime() + 24 * 60 * 60 * 1000)) - new Date().getTimezoneOffset()))
   const [tomorrow, setTomorrow] = useState(new Date(new Date(today).getTime() + 24 * 60 * 60 * 1000))
   const [startDate, setStartDate] = useState(format(today, 'yyy-MM-dd'))
   const [endDate, setEndDate] = useState(format(new Date(today).getTime() + 120 * 60 * 60 * 1000, 'yyy-MM-dd'))
@@ -39,7 +39,7 @@ function CreateBookingForm({ spot, bookings }) {
     setErrors([])
     let updatedStart = new Date(startDate);
     let updatedEnd = new Date(endDate);
-    if (updatedStart.getTime() > updatedEnd.getTime()) {
+    if (updatedStart.getTime() >= updatedEnd.getTime()) {
       setEndDate(format(new Date(new Date(updatedStart).getTime() + 48 * 60 * 60 * 1000), 'yyy-MM-dd'))
       setTomorrow(new Date(new Date(updatedStart).getTime() + 48 * 60 * 60 * 1000))
     } else {
