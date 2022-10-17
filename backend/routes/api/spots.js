@@ -284,7 +284,7 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
   let spot = await Spot.findByPk(spotId);
 
   let previewImageDeleted = false;
-  if (imagesToDelete) {
+  if (Array.isArray(imagesToDelete)) {
     for (let image of imagesToDelete) {
       const imageToDelete = await Image.findOne({
         where: {
@@ -294,9 +294,9 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
       if (imageToDelete) {
         await imageToDelete.destroy()
       }
+      console.log(image)
       const splitUrl = image.split('/')
       const key = splitUrl[splitUrl.length - 1]
-      console.log(key)
       const params = {
         Bucket: 'jair-bnb',
         Key: key
@@ -309,14 +309,24 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
         previewImageDeleted = true
       }
     }
+  } else {
+    const splitUrl = imagesToDelete.split('/')
+      const key = splitUrl[splitUrl.length - 1]
+      const params = {
+        Bucket: 'jair-bnb',
+        Key: key
+      };
+      s3.deleteObject(params, function (err, data) {
+        if (err) console.log(err, err.stack); // an error occurred
+        else console.log(data);           // successful response
+      });
+    previewImageDeleted = true
   }
-
 
   const spotImages = await multiplePublicFileUpload(req.files);
   let newPreviewImage;
   let previewImage = spot.previewImage
   if (previewImageDeleted) {
-    console.log('Im here because preivew image was deleted and updated')
     newPreviewImage = spotImages.shift()
   }
 

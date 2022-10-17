@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { Redirect, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { useEffect, useState } from 'react'
 import { updateSpot, getSpotDetails } from '../../store/spots'
@@ -47,7 +47,13 @@ function CurrentSpot() {
 
   const dispatch = useDispatch()
   useEffect(() => {
-    dispatch(getSpotDetails(spotId)).then(() => dispatch(getSpotReviewsThunk(spotId))).then((res) => setIsLoaded(true))
+    dispatch(getSpotDetails(spotId))
+    .then(() => dispatch(getSpotReviewsThunk(spotId)))
+    .catch(async(err) => {
+      const error = await err.json()
+      console.log(error)
+    })
+    .finally((res) => setIsLoaded(true))
   }, [dispatch, newReviewPosted, updateReviewPosted, deletedReviewPosted])
 
   useEffect(() => {
@@ -61,6 +67,10 @@ function CurrentSpot() {
     setLastName(spot?.Owner.lastName[0].toUpperCase() + spot?.Owner.lastName.substring(1).toLowerCase())
     setSpotImages(spot?.Images)
   }, [spot])
+
+  if (isLoaded && !spot) {
+    return <Redirect to='/'/>
+  }
 
   const rating = spot?.avgStarRating == 0 ? "New" : spot?.avgStarRating
   return isLoaded && (

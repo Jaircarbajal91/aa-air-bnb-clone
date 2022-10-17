@@ -50,7 +50,7 @@ router.get('/auth', requireAuth, async (req, res) => {
   const bookings = await Booking.findAll({
     include: [
       {
-        model: Spot
+        model: Spot,
       }
     ],
     where: {
@@ -58,7 +58,17 @@ router.get('/auth', requireAuth, async (req, res) => {
     }
   })
 
-  res.json({Bookings: bookings});
+  let result = []
+  for (let booking of bookings) {
+    let final = {...booking.toJSON()}
+    let spot = final.Spot;
+    let user = await User.findByPk(spot.ownerId)
+    user = user.toJSON()
+    spot.Owner = user
+    result.push(final)
+  }
+  result = result.sort((a, b) => new Date(b.startDate) - new Date(a.startDate))
+  res.json({Bookings: result});
 })
 
 

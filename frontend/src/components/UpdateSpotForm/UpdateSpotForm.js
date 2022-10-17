@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { Redirect, useHistory, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getSpotDetails, updateSpot } from "../../store/spots";
+import UpdateLoadingAnimation from "../LoadingAnimation/UpdateLoadingAnimation";
 import exit from '../Navigation/images/exit.svg'
 import './UpdateSpot.css'
 
@@ -20,6 +21,7 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
   const [previewImage, setPreviewImage] = useState(spot.previewImage)
   const [errors, setErrors] = useState([])
   const [hasSubmitted, setHasSubmitted] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
   const [images, setImages] = useState([]);
   const [isDisabled, setIsDisabled] = useState(true)
   const [previewImages, setPreviewImages] = useState([spot.previewImage, ...spot.Images.map(image => image.url)])
@@ -48,7 +50,7 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
     e.preventDefault()
     setHasSubmitted(true)
     if (errors.length > 0) return;
-    
+    setIsSubmitting(true)
     const updatedSpot = {
       id: spotId,
       name,
@@ -114,7 +116,7 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
   const checkKeyDown = (e) => {
     if (e.keyCode == 13) return false;
   };
-  return (
+  return !isSubmitting ? (
     <form
       onSubmit={handleSubmit}
       className="update-spot-form"
@@ -254,7 +256,9 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
         ))}
       </div>
     </form>
-  )
+  ) : <div className="udpate-loading-animation-container">
+    <UpdateLoadingAnimation />
+  </div>
 }
 
 export default UpdateSpotForm

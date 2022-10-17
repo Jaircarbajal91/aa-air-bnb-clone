@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useParams, useHistory } from "react-router-dom"
+import { useParams, useHistory, Redirect } from "react-router-dom"
 import { format } from 'date-fns'
 import { useSelector, useDispatch } from "react-redux"
 import { getAllUserBookingsThunk } from "../../../store/bookings"
@@ -41,31 +41,33 @@ function CurrentBooking() {
   const [checkOut, setCheckOut] = useState('')
 
 
-
-
   useEffect(() => {
-    setIsLoaded(false)
     dispatch(getAllUserBookingsThunk(sessionUser.id))
-    if (spot) {
-      setStartDate(format(new Date(booking.startDate), 'MMM dd, yyy'))
-      setEndDate(format(new Date(booking.endDate), 'MMM dd, yyy'))
+      .then(() => setIsLoaded(true))
+      .catch((err) => {
+        setIsLoaded(false)
+      })
+    if (spot && isLoaded) {
+      setStartDate(format(new Date(booking?.startDate), 'MMM dd, yyy'))
+      setEndDate(format(new Date(booking?.endDate), 'MMM dd, yyy'))
       setTimeDifference(new Date(endDate).getTime() - new Date(startDate).getTime())
       setDaysCount(timeDifference / (1000 * 3600 * 24))
-      setPrice(spot.price)
+      setPrice(spot?.price)
       setSubTotal(price * daysCount)
       setCleaningFee((Math.ceil(price / 5)))
       setWeeklyDiscount(Math.ceil(subTotal / 7))
       setServiceFee(Math.ceil(subTotal / 4))
       setTotal(subTotal - weeklyDiscount + cleaningFee + serviceFee)
       setIsLoaded(true)
+    } else {
+      setIsLoaded(false)
     }
-  }, [dispatch, booking?.startDate, price, subTotal, cleaningFee, weeklyDiscount, total, daysCount, startDate, endDate, timeDifference, serviceFee])
+  }, [dispatch, startDate, endDate, price, subTotal, cleaningFee, weeklyDiscount, total, daysCount, startDate, endDate, timeDifference, serviceFee, total, isLoaded])
 
 
   useEffect(() => {
     const start = new Date(startDate).getTime()
     const today = new Date().getTime()
-    console.log(start < today)
     if (start <= today) {
       setChangeable(false)
     }
@@ -82,7 +84,12 @@ function CurrentBooking() {
     style: 'currency',
     currency: 'USD',
   });
-  return isLoaded && (
+
+  if (isLoaded && !spot) {
+    return <Redirect to="/bookings" />
+  }
+
+  return isLoaded && spot && (
     <div className="current-booking">
       <div className="confirmation-header">
         <h1 className="booking heading">{changeable ? "Your reservation is confirmed!" : "We hope you enjoyed your stay!"}</h1>

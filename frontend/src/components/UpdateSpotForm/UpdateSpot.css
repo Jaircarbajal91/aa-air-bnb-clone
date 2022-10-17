@@ -68,3 +68,12 @@ span.add-images.update {
   color: rgb(218, 217, 217);
   cursor: not-allowed;
 }
+
+.udpate-loading-animation-container {
+  width: 20em;
+  height: 10em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid red;
+}

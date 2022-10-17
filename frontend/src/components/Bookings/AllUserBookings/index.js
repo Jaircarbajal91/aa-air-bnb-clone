@@ -35,23 +35,9 @@ function UserBookings() {
       )}
       {bookingsArr?.[0]?.Spot && bookingsArr?.length > 0 && (
         <div className="table-inner-container">
-          <table>
-            <thead className="table-head">
-              <tr className="table-row">
-                <th className="table-header">Name</th>
-                <th className="table-header">Location</th>
-                <th className="table-header">Dates Booked</th>
-                <th className="table-header">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookingsArr.map(booking => (
-                <tr key={booking.id}>
-                  <Listing booking={booking} />
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          {bookingsArr.map(booking => (
+            <Listing key={booking.id} booking={booking} />
+          ))}
         </div>
       )}
     </div>
