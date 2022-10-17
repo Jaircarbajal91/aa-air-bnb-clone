@@ -10,6 +10,7 @@ import CurrentSpot from "./components/CurrentSpot/CurrentSpot";
 import NewSpotForm from "./components/NewSpotForm";
 import UserBookings from "./components/Bookings/AllUserBookings";
 import CurrentBooking from "./components/Bookings/CurrentBooking";
+import Footer from "./components/Footer";
 import { getAllSpots } from "./store/spots";
 import { getAllUserBookingsThunk } from "./store/bookings";
 
@@ -55,6 +56,7 @@ function App() {
           </Route>
         </Switch>
       )}
+      <Footer />
     </>
   );
 }

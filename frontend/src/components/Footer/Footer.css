@@ -1,0 +1,36 @@
+.footer-container {
+  display: flex;
+  justify-content: center;
+  border-top: .1px;
+  width: 100vw;
+  position: fixed;
+  bottom: 0;
+  z-index: 55;
+  box-shadow: 0 -.1px 3px grey;
+  background-color: white;
+  padding: 1em;
+}
+
+.footer-content-container {
+  width: 30%;
+  justify-content: space-between;
+  display: flex;
+  align-items: center;
+}
+
+.footer-content-container  > a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: black;
+}
+
+.footer-content-container  > a  > img {
+  width: 1.2em;
+  margin-right: .3em;
+}
+
+.footer-content-container  > a  > span {
+  font-size: .9rem;
+  text-decoration: none;
+}
