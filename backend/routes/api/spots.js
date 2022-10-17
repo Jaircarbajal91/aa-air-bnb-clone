@@ -309,7 +309,7 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
         previewImageDeleted = true
       }
     }
-  } else {
+  } else if (typeof imagesToDelete === 'string') {
     const splitUrl = imagesToDelete.split('/')
       const key = splitUrl[splitUrl.length - 1]
       const params = {
