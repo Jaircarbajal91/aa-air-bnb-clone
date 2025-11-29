@@ -22,7 +22,7 @@ function CurrentBooking() {
   const dispatch = useDispatch()
   const [showDelete, setShowDelete] = useState(false);
   const [showUpdate, setShowUpdate] = useState(false);
-  const [changeable, setChangeable] = useState(true);
+  const [bookingStatus, setBookingStatus] = useState('future'); // 'future', 'current', 'past'
   const [deleted, setDeleted] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false)
   const [price, setPrice] = useState(0)
@@ -41,37 +41,121 @@ function CurrentBooking() {
   const [checkOut, setCheckOut] = useState('')
 
 
+  // Fetch bookings only once on mount
   useEffect(() => {
-    dispatch(getAllUserBookingsThunk(sessionUser.id))
-      .then(() => setIsLoaded(true))
-      .catch((err) => {
-        setIsLoaded(false)
-      })
-    if (spot && isLoaded) {
-      setStartDate(format(new Date(booking?.startDate), 'MMM dd, yyy'))
-      setEndDate(format(new Date(booking?.endDate), 'MMM dd, yyy'))
-      setTimeDifference(new Date(endDate).getTime() - new Date(startDate).getTime())
-      setDaysCount(timeDifference / (1000 * 3600 * 24))
-      setPrice(spot?.price)
-      setSubTotal(price * daysCount)
-      setCleaningFee((Math.ceil(price / 5)))
-      setWeeklyDiscount(Math.ceil(subTotal / 7))
-      setServiceFee(Math.ceil(subTotal / 4))
-      setTotal(subTotal - weeklyDiscount + cleaningFee + serviceFee)
-      setIsLoaded(true)
-    } else {
-      setIsLoaded(false)
+    if (sessionUser?.id) {
+      dispatch(getAllUserBookingsThunk())
+        .then(() => setIsLoaded(true))
+        .catch((err) => {
+          setIsLoaded(true) // Set to true even on error to prevent infinite loading
+        })
     }
-  }, [dispatch, startDate, endDate, price, subTotal, cleaningFee, weeklyDiscount, total, daysCount, startDate, endDate, timeDifference, serviceFee, total, isLoaded])
+  }, [dispatch, sessionUser?.id])
+
+  // Process booking data when booking and spot are available
+  useEffect(() => {
+    if (spot && booking && isLoaded) {
+      // Parse dates as local dates to avoid timezone issues
+      const parseLocalDate = (dateValue) => {
+        if (!dateValue) return null
+        if (dateValue instanceof Date) {
+          const date = new Date(dateValue)
+          date.setHours(0, 0, 0, 0)
+          return date
+        }
+        const dateStr = dateValue.toString()
+        // If it's in YYYY-MM-DD format, parse as local date
+        if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          const [year, month, day] = dateStr.split('-').map(Number)
+          return new Date(year, month - 1, day)
+        }
+        // Try parsing as ISO date
+        const date = new Date(dateValue)
+        date.setHours(0, 0, 0, 0)
+        return date
+      }
+      
+      const startDateObj = parseLocalDate(booking.startDate)
+      const endDateObj = parseLocalDate(booking.endDate)
+      
+      if (startDateObj && endDateObj) {
+        // Format dates for display
+        const formattedStartDate = format(startDateObj, 'MMM dd, yyy')
+        const formattedEndDate = format(endDateObj, 'MMM dd, yyy')
+        setStartDate(formattedStartDate)
+        setEndDate(formattedEndDate)
+        
+        const today = new Date()
+        today.setHours(0, 0, 0, 0)
+        
+        const timeDiff = endDateObj.getTime() - startDateObj.getTime()
+        const days = timeDiff / (1000 * 3600 * 24)
+        
+        setTimeDifference(timeDiff)
+        setDaysCount(days)
+        setPrice(spot?.price)
+        const subTotalCalc = spot?.price * days
+        setSubTotal(subTotalCalc)
+        setCleaningFee((Math.ceil(spot?.price / 5)))
+        setWeeklyDiscount(Math.ceil(subTotalCalc / 7))
+        setServiceFee(Math.ceil(subTotalCalc / 4))
+        setTotal(subTotalCalc - Math.ceil(subTotalCalc / 7) + Math.ceil(spot?.price / 5) + Math.ceil(subTotalCalc / 4))
+      }
+    }
+  }, [booking, spot, isLoaded])
 
 
   useEffect(() => {
-    const start = new Date(startDate).getTime()
-    const today = new Date().getTime()
-    if (start <= today) {
-      setChangeable(false)
+    if (booking) {
+      // Parse dates as local dates to avoid timezone issues
+      const parseLocalDate = (dateValue) => {
+        if (!dateValue) return null
+        // If it's already a Date object
+        if (dateValue instanceof Date) {
+          const date = new Date(dateValue)
+          date.setHours(0, 0, 0, 0)
+          return date
+        }
+        // If it's a string in YYYY-MM-DD format
+        const dateStr = dateValue.toString()
+        if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+          const [year, month, day] = dateStr.split('-').map(Number)
+          const date = new Date(year, month - 1, day)
+          date.setHours(0, 0, 0, 0)
+          return date
+        }
+        // Try parsing as ISO date
+        const date = new Date(dateValue)
+        date.setHours(0, 0, 0, 0)
+        return date
+      }
+      
+      const startDateObj = parseLocalDate(booking.startDate)
+      const endDateObj = parseLocalDate(booking.endDate)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      
+      if (!startDateObj || !endDateObj) return
+      
+      const startTime = startDateObj.getTime()
+      const endTime = endDateObj.getTime()
+      const todayTime = today.getTime()
+      
+      // Determine booking status
+      // Past: end date is before today
+      if (endTime < todayTime) {
+        setBookingStatus('past')
+      } 
+      // Current: start date is today or earlier AND end date is today or later
+      else if (startTime <= todayTime && endTime >= todayTime) {
+        setBookingStatus('current')
+      } 
+      // Future: start date is after today
+      else {
+        setBookingStatus('future')
+      }
     }
-  }, [startDate])
+  }, [booking])
 
   useEffect(() => {
     if (deleted) {
@@ -79,6 +163,18 @@ function CurrentBooking() {
         .then(() => history.push('/bookings'))
     }
   }, [deleted, dispatch, history])
+
+  // Disable body and html scroll when component mounts
+  useEffect(() => {
+    const originalBodyOverflow = document.body.style.overflow
+    const originalHtmlOverflow = document.documentElement.style.overflow
+    document.body.style.overflow = 'hidden'
+    document.documentElement.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = originalBodyOverflow
+      document.documentElement.style.overflow = originalHtmlOverflow
+    }
+  }, [])
 
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -89,29 +185,70 @@ function CurrentBooking() {
     return <Redirect to="/bookings" />
   }
 
+  const handleImageClick = () => {
+    if (spot?.id) {
+      history.push(`/spots/${spot.id}`)
+    }
+  }
+
+  const getHeaderMessage = () => {
+    switch (bookingStatus) {
+      case 'current':
+        return "You're currently staying here!"
+      case 'past':
+        return "We hope you enjoyed your stay!"
+      case 'future':
+      default:
+        return "Your reservation is confirmed!"
+    }
+  }
+
+  const getSubHeaderMessage = () => {
+    switch (bookingStatus) {
+      case 'current':
+        return <span>Enjoy your stay in <u>{spot.city}, {spot.state}</u>!</span>
+      case 'past':
+        return null
+      case 'future':
+      default:
+        return <span>You're going to <u>{spot.city}, {spot.state}</u>!</span>
+    }
+  }
+
   return isLoaded && spot && (
-    <div className="current-booking">
+    <div className="current-booking-wrapper">
+      <div className="current-booking">
       <div className="confirmation-header">
-        <h1 className="booking heading">{changeable ? "Your reservation is confirmed!" : "We hope you enjoyed your stay!"}</h1>
-        {changeable && <span>You're going to <u>{spot.city}, {spot.state}</u>!</span>}
+        <h1 className={`booking heading ${bookingStatus === 'current' ? 'current-stay' : ''}`}>
+          {getHeaderMessage()}
+        </h1>
+        {getSubHeaderMessage()}
       </div>
       <div className="confirmation-container">
         <div className="confirmation-right-container">
-          {spot && (<img className="booking-spot-img" src={spot.previewImage} />)}
+          {spot && (
+            <img 
+              className="booking-spot-img" 
+              src={spot.previewImage} 
+              alt={`${spot.name} in ${spot.city}, ${spot.state}`}
+              onClick={handleImageClick}
+              style={{ cursor: 'pointer' }}
+            />
+          )}
           <div className="confirmation-description">
-            <span>{spot.name} {spot.description} </span>
+            <span>{spot.name}</span>
             <span>{spot.city}, {spot.state}</span>
           </div>
           <div className="confirmation-booking info">
             <div className="confirmation-left-itinerary">
-              <h3 className="start date">Start Date</h3>
+              <h3 className="start date">Check-in</h3>
               <span>{startDate}</span>
-              <span>Check-in time is 4PM - 9PM</span>
+              <span>4PM - 9PM</span>
             </div>
             <div className="confirmation-right-itinerary">
-              <h3 className="end date">End Date</h3>
+              <h3 className="end date">Check-out</h3>
               <span>{endDate}</span>
-              <span>Check out time is 11AM</span>
+              <span>11AM</span>
             </div>
           </div>
         </div>
@@ -122,18 +259,22 @@ function CurrentBooking() {
             <p>{spot.address}, {spot.city}, {spot.state}, {spot.country}</p>
           </div>
           <div className="confirmation-total-amount">
-            <h3>Amount</h3>
+            <h3>Total Amount</h3>
             <p>{formatter.format(total)}</p>
           </div>
-          {booking.userId === sessionUser.id && changeable && (
-            <div>
-              {/* <button onClick={() => setShowUpdate(true)}>Change Reservaion</button> */}
-              <button className="confirmation-button" onClick={() => setShowDelete(true)}>Cancel Reservaion</button>
-              {/* {showUpdate && (
-              <Modal onClose={() => setShowUpdate(false)}>
-                <UpdateBookingForm booking={booking} setShowUpdate={setShowUpdate} />
-              </Modal>
-            )} */}
+          {booking.userId === sessionUser.id && bookingStatus === 'future' && (
+            <div className="confirmation-actions">
+              <button className="confirmation-button" onClick={() => setShowUpdate(true)}>
+                Change Reservation
+              </button>
+              <button className="confirmation-button cancel-button" onClick={() => setShowDelete(true)}>
+                Cancel Reservation
+              </button>
+              {showUpdate && (
+                <Modal onClose={() => setShowUpdate(false)}>
+                  <UpdateBookingForm booking={booking} setShowUpdate={setShowUpdate} />
+                </Modal>
+              )}
               {showDelete && (
                 <Modal onClose={() => setShowDelete(false)}>
                   <DeleteBooking setDeleted={setDeleted} booking={booking} setShowDelete={setShowDelete} />
@@ -143,6 +284,7 @@ function CurrentBooking() {
           )}
         </div>
       </div>
+    </div>
     </div>
   )
 }

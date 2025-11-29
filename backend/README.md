@@ -1,5 +1,36 @@
 # `JAir BnB`
 
+## Environment Variables
+
+### Required for Seeding with API Images
+
+To seed the database with real property images from Unsplash and Pexels APIs, you need to set the following environment variables in your `.env` file:
+
+- `UNSPLASH_ACCESS_KEY` - Your Unsplash API access key (get one at https://unsplash.com/developers)
+- `PEXELS_API_KEY` - Your Pexels API key (get one at https://www.pexels.com/api/)
+
+**Note:** At least one API key is required for seeding. Both APIs are used to ensure variety and uniqueness of images.
+
+### Obtaining API Keys
+
+1. **Unsplash API:**
+   - Visit https://unsplash.com/developers
+   - Create a developer account
+   - Create a new application
+   - Copy your Access Key
+
+2. **Pexels API:**
+   - Visit https://www.pexels.com/api/
+   - Sign up for a free account
+   - Navigate to your API dashboard
+   - Copy your API key
+
+Add these to your `.env` file:
+```
+UNSPLASH_ACCESS_KEY=your_unsplash_access_key_here
+PEXELS_API_KEY=your_pexels_api_key_here
+```
+
 ## Database Schema Design
 
 ![](./backend/images/schema/Screen%20Shot%202022-07-07%20at%202.24.29%20PM.png)

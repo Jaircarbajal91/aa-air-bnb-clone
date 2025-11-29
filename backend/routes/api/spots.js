@@ -6,7 +6,7 @@ const { Op, EmptyResultError } = require("sequelize");
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const user = require('../../db/models/user');
-const { multiplePublicFileUpload, singlePublicFileUpload, singleMulterUpload, multipleMulterUpload, s3 } = require('../../awsS3')
+const { multiplePublicFileUpload, singlePublicFileUpload, singleMulterUpload, multipleMulterUpload, s3, DeleteObjectCommand } = require('../../awsS3')
 
 router.get('/auth', requireAuth, async (req, res) => {
   const { id } = req.user
@@ -62,145 +62,158 @@ router.get('/:spotId', async (req, res) => {
 })
 
 router.get('/', async (req, res) => {
-
-  const pagination = {
-    options: []
-  }
-  let { page, size, maxLat, minLat, minLng, maxLng, minPrice, maxPrice } = req.query;
-  const err = {
-    "message": "Validation Error",
-    "statusCode": 400,
-    "errors": {}
-  }
-
-  page = Number(page);
-  size = Number(size);
-
-
-  if (Number.isNaN(page)) page = 0;
-  if (Number.isNaN(size)) size = 100;
-
-  if (page > 10) page = 10
-  if (size > 100) size = 100
-
-  if (page < 0) err.errors.page = "Page must be greater than or equal to 0"
-  if (size < 0) err.errors.size = "Size must be greater than or equal to 0"
-  if (Number(maxLat) > 90) {
-    err.errors.maxLat = "Maximum latitude is invalid"
-    maxLat = false
-  }
-  if (Number(minLat) < -90) {
-    err.errors.maxLat = "Minimum latitude is invalid"
-    minLng = false
-  }
-  if (Number(maxLng) > 180) {
-    err.errors.maxLng = "Maximum longitude is invalid"
-    maxLng = false
-  }
-  if (Number(minLng) < -180) {
-    err.errors.minLng = "Minimum longitude is invalid"
-    minLng = false
-  }
-  if (Number(minPrice) < 0) {
-    err.errors.minPrice = "Maximum price must be greater than 0"
-    minPrice = false
-  }
-  if (Number(maxPrice) < 0) {
-    err.errors.maxPrice = "Minimum price must be greater than 0"
-    maxPrice = false
-  }
-
-  if (page < 0 || size < 0 || (!maxLat && maxLat !== undefined) || (!minLat && minLat !== undefined) || (!maxLng && maxLng !== undefined) || (!minLng && minLng !== undefined) || (!minPrice && minPrice !== undefined) || (!maxPrice && maxPrice !== undefined)) {
-    return res.status(400).json(err)
-  }
-
-  if (maxLat) {
-    pagination.options.push(
-      {
-        lat: { [Op.lte]: Number(maxLat) }
-      }
-    )
-  }
-  if (minLat) {
-    pagination.options.push(
-      {
-        lat: { [Op.gte]: Number(minLat) }
-      }
-    )
-  }
-  if (minLng) {
-    pagination.options.push(
-      {
-        lng: { [Op.gte]: Number(minLng) }
-      }
-    )
-  }
-  if (maxLng) {
-    pagination.options.push(
-      {
-        lng: { [Op.lte]: Number(maxLng) }
-      }
-    )
-  }
-  if (minPrice) {
-    pagination.options.push(
-      {
-        price: { [Op.gte]: Number(minPrice) }
-      }
-    )
-  }
-  if (maxPrice) { pagination.options.push({ price: { [Op.lte]: Number(maxPrice) } }) }
-
-  pagination.size = size
-  pagination.page = page
-
-
-  const spots = await Spot.findAll({
-    where: {
-      [Op.and]: pagination.options
-    },
-    include: [
-      {
-        model: Review
-      },
-      {
-        model: Image
-      }
-    ],
-    limit: pagination.size || 100,
-    offset: pagination.size * pagination.page
-  })
-
-  spots.forEach(async (spot, i) => {
-    let result = {}
-    spot = spot.toJSON()
-    let sum = 0;
-    let avg = 0;
-    let reviews = spot.Reviews
-    if (reviews.length) {
-      for (let review of reviews) {
-        sum += review.stars;
-      }
-      avg = (sum / reviews.length).toFixed(1);
-      spot.numReviews = reviews.length;
-      spot.avgStarRating = avg;
-      delete spot.Reviews
-      result = { ...spot }
-      spots[i] = result;
-    } else {
-      spot.numReviews = reviews.length;
-      spot.avgStarRating = "0";
-      delete spot.Reviews
-      result = { ...spot }
-      spots[i] = result;
+  try {
+    const pagination = {
+      options: []
     }
-  })
+    let { page, size, maxLat, minLat, minLng, maxLng, minPrice, maxPrice } = req.query;
+    const err = {
+      "message": "Validation Error",
+      "statusCode": 400,
+      "errors": {}
+    }
 
-  res.json({
-    Spots: spots,
-    page: pagination.page,
-    size: pagination.size || 100,
-  })
+    page = Number(page);
+    size = Number(size);
+
+
+    if (Number.isNaN(page)) page = 0;
+    if (Number.isNaN(size)) size = 100;
+
+    if (page > 10) page = 10
+    if (size > 100) size = 100
+
+    if (page < 0) err.errors.page = "Page must be greater than or equal to 0"
+    if (size < 0) err.errors.size = "Size must be greater than or equal to 0"
+    if (Number(maxLat) > 90) {
+      err.errors.maxLat = "Maximum latitude is invalid"
+      maxLat = false
+    }
+    if (Number(minLat) < -90) {
+      err.errors.minLat = "Minimum latitude is invalid"
+      minLat = false
+    }
+    if (Number(maxLng) > 180) {
+      err.errors.maxLng = "Maximum longitude is invalid"
+      maxLng = false
+    }
+    if (Number(minLng) < -180) {
+      err.errors.minLng = "Minimum longitude is invalid"
+      minLng = false
+    }
+    if (Number(minPrice) < 0) {
+      err.errors.minPrice = "Maximum price must be greater than 0"
+      minPrice = false
+    }
+    if (Number(maxPrice) < 0) {
+      err.errors.maxPrice = "Minimum price must be greater than 0"
+      maxPrice = false
+    }
+
+    if (page < 0 || size < 0 || (!maxLat && maxLat !== undefined) || (!minLat && minLat !== undefined) || (!maxLng && maxLng !== undefined) || (!minLng && minLng !== undefined) || (!minPrice && minPrice !== undefined) || (!maxPrice && maxPrice !== undefined)) {
+      return res.status(400).json(err)
+    }
+
+    if (maxLat) {
+      pagination.options.push(
+        {
+          lat: { [Op.lte]: Number(maxLat) }
+        }
+      )
+    }
+    if (minLat) {
+      pagination.options.push(
+        {
+          lat: { [Op.gte]: Number(minLat) }
+        }
+      )
+    }
+    if (minLng) {
+      pagination.options.push(
+        {
+          lng: { [Op.gte]: Number(minLng) }
+        }
+      )
+    }
+    if (maxLng) {
+      pagination.options.push(
+        {
+          lng: { [Op.lte]: Number(maxLng) }
+        }
+      )
+    }
+    if (minPrice) {
+      pagination.options.push(
+        {
+          price: { [Op.gte]: Number(minPrice) }
+        }
+      )
+    }
+    if (maxPrice) { pagination.options.push({ price: { [Op.lte]: Number(maxPrice) } }) }
+
+    pagination.size = size
+    pagination.page = page
+
+    // Build where clause - only use Op.and if there are options
+    const whereClause = pagination.options.length > 0 
+      ? { [Op.and]: pagination.options }
+      : {};
+
+    const spots = await Spot.findAll({
+      where: whereClause,
+      include: [
+        {
+          model: Review
+        },
+        {
+          model: Image
+        }
+      ],
+      limit: pagination.size || 100,
+      offset: pagination.size * pagination.page
+    })
+
+    // Process spots synchronously using map instead of forEach
+    const processedSpots = spots.map(spot => {
+      const spotData = spot.toJSON()
+      let sum = 0;
+      let avg = 0;
+      let reviews = spotData.Reviews || []
+      
+      if (reviews && reviews.length > 0) {
+        for (let review of reviews) {
+          // Convert DECIMAL to number if needed
+          const stars = Number(review.stars) || 0;
+          sum += stars;
+        }
+        avg = (sum / reviews.length).toFixed(1);
+        spotData.numReviews = reviews.length;
+        spotData.avgStarRating = avg;
+      } else {
+        spotData.numReviews = 0;
+        spotData.avgStarRating = "0";
+      }
+      
+      // Remove Reviews from the response
+      delete spotData.Reviews
+      
+      return spotData;
+    })
+
+    res.json({
+      Spots: processedSpots,
+      page: pagination.page,
+      size: pagination.size || 100,
+    })
+  } catch (error) {
+    console.error('Error fetching spots:', error);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({
+      "message": "Internal server error",
+      "statusCode": 500,
+      "error": process.env.NODE_ENV === 'development' ? error.message : undefined
+    })
+  }
 })
 
 router.post('/auth', multipleMulterUpload("images"), requireAuth, async (req, res, next) => {
@@ -297,14 +310,16 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
       console.log(image)
       const splitUrl = image.split('/')
       const key = splitUrl[splitUrl.length - 1]
-      const params = {
+      const command = new DeleteObjectCommand({
         Bucket: 'jair-bnb',
         Key: key
-      };
-      s3.deleteObject(params, function (err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else console.log(data);           // successful response
       });
+      try {
+        await s3.send(command);
+        console.log('Successfully deleted object:', key);
+      } catch (err) {
+        console.log(err, err.stack); // an error occurred
+      }
       if (image === spot.previewImage) {
         previewImageDeleted = true
       }
@@ -312,14 +327,16 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
   } else if (typeof imagesToDelete === 'string') {
     const splitUrl = imagesToDelete.split('/')
       const key = splitUrl[splitUrl.length - 1]
-      const params = {
+      const command = new DeleteObjectCommand({
         Bucket: 'jair-bnb',
         Key: key
-      };
-      s3.deleteObject(params, function (err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
-        else console.log(data);           // successful response
       });
+      try {
+        await s3.send(command);
+        console.log('Successfully deleted object:', key);
+      } catch (err) {
+        console.log(err, err.stack); // an error occurred
+      }
     previewImageDeleted = true
   }
 
@@ -424,27 +441,30 @@ router.delete('/auth/:spotId', requireAuth, async (req, res) => {
     const jsonImage = image.toJSON()
     const splitUrl = jsonImage.url.split('/')
     const key = splitUrl[splitUrl.length - 1]
-    const params = {
+    const command = new DeleteObjectCommand({
       Bucket: 'jair-bnb',
       Key: key
-    };
-    s3.deleteObject(params, function (err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else console.log(data);           // successful response
     });
-
+    try {
+      await s3.send(command);
+      console.log('Successfully deleted object:', key);
+    } catch (err) {
+      console.log(err, err.stack); // an error occurred
+    }
   }
 
   let splitUrl = spot.previewImage.split('/')
   const key = splitUrl[splitUrl.length - 1]
-  const params = {
+  const command = new DeleteObjectCommand({
     Bucket: 'jair-bnb',
     Key: key
-  };
-  s3.deleteObject(params, function (err, data) {
-    if (err) console.log(err, err.stack); // an error occurred
-    else console.log(data);           // successful response
   });
+  try {
+    await s3.send(command);
+    console.log('Successfully deleted object:', key);
+  } catch (err) {
+    console.log(err, err.stack); // an error occurred
+  }
 
   await spot.destroy()
   res.status(200).json({

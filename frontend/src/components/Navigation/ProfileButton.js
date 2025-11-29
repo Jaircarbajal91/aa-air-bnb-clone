@@ -71,14 +71,14 @@ function ProfileButton({ user, isLoaded }) {
       {showLoginModal && (<LoginFormModal showLoginModal={showLoginModal} setShowLoginModal={setShowLoginModal} />)}
       {showSignUpModal && (<SignUpFormModal showSignUpModal={showSignUpModal} setShowSignUpModal={setShowSignUpModal} />)}
       {showLoginRequestModal && (<LoginRequestModal setShowLoginModal={setShowLoginModal} setShowLoginRequestModal={setShowLoginRequestModal} />)}
-      <div className='host-hover-border'>
-        <div className='become-host-link' onClick={() => {
-          if (sessionUser) {
-            history.push('/spots/create')
-            return
-          }
-          setShowLoginRequestModal(true)
-          }}>Become a Host</div>
+      <div className='host-hover-border' onClick={() => {
+        if (sessionUser) {
+          history.push('/spots/create')
+          return
+        }
+        setShowLoginRequestModal(true)
+      }}>
+        <div className='become-host-link'>Become a Host</div>
       </div>
       <div className="profile-button-border"
         onClick={openMenu}>
@@ -89,6 +89,13 @@ function ProfileButton({ user, isLoaded }) {
             {isLoaded && sessionUser && (
               <ul className="profile-list">
                 <li className="profile-list-item user-name-li">{user.username}</li>
+                <NavLink
+                  className="menu-my-spots hover-link"
+                  activeClassName="active"
+                  to="/spots/mine"
+                >
+                  My Spots
+                </NavLink>
                 <NavLink className="menu-my-bookings hover-link" activeClassName="active" to="/bookings">My Bookings</NavLink>
                 <li className="profile-list-item hover-link" onClick={logout}>Log Out</li>
               </ul>

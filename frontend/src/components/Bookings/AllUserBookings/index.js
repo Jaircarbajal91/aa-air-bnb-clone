@@ -31,7 +31,12 @@ function UserBookings() {
   return isLoaded && (
     <div className="table-outer-container">
       {bookings?.orderedBookingList.length === 0 && (
-        <div>Looks like you currently don't have any bookings</div>
+        <div className="empty-bookings-container">
+          <div className="empty-bookings-content">
+            <h2>No bookings yet</h2>
+            <p>When you make a reservation, it will appear here.</p>
+          </div>
+        </div>
       )}
       {bookingsArr?.[0]?.Spot && bookingsArr?.length > 0 && (
         <div className="table-inner-container">

@@ -24,12 +24,15 @@ function LoginForm({ setShowLoginModal }) {
 
   const handleDemoLogin = async (e) => {
     e.preventDefault()
-    setCredential('demo@user.io')
-    setPassword('password')
-    await dispatch(sessionActions.login({ credential: 'demo@user.io', password: "password" }))
-    setCredential('')
-    setPassword('')
-    setShowLoginModal(false)
+    setErrors([])
+    return dispatch(sessionActions.logInAsDemo())
+      .then(() => setShowLoginModal(false))
+      .catch(
+        async (res) => {
+          const data = await res.json();
+          if (data && data.errors) setErrors(data.errors);
+        }
+      );
   }
 
   return (

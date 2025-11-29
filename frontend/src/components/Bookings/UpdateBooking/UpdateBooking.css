@@ -2,4 +2,109 @@ form.update-booking-form {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 2em;
+  min-width: 400px;
+}
+
+form.update-booking-form h3 {
+  margin-top: 0;
+  margin-bottom: 1.5em;
+  font-size: 1.5rem;
+}
+
+form.update-booking-form label {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-bottom: 1.5em;
+  font-weight: 600;
+}
+
+form.update-booking-form input[type="date"] {
+  margin-top: 0.5em;
+  padding: 0.75em;
+  border: 1px solid #ddd;
+  border-radius: 0.5em;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+form.update-booking-form input[type="date"]:focus {
+  outline: none;
+  border-color: #E61E4D;
+  box-shadow: 0 0 0 2px rgba(230, 30, 77, 0.2);
+}
+
+.update-booking-errors {
+  width: 100%;
+  margin-bottom: 1em;
+  min-height: 2em;
+}
+
+.update-booking-errors .errors-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.update-booking-errors .errors-list li {
+  color: #E61E4D;
+  font-size: 0.9rem;
+  padding: 0.3em 0;
+  text-align: center;
+}
+
+.update-booking-form .date-help-text {
+  font-size: 0.75rem;
+  color: #717171;
+  margin-top: -1em;
+  margin-bottom: 1.5em;
+  text-align: center;
+  font-style: italic;
+  width: 100%;
+}
+
+.update-booking-buttons {
+  display: flex;
+  gap: 1em;
+  width: 100%;
+  justify-content: center;
+}
+
+.update-booking-buttons button {
+  padding: 0.75em 2em;
+  border: none;
+  border-radius: 0.5em;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  min-width: 150px;
+}
+
+.update-booking-buttons button[type="submit"] {
+  background: linear-gradient(0.25turn, #E61E4D, #D70666);
+  color: white;
+}
+
+.update-booking-buttons button[type="submit"]:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.update-booking-buttons button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.update-booking-buttons button[type="button"] {
+  background: #717171;
+  color: white;
+}
+
+.update-booking-buttons button[type="button"]:hover {
+  background: #5a5a5a;
+}
+
+.update-booking-buttons button:active {
+  transform: scale(.97);
 }

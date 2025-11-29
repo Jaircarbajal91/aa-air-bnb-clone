@@ -1,56 +1,129 @@
 .review-container {
   display: flex;
   flex-direction: column;
-  gap: 1em;
-  box-shadow: 0 0 4px rgb(195 195 195);
+  gap: 1.25em;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   position: relative;
-
-  border-radius: .7em;
-  padding: 1em;
+  border-radius: 12px;
+  padding: 1.5em;
   box-sizing: border-box;
+  background: #ffffff;
+  border: 1px solid #EBEBEB;
+  min-height: 180px;
+  transition: all 0.2s ease;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
 }
-.review-container {
-  width: 49%;
-  height: 220px;
+
+.review-container:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .review-user-info-container {
   display: flex;
-  gap: .8em;
+  justify-content: space-between;
+  gap: 0.75em;
   width: 100%;
-  height: 20%;
+  align-items: center;
 }
 
-.review-user-info-container > img {
-  width: 6%;
+.review-user-main {
+  display: flex;
+  gap: 0.75em;
+  align-items: center;
+}
+
+.review-user-main > img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
 }
 
 .review-user-info {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 0.25em;
+}
+
+.review-stars {
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  font-size: 0.9rem;
+  color: #222222;
+}
+
+.review-stars i {
+  color: #FF385C;
+  font-size: 0.8rem;
+}
+
+.review-stars-value {
+  font-weight: 500;
 }
 
 .review-name {
   text-transform: capitalize;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #222222;
 }
 
 .review-date {
   color: #717171;
-  font-size: .82rem;
+  font-size: 0.875rem;
+  font-weight: 400;
+}
+
+.review-content-container {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  line-height: 1.6;
+  color: #222222;
+  font-size: 0.95rem;
+  margin-top: 0.5em;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+.review-content-container > span {
+  color: #484848;
+  line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  width: 100%;
 }
 
 .review-options {
   display: flex;
-  gap: .7em;
-  position: absolute;
-  bottom: 1em;
-  right: 1em;
+  gap: 1em;
+  margin-top: 0.5em;
+  padding-top: 1em;
+  border-top: 1px solid #EBEBEB;
 }
 
 .review-options > span {
-  text-decoration: underline;
-  color: rgb(156, 155, 155);
+  text-decoration: none;
+  color: #222222;
   cursor: pointer;
-  font-size: .9rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.25em 0.5em;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.review-options > span:hover {
+  background: #F7F7F7;
+  color: #E61E4D;
+}
+
+.review-options > span:active {
+  transform: scale(0.95);
 }

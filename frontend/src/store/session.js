@@ -55,14 +55,20 @@ export const logInAsDemo = () => async dispatch => {
 }
 
 export const restoreUser = () => async dispatch => {
-  const response = await csrfFetch('/api/session');
-  const data = await response.json();
-  if (Object.values(data).length) {
-    dispatch(setUser(data.user));
+  try {
+    const response = await csrfFetch('/api/session');
+    const data = await response.json();
+    if (Object.values(data).length) {
+      dispatch(setUser(data.user));
+      return response;
+    }
+    dispatch(setUser(null));
     return response;
+  } catch (res) {
+    // If there's an error (e.g., 401), user is not logged in
+    dispatch(setUser(null));
+    return res;
   }
-  dispatch(setUser(null));
-  return response;
 };
 
 

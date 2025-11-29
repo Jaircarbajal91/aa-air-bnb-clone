@@ -1,0 +1,149 @@
+.map-modal-container {
+  width: 90vw;
+  max-width: 900px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.map-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5em 2em;
+  border-bottom: 1px solid #EBEBEB;
+}
+
+.map-modal-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #222222;
+  margin: 0;
+}
+
+.map-modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: #222222;
+  cursor: pointer;
+  padding: 0.25em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.map-modal-close:hover {
+  background-color: #F7F7F7;
+  color: #E61E4D;
+}
+
+.map-modal-content {
+  display: flex;
+  flex-direction: column;
+  padding: 2em;
+  gap: 1.5em;
+  overflow-y: auto;
+  max-height: calc(90vh - 120px);
+}
+
+.map-modal-address {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+}
+
+.map-address-text {
+  margin: 0;
+  color: #222222;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.map-coordinates {
+  margin: 0.5em 0 0 0;
+  color: #717171;
+  font-size: 0.9rem;
+  font-family: monospace;
+  padding: 0.5em;
+  background-color: #F7F7F7;
+  border-radius: 6px;
+}
+
+.map-modal-map {
+  width: 100%;
+  height: 500px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.map-modal-map iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.map-modal-footer {
+  display: flex;
+  justify-content: center;
+  padding-top: 1em;
+  border-top: 1px solid #EBEBEB;
+}
+
+.map-modal-link {
+  color: #222222;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.75em 1.5em;
+  border: 1px solid #222222;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.map-modal-link:hover {
+  background-color: #222222;
+  color: white;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .map-modal-container {
+    width: 95vw;
+    max-height: 95vh;
+  }
+
+  .map-modal-header {
+    padding: 1em 1.5em;
+  }
+
+  .map-modal-content {
+    padding: 1.5em;
+    max-height: calc(95vh - 100px);
+  }
+
+  .map-modal-map {
+    height: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .map-modal-map {
+    height: 300px;
+  }
+
+  .map-modal-title {
+    font-size: 1.25rem;
+  }
+}
+

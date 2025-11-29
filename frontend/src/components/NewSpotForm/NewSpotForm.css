@@ -12,6 +12,7 @@ form.new-spot-form {
   top: 7.3%;
   min-width: 100vw;
   min-height: 100vh;
+  background-color: #f5f5f7;
 }
 
 .host-page-left-conatiner{
@@ -22,15 +23,16 @@ form.new-spot-form {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 3rem 2rem;
 }
 
 .welcome-message {
   position: relative;
   color: white;
-  font-size: 2.5rem;
-  right: 1em;
-  bottom: 3em;
+  font-size: 2.8rem;
+  max-width: 16ch;
   margin: 0;
+  font-weight: 600;
 }
 
 .host-page-right-container {
@@ -41,7 +43,7 @@ form.new-spot-form {
   justify-content: center;
   flex-direction: column;
   align-items: center;
-
+  padding: 3rem 2rem;
 }
 
 .create.submit-button {
@@ -102,16 +104,20 @@ form.new-spot-form {
 .create-spot-input-wrapper {
   min-height: 20em;
   width: 60%;
-  max-width: 100%;
+  max-width: 640px;
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
+  background-color: #ffffff;
+  border-radius: 1.5rem;
+  padding: 2.5rem 3rem 3rem;
+  box-shadow: 0 18px 35px rgba(15, 15, 30, 0.08);
 }
 
 
 .page.zero-container {
-  border: .2rem solid black;
+  border: .12rem solid rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
   gap: 3em;
@@ -123,6 +129,8 @@ form.new-spot-form {
   cursor: pointer;
   box-sizing: border-box;
   top: 3.5em;
+  background-color: #ffffff;
+  box-shadow: 0 10px 25px rgba(15, 15, 30, 0.08);
 }
 
 .page.zero-container:active {
@@ -131,6 +139,7 @@ form.new-spot-form {
 
 .page.zero-container > span {
   font-size: 1.6rem;
+  font-weight: 500;
 }
 
 
@@ -151,6 +160,7 @@ form.new-spot-form {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+  padding-top: 0.5rem;
 }
 
 .page.two-container {
@@ -161,18 +171,25 @@ form.new-spot-form {
 
 .page > h2 {
   font-weight: 400;
+  font-size: 1.3rem;
+  margin-bottom: 1.2rem;
 }
 
 
 .multi-page-input {
-  border: 1px solid black;
+  border: 1px solid #d1d1d6;
   border-radius: .7em;
-  width: 95%;
+  width: 100%;
   padding: 1em;
+  font-size: 0.95rem;
+  box-shadow: 0 1px 2px rgba(15, 15, 30, 0.03);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
 }
 
 .multi-page-input:focus {
-  border: 1px solid black;
+  border: 1px solid #E61E4D;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(230, 30, 77, 0.15);
 }
 
 .multi-page-input.select {
@@ -188,6 +205,74 @@ form.new-spot-form {
   max-width: 100%;
 }
 
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.custom-dropdown-toggle {
+  width: 100%;
+  padding-right: 2.5rem;
+  text-align: left;
+  background-color: #ffffff;
+  border: 1px solid #d1d1d6;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 0.7rem;
+  box-shadow: 0 1px 2px rgba(15, 15, 30, 0.03);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.05s ease;
+  cursor: pointer;
+}
+
+.custom-dropdown-toggle:focus {
+  outline: none;
+  border-color: #E61E4D;
+  box-shadow: 0 0 0 3px rgba(230, 30, 77, 0.15);
+}
+
+.custom-dropdown-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.custom-dropdown-caret {
+  font-size: 0.7rem;
+  color: #8e8e93;
+  margin-left: 0.5rem;
+}
+
+.custom-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  margin-top: 0.35rem;
+  max-height: 220px;
+  overflow-y: auto;
+  background-color: #ffffff;
+  border-radius: 0.7rem;
+  box-shadow: 0 14px 30px rgba(15, 15, 30, 0.15);
+  z-index: 10;
+}
+
+.custom-dropdown-item {
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.custom-dropdown-item:hover {
+  background-color: #f5f5f7;
+}
+
+.custom-dropdown-item.selected {
+  background-color: #fde7ee;
+  font-weight: 500;
+}
+
 .page.two-container {
   display: flex;
   flex-direction: column;
@@ -195,13 +280,13 @@ form.new-spot-form {
 }
 
 .price-container {
-  border: 1px solid black;
+  border: 1px solid #d1d1d6;
   box-sizing: border-box;
   border-radius: .7em;
   display: flex;
   align-items: center;
   padding: 1em;
-  width: 92.6%;
+  width: 100%;
 }
 
 .multi-page-input.create-spot.price {
@@ -238,6 +323,7 @@ textarea.multi-page-input.create-spot {
   gap: .3em;
   max-width: 100%;
   border-radius: .7em;
+  margin-bottom: 0.75rem;
 }
 
 
@@ -278,10 +364,14 @@ textarea.multi-page-input.create-spot {
   width: 100%;
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0.5rem 0 0.25rem;
 }
 .page-errors > p {
   color: red;
   margin: 0;
+  font-size: 0.85rem;
 }
 
 .page-errors > p:before {
@@ -295,4 +385,35 @@ textarea.multi-page-input.create-spot {
   justify-content: center;
   align-items: center;
   position: relative;
+}
+
+@media (max-width: 900px) {
+  .host-page-container{
+    flex-direction: column;
+    min-height: auto;
+  }
+
+  .host-page-left-conatiner,
+  .host-page-right-container {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .host-page-left-conatiner {
+    min-height: 40vh;
+  }
+
+  .host-page-right-container {
+    padding: 2rem 1.5rem 3rem;
+  }
+
+  .create-spot-input-wrapper {
+    width: 100%;
+    padding: 2rem 1.75rem 2.5rem;
+  }
+
+  .page.zero-container {
+    position: relative;
+    top: 0;
+  }
 }

@@ -38,8 +38,14 @@ const restoreUser = (req, res, next) => {
   const { token } = req.cookies;
   req.user = null;
 
-  return jwt.verify(token, secret, null, async (err, jwtPayload) => {
+  // If no token, continue without authentication
+  if (!token) {
+    return next();
+  }
+
+  return jwt.verify(token, secret, async (err, jwtPayload) => {
     if (err) {
+      res.clearCookie('token');
       return next();
     }
 

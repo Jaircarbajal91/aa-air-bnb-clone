@@ -1,0 +1,36 @@
+.my-spots-header-bar {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 32px 40px 8px;
+  box-sizing: border-box;
+}
+
+.my-spots-header-inner {
+  width: 100%;
+  max-width: 1760px;
+  text-align: center;
+}
+
+.my-spots-header-inner h1 {
+  font-size: 2.4rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  margin: 0 0 6px 0;
+}
+
+.my-spots-header-inner p {
+  margin: 0;
+  color: #717171;
+  font-size: 0.98rem;
+}
+
+@media (max-width: 768px) {
+  .my-spots-header-bar {
+    padding: 20px 20px 4px;
+  }
+  .my-spots-header-inner h1 {
+    font-size: 2rem;
+  }
+}
+

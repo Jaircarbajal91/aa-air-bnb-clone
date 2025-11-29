@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux"
 import { Redirect, useHistory } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { createNewSpot } from "../../store/spots";
 import { getAllSpots } from "../../store/spots";
 import plus from '../Navigation/images/plus.svg'
@@ -8,8 +8,63 @@ import states from '../../utils/statesArray'
 import countryList from '../../utils/countryList'
 import exit from '../Navigation/images/exit.svg'
 import "./NewSpotForm.css"
-import { CommandCompleteMessage } from "pg-protocol/dist/messages";
 import LoadingAnimation from "../LoadingAnimation";
+
+function Dropdown({ value, onChange, options, placeholder }) {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  const selectedLabel = options.find(option => option.value === value)?.label || placeholder;
+
+  const handleSelect = (option) => {
+    onChange(option.value);
+    setIsOpen(false);
+  };
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isOpen]);
+
+  return (
+    <div ref={dropdownRef} className={`custom-dropdown ${isOpen ? 'open' : ''}`}>
+      <button
+        type="button"
+        className="custom-dropdown-toggle multi-page-input create-spot"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className="custom-dropdown-label">
+          {selectedLabel}
+        </span>
+        <span className="custom-dropdown-caret">▾</span>
+      </button>
+      {isOpen && (
+        <div className="custom-dropdown-menu">
+          {options.map(option => (
+            <div
+              key={option.value}
+              className={`custom-dropdown-item ${option.value === value ? 'selected' : ''}`}
+              onClick={() => handleSelect(option)}
+            >
+              {option.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 function NewSpotForm() {
   const sessionUser = useSelector(state => state.session.user)
@@ -25,13 +80,14 @@ function NewSpotForm() {
   const [message, setMessage] = useState("Welcome back!")
   const [hasSubmitted, setHasSubmitted] = useState(false)
   const [images, setImages] = useState([]);
-  const [uploadedFiles, setUploadedFiles] = useState([]);
   const [page, setPage] = useState(0)
   const [errors, setErrors] = useState([]);
   const [nameErrors, setNameErrors] = useState([])
   const [priceErrors, setPriceErrors] = useState([])
   const [addressErrors, setAddressErrors] = useState([])
   const [descriptionErrors, setDescriptionErrors] = useState([])
+  const [imageCountErrors, setImageCountErrors] = useState([])
+  const [imageErrors, setImageErrors] = useState([])
   const [isDisabled, setIsDisabled] = useState(true)
   const [previewImages, setPreviewImages] = useState([])
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -39,6 +95,8 @@ function NewSpotForm() {
   const dispatch = useDispatch()
 
   const spots = useSelector(state => state.spots?.orderedSpotsList)
+  const stateOptions = states.map(state => ({ value: state.abbreviation, label: state.name }))
+  const countryOptions = countryList.map(country => ({ value: country, label: country }))
 
   useEffect(() => {
     dispatch(getAllSpots())
@@ -98,7 +156,8 @@ function NewSpotForm() {
       }
       case (5): {
         setMessage("Let's us see your spot!")
-        if (images.length < 5) errors.images.push("Please add more images")
+        if (images.length < 1) errors.images.push("Please add at least 1 image")
+        if (images.length > 5) errors.images.push("Maximum 5 images allowed")
         break;
       }
       default:
@@ -119,6 +178,7 @@ function NewSpotForm() {
     setAddressErrors(errors.address)
     setPriceErrors(errors.price)
     setDescriptionErrors(errors.description)
+    setImageCountErrors(errors.images)
   }, [page, name, address, city, state, country, price, description, images.length])
 
 
@@ -156,29 +216,61 @@ function NewSpotForm() {
   // };
 
 
-  const getPreviewImages = async (uploaded) => {
-    const file = uploaded[uploaded.length - 1]
-    const reader = new FileReader(file)
+  const getPreviewImage = (file) => {
+    const reader = new FileReader()
     reader.readAsDataURL(file);
     reader.onloadend = function () {
-      setPreviewImages([...previewImages, reader.result])
+      setPreviewImages(prev => {
+        const newPreviewImages = [...prev, reader.result]
+        // Limit to 5 images
+        if (newPreviewImages.length > 5) return newPreviewImages.slice(0, 5)
+        return newPreviewImages
+      })
     }
   }
 
   const updateImages = async (files) => {
     const uploaded = [...images]
-    const length = uploaded.length
-    const file = files[files.length - 1]
-    const item = uploaded.find(uploadedFile => uploadedFile.name === file.name)
-    if (item) {
-      files.pop()
-    } else {
+    const allowedTypes = [
+      'image/png',
+      'image/jpeg',
+      'image/jpg',
+      'image/gif',
+      'image/webp'
+    ]
+
+    let hadInvalidType = false
+
+    for (const file of files) {
+      if (!allowedTypes.includes(file.type)) {
+        hadInvalidType = true
+        continue
+      }
+
+      const exists = uploaded.find(uploadedFile =>
+        uploadedFile.name === file.name && uploadedFile.lastModified === file.lastModified
+      )
+
+      if (exists) continue
+      if (uploaded.length >= 5) break
+
       uploaded.push(file)
+      getPreviewImage(file)
     }
+
+    if (hadInvalidType) {
+      setImageErrors([
+        "Only PNG, JPG, JPEG, GIF, or WEBP images are allowed. Unsupported files were ignored."
+      ])
+    } else {
+      setImageErrors([])
+    }
+
+    if (uploaded.length > 5) {
+      uploaded.splice(5)
+    }
+
     setImages(uploaded)
-    if (uploaded.length !== length) {
-      getPreviewImages(uploaded)
-    }
   }
   const handleFileEvent = (e) => {
     const chosenFiles = Array.prototype.slice.call(e.target.files)
@@ -271,33 +363,18 @@ function NewSpotForm() {
                 required
               />
               <div className="select-fields">
-                <select
-                  className="multi-page-input create-spot select"
+                <Dropdown
                   value={state}
-                  onChange={(e) => setState(e.target.value)}
-                  required
-                >
-                  <>
-                    <option disabled value="">Please select a state</option>
-                    {states.map(state => (
-                      <option key={state.name} value={state.abbreviation}>{state.name}</option>
-                    ))}
-                  </>
-                </select>
-                <select
-                  placeholder="Country"
-                  className="multi-page-input create-spot select"
+                  onChange={setState}
+                  options={stateOptions}
+                  placeholder="Please select a state"
+                />
+                <Dropdown
                   value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  required
-                >
-                  <>
-                    <option disabled value="">Please select a Country</option>
-                    {countryList.map(country => (
-                      <option key={country} value={country}>{country}</option>
-                    ))}
-                  </>
-                </select>
+                  onChange={setCountry}
+                  options={countryOptions}
+                  placeholder="Please select a Country"
+                />
               </div>
             </div>}
             {/* <input
@@ -367,19 +444,27 @@ function NewSpotForm() {
               <div className="preview-images-container">
                 {previewImages.length > 0 && previewImages.map((image, i) => (
                   <div key={i} className="current-preview-image">
-                    <img className="preview image" src={image} />
-                    <img onClick={(e) => removePreviewImage(image, i)} className='remove-preivew-img icon' src={exit} alt="" />
+                    <img className="preview image" src={image} alt={`Preview ${i + 1}`} />
+                    <img onClick={(e) => removePreviewImage(image, i)} className='remove-preivew-img icon' src={exit} alt="Remove" />
                   </div>
                 ))}
               </div>
-              <h2>Please add minimum 5 images:</h2>
+              <h2>Add 1-5 images (required):</h2>
+              {(imageCountErrors.length > 0 || imageErrors.length > 0) && (
+                <div className="page-errors">
+                  {imageCountErrors.map(error => (
+                    <p key={error}>{error}</p>
+                  ))}
+                  {imageErrors.map(error => (
+                    <p key={error}>{error}</p>
+                  ))}
+                </div>
+              )}
               <input
                 type="file"
                 className="file-select create-spot"
-                accept=".png,
-                            .jpeg,
-                            .jpg,
-                            .gif,"
+                accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+                multiple
                 onChange={handleFileEvent}
               />
             </div>}
@@ -404,3 +489,4 @@ function NewSpotForm() {
 }
 
 export default NewSpotForm
+

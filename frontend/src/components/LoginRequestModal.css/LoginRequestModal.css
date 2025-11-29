@@ -1,35 +1,78 @@
+.login-request-container {
+  display: flex;
+  flex-direction: column;
+  padding: 2rem 2.5rem 2.2rem;
+  min-width: 320px;
+  max-width: 420px;
+  gap: 1.5rem;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
 .exit-image-container {
   width: 100%;
   display: flex;
   align-items: center;
+  justify-content: flex-start;
 }
 
 .exit-image-container > img {
-  width: 5%;
+  width: 28px;
+  height: 28px;
   cursor: pointer;
-  padding: .2em;
-  display: flex;
+  padding: 0.25rem;
   border-radius: 50%;
-  transition: .2s ease-in-out;
+  transition: background-color 0.18s ease-out, transform 0.12s ease-out;
 }
 
 .exit-image-container > img:hover {
-  background-color: rgb(230, 229, 229);
+  background-color: rgb(243, 243, 243);
+  transform: scale(1.03);
+}
+
+.login-request-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.login-request-heading {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #222222;
+}
+
+.login-request-subtext {
+  margin: 0;
+  font-size: 0.93rem;
+  line-height: 1.4;
+  color: #717171;
 }
 
 .button.login-request {
-  background: linear-gradient(0.25turn, #E61E4D, #D70666);
+  background: linear-gradient(90deg, #ff385c, #e61e4d, #d70666);
   color: white;
   border: none;
-  padding: 1em 0;
-  border-radius: .5em;
-  width: 95%;
-  max-width: 95%;
+  padding: 0.9rem 1rem;
+  border-radius: 999px;
+  width: 100%;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
-  margin-top: 1em;
+  font-size: 0.98rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 10px 24px rgba(214, 6, 102, 0.35);
+  transition: transform 0.14s ease-out, box-shadow 0.14s ease-out, filter 0.2s ease-out;
+  margin-top: 0.25rem;
+}
+
+.button.login-request:hover {
+  filter: brightness(1.02);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(214, 6, 102, 0.45);
 }
 
 .button.login-request:active {
-  transform: scale(.97);
+  transform: translateY(0) scale(0.98);
+  box-shadow: 0 6px 18px rgba(214, 6, 102, 0.3);
 }

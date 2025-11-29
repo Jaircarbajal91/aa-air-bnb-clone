@@ -28,15 +28,10 @@ nav.main-navbar {
   height: 4em;
   z-index: 20;
 }
-.navbar-content-wrapper {
-  display: flex;
-  width: 59%;
-  justify-content: space-between;
-}
-
+.navbar-content-wrapper,
 .navbar-content-home {
   display: flex;
-  width: 81%;
+  width: 72%;
   box-sizing: border-box;
   justify-content: space-between;
 }

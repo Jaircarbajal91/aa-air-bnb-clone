@@ -23,7 +23,10 @@ app.use(express.json());
 
 if (!isProduction) {
   // enable cors only in development
-  app.use(cors());
+  app.use(cors({
+    credentials: true,
+    origin: true
+  }));
 }
 
 // helmet helps set a variety of headers to better secure your app,
@@ -43,6 +46,13 @@ app.use(
       secure: isProduction,
       sameSite: isProduction && 'Lax',
       httpOnly: true
+    },
+    // Configure to read token from XSRF-Token header
+    // Express normalizes headers to lowercase, so 'XSRF-Token' becomes 'xsrf-token'
+    value: (req) => {
+      return req.headers['xsrf-token'] || 
+             req.body._csrf ||
+             req.query._csrf;
     }
   })
 )
@@ -67,6 +77,13 @@ app.use((err, _req, _res, next) => {
   if (err instanceof ValidationError) {
     err.errors = err.errors.map((e) => e.message);
     err.title = 'Validation error';
+  }
+  // Handle CSRF token errors
+  if (err.code === 'EBADCSRFTOKEN') {
+    err.status = 403;
+    err.title = 'Forbidden';
+    err.message = 'Invalid CSRF token';
+    err.errors = ['Invalid CSRF token'];
   }
   next(err);
 });

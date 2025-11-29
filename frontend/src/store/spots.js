@@ -1,6 +1,7 @@
 import { csrfFetch } from './csrf';
 
 const GET_ALL_SPOTS = 'spots/getAllSpots';
+const GET_USER_SPOTS = 'spots/getUserSpots';
 const CREAT_NEW_SPOT = 'spots/createNewSpot';
 const UPDATE_SPOT = 'spots/updateSpot';
 const DELETE_SPOT = 'spots/deleteSpot';
@@ -17,6 +18,12 @@ const getSingleSpot = spot => {
 const getSpots = spots => {
   return {
     type: GET_ALL_SPOTS,
+    spots
+  };
+};
+const getUserSpots = spots => {
+  return {
+    type: GET_USER_SPOTS,
     spots
   };
 };
@@ -40,23 +47,45 @@ const deleteSpotAction = id => {
 }
 
 export const getAllSpots = () => async dispatch => {
-  const response = await csrfFetch('/api/spots');
-  if (response.ok) {
-    const spots = await response.json();
-    dispatch(getSpots(spots.Spots));
-    return response
+  try {
+    const response = await csrfFetch('/api/spots');
+    if (response.ok) {
+      const spots = await response.json();
+      dispatch(getSpots(spots.Spots));
+      return response
+    }
+    return response;
+  } catch (res) {
+    return res;
   }
-  return response;
+};
+
+export const getAllUserSpots = () => async dispatch => {
+  try {
+    const response = await csrfFetch('/api/spots/auth');
+    if (response.ok) {
+      const spots = await response.json();
+      dispatch(getUserSpots(spots));
+      return response;
+    }
+    return response;
+  } catch (res) {
+    return res;
+  }
 };
 
 export const getSpotDetails = (id) => async dispatch => {
-  const response = await csrfFetch(`/api/spots/${id}`);
-  if (response.ok) {
-    const spot = await response.json();
-    dispatch(getSingleSpot(spot));
-    return spot
+  try {
+    const response = await csrfFetch(`/api/spots/${id}`);
+    if (response.ok) {
+      const spot = await response.json();
+      dispatch(getSingleSpot(spot));
+      return spot
+    }
+    return response;
+  } catch (res) {
+    return res;
   }
-  return response;
 };
 
 export const createNewSpot = spot => async dispatch => {
@@ -158,8 +187,19 @@ const spotsReducer = (state = {}, action) => {
       action.spots.forEach(spot => {
         newState[spot.id] = spot
       })
-      newState.orderedSpotsList = [...action.spots.sort((a, b) => b.id - a.id)]
+      // Sort by number of images (descending)
+      // Each spot has 1 previewImage + additional Images array
+      newState.orderedSpotsList = [...action.spots.sort((a, b) => {
+        const aImageCount = 1 + (a.Images?.length || 0);
+        const bImageCount = 1 + (b.Images?.length || 0);
+        return bImageCount - aImageCount;
+      })]
       return newState
+    }
+    case GET_USER_SPOTS: {
+      const newState = { ...state };
+      newState.userSpotsList = [...action.spots];
+      return newState;
     }
     case GET_SPOT_DETAILS: {
       let newState = { ...state }
@@ -170,16 +210,52 @@ const spotsReducer = (state = {}, action) => {
     case DELETE_SPOT: {
       const newState = { ...state }
       delete newState[action.id]
+      if (Array.isArray(newState.orderedSpotsList)) {
+        newState.orderedSpotsList = newState.orderedSpotsList.filter(
+          (spot) => spot.id !== action.id
+        );
+      }
+      if (Array.isArray(newState.userSpotsList)) {
+        newState.userSpotsList = newState.userSpotsList.filter(
+          (spot) => spot.id !== action.id
+        );
+      }
       return newState
     }
     case UPDATE_SPOT: {
       let newState = { ...state };
       newState[action.spot.id] = action.spot
+      if (Array.isArray(newState.orderedSpotsList)) {
+        newState.orderedSpotsList = newState.orderedSpotsList.map((spot) =>
+          spot.id === action.spot.id ? action.spot : spot
+        );
+      }
+      if (Array.isArray(newState.userSpotsList)) {
+        newState.userSpotsList = newState.userSpotsList.map((spot) =>
+          spot.id === action.spot.id ? action.spot : spot
+        );
+      }
       return newState;
     }
     case CREAT_NEW_SPOT: {
       let newState = { ...state };
       newState[action.spot.id] = action.spot
+      // Add new spot to ordered list (at the front) so it appears on the home page
+      if (Array.isArray(newState.orderedSpotsList)) {
+        newState.orderedSpotsList = [
+          action.spot,
+          ...newState.orderedSpotsList.filter(spot => spot.id !== action.spot.id)
+        ];
+      } else {
+        newState.orderedSpotsList = [action.spot];
+      }
+      // Also keep user-specific list in sync
+      if (Array.isArray(newState.userSpotsList)) {
+        newState.userSpotsList = [
+          action.spot,
+          ...newState.userSpotsList.filter(spot => spot.id !== action.spot.id)
+        ];
+      }
       return newState;
     }
     default:

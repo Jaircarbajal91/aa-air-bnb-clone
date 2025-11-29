@@ -21,19 +21,19 @@ function Card({ spot }) {
       onClick={(e) => handleClick(e)}
     >
       <div className="card-container">
-        {spot && (<img src={`${spot.previewImage}`} className="spot-img" />)}
+        {spot && (
+          <div className="spot-img-wrapper">
+            <img src={`${spot.previewImage}`} className="spot-img" alt={`${spot.name || spot.city}`} />
+          </div>
+        )}
         <div className="spot-info-container">
           <div className="spot-info-left">
-            <div style={{
-              fontSize: '.9rem'
-            }}>{spot.city}, {spot.state}</div>
-            <p style={{
-              fontSize: '.9rem',
-              color: 'grey'
-            }}>{getRandomInt(100)} miles away</p>
-            <div><strong>${spot.price}</strong> <span style={{
-              fontSize: '.9rem'
-            }}>night</span></div>
+            <div className="spot-location">{spot.city}, {spot.state}</div>
+            <p className="spot-distance">{getRandomInt(100)} miles away</p>
+            <div className="spot-price">
+              <strong>${spot.price}</strong>
+              <span> night</span>
+            </div>
           </div>
           <div className="spot-info-right">
             <i className="fa-solid fa-star"></i>

@@ -59,7 +59,7 @@ function SignupFormPage({ setShowSignUpModal }) {
             required
           />
           <input
-            type="text"
+            type="email"
             value={email}
             className='form-input none'
             placeholder='Email'

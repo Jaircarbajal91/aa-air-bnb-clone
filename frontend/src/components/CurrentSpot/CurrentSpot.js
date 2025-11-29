@@ -16,6 +16,7 @@ import designedBy from '../Navigation/images/designedBy.svg'
 import CreateReviewModal from '../Reviews/CreateReviewModal'
 import UpdateReviewModal from '../Reviews/UpdateReviewModal'
 import DeleteReviewModal from '../Reviews/DeleteReviewModal'
+import MapModal from '../MapModal'
 import './CurrentSpot.css'
 
 
@@ -31,10 +32,12 @@ function CurrentSpot() {
   const [showReviewModal, setShowReviewModal] = useState(false)
   const [showUpdateReviewModal, setUpdateShowReviewModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [showMapModal, setShowMapModal] = useState(false)
   const [newReviewPosted, setNewReviewPosted] = useState(false)
   const [updateReviewPosted, setUpdateReviewPosted] = useState(false)
   const [deletedReviewPosted, setDeletedReviewPosted] = useState(false)
   const [spotImages, setSpotImages] = useState([])
+  const [allImages, setAllImages] = useState([])
   const [reviewToUpdate, setReviewToUpdate] = useState({ review: '' })
   const sessionUser = useSelector(state => state.session.user)
   const spot = useSelector(state => state.spots.selectedSpot?.[spotId])
@@ -42,8 +45,6 @@ function CurrentSpot() {
   const reviews = useSelector(state => state.reviews.orderedReviewsList)
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
-
-  const classNameSetter = [1, 2, 3, 4]
 
   const dispatch = useDispatch()
   useEffect(() => {
@@ -65,7 +66,23 @@ function CurrentSpot() {
   useEffect(() => {
     setFirstName(spot?.Owner.firstName[0].toUpperCase() + spot?.Owner.firstName.substring(1).toLowerCase())
     setLastName(spot?.Owner.lastName[0].toUpperCase() + spot?.Owner.lastName.substring(1).toLowerCase())
-    setSpotImages(spot?.Images)
+    setSpotImages(spot?.Images || [])
+    
+    // Combine previewImage with Images array (no duplication),
+    // limit to a maximum of 5 actual images
+    if (spot) {
+      const images = []
+      if (spot.previewImage) {
+        images.push({ url: spot.previewImage, isPreview: true })
+      }
+      if (spot.Images && spot.Images.length > 0) {
+        const additionalImages = spot.Images
+          .filter(img => img.url !== spot.previewImage)
+          .slice(0, 5 - images.length)
+        images.push(...additionalImages.map(img => ({ url: img.url, isPreview: false })))
+      }
+      setAllImages(images)
+    }
   }, [spot])
 
   if (isLoaded && !spot) {
@@ -78,6 +95,7 @@ function CurrentSpot() {
       {showReviewModal && <CreateReviewModal setNewReviewPosted={setNewReviewPosted} spot={spot} setShowReviewModal={setShowReviewModal} />}
       {showUpdateReviewModal && <UpdateReviewModal setUpdateReviewPosted={setUpdateReviewPosted} reviewToUpdate={reviewToUpdate} spot={spot} setUpdateShowReviewModal={setUpdateShowReviewModal} />}
       {showDeleteModal && <DeleteReviewModal setDeletedReviewPosted={setDeletedReviewPosted} reviewToUpdate={reviewToUpdate} setShowDeleteModal={setShowDeleteModal} />}
+      {showMapModal && <MapModal spot={spot} onClose={() => setShowMapModal(false)} />}
       <div className='current-spot-wrapper'>
         <div className='current-spot-content'>
           <div className='current-spot-top-container'>
@@ -89,7 +107,12 @@ function CurrentSpot() {
               <span className='current-spot-rating'>{rating} · </span>
               <u className='current-spot-rating'>{reviews.length} {reviews.length === 1 ? "review" : "reviews"}</u>
               <span className='current-spot-rating'> · Superhost · </span>
-              <span className='current-spot-location'>{spot.city}, {spot.state}, {spot.country}</span>
+              <span 
+                className='current-spot-location' 
+                onClick={() => setShowMapModal(true)}
+              >
+                {spot.city}, {spot.state}, {spot.country}
+              </span>
             </div>
             {spot.Owner.id === sessionUser?.id && (
               <div className='current-spot-buttons'>
@@ -114,28 +137,52 @@ function CurrentSpot() {
             )}
           </div>
         </div>
-        {spot && (
-          <div className='current-spot-img-container'>
-            <div className='preview-image main container'>
-              <img className='preview-image main' src={`${spot.previewImage}`} />
-            </div>
-            {classNameSetter.map((num, i) => {
-              let setClassName = ''
-              let counter = 0
-              if (i === 0) setClassName = 'preview-image top left'
-              if (i === 1) setClassName = 'preview-image top right'
-              if (i === 2) setClassName = 'preview-image bottom left'
-              if (i === 3) setClassName = 'preview-image bottom right'
-              return (
-                <div className={`${setClassName} container`}>
-                  <img key={i} className={setClassName} src={spotImages[i] ? spotImages[i].url : spot.previewImage} />
+        {spot && allImages.length > 0 && (
+          <div className={`current-spot-img-container images-count-${Math.min(allImages.length, 5)}`}>
+            {allImages.length === 1 ? (
+              // Single image - full width
+              <div className='preview-image main container single-image'>
+                <img className='preview-image main' src={allImages[0].url} alt={spot.name} />
+              </div>
+            ) : (
+              <>
+                {/* Main image (first image) */}
+                <div className='preview-image main container'>
+                  <img className='preview-image main' src={allImages[0].url} alt={spot.name} />
                 </div>
-              )
-            })}
-            {/* <img className='preview-image top left' src={`${spot.previewImage}`} />
-            <img className='preview-image top right' src={`${spot.previewImage}`} />
-            <img className='preview-image bottom left' src={`${spot.previewImage}`} />
-            <img className='preview-image bottom right' src={`${spot.previewImage}`} /> */}
+                {/* Additional images (2-5 total) */}
+                {allImages.slice(1, 5).map((img, i) => {
+                  let setClassName = ''
+                  const totalAdditional = allImages.length - 1
+                  
+                  if (totalAdditional === 1) {
+                    // 2 images total: main + 1 side image
+                    setClassName = 'preview-image side single'
+                  } else if (totalAdditional === 2) {
+                    // 3 images total: main + 2 stacked
+                    if (i === 0) setClassName = 'preview-image top stacked'
+                    if (i === 1) setClassName = 'preview-image bottom stacked'
+                  } else if (totalAdditional === 3) {
+                    // 4 images total: main + 3 (2x2 grid with one missing)
+                    if (i === 0) setClassName = 'preview-image top left'
+                    if (i === 1) setClassName = 'preview-image top right'
+                    if (i === 2) setClassName = 'preview-image bottom left'
+                  } else if (totalAdditional === 4) {
+                    // 5 images total: main + 4 (2x2 grid)
+                    if (i === 0) setClassName = 'preview-image top left'
+                    if (i === 1) setClassName = 'preview-image top right'
+                    if (i === 2) setClassName = 'preview-image bottom left'
+                    if (i === 3) setClassName = 'preview-image bottom right'
+                  }
+                  
+                  return (
+                    <div key={i} className={`${setClassName} container`}>
+                      <img className={setClassName} src={img.url} alt={spot.name} />
+                    </div>
+                  )
+                })}
+              </>
+            )}
           </div>
         )}
         <div className='booking-container'>

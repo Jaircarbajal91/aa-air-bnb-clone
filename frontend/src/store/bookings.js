@@ -88,7 +88,8 @@ export const createBookingThunk = (id, booking) => async dispatch => {
     dispatch(createBookingAction(createdBooking))
     return createdBooking
   }
-  return response
+  // Throw the response so it can be caught and handled in the component
+  throw response
 }
 export const updateBookingThunk = (id, booking) => async dispatch => {
   const response = await csrfFetch(`/api/bookings/auth/${id}`, {
@@ -100,10 +101,11 @@ export const updateBookingThunk = (id, booking) => async dispatch => {
   })
   if (response.ok) {
     const updatedBooking = await response.json()
-    dispatch(updateBookingAction(booking))
+    dispatch(updateBookingAction(updatedBooking))
     return updatedBooking
   }
-  return response
+  // Throw the response so it can be caught and handled in the component
+  throw response
 }
 export const deleteBookingThunk = id => async dispatch => {
   const response = await csrfFetch(`/api/bookings/auth/${id}`, {

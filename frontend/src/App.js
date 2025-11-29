@@ -10,6 +10,7 @@ import CurrentSpot from "./components/CurrentSpot/CurrentSpot";
 import NewSpotForm from "./components/NewSpotForm";
 import UserBookings from "./components/Bookings/AllUserBookings";
 import CurrentBooking from "./components/Bookings/CurrentBooking";
+import MySpots from "./components/MySpots";
 import Footer from "./components/Footer";
 import { getAllSpots } from "./store/spots";
 import { getAllUserBookingsThunk } from "./store/bookings";
@@ -17,11 +18,25 @@ import { getAllUserBookingsThunk } from "./store/bookings";
 function App() {
   const dispatch = useDispatch();
   const [isLoaded, setIsLoaded] = useState(false);
-  // const bookings = useSelector(state => state.bookings?.orderedBookingList)
-  // const sessionUser = useSelector(state => state.session?.user)
+  const [showWelcome, setShowWelcome] = useState(false);
+  const sessionUser = useSelector(state => state.session?.user);
   useEffect(() => {
-    dispatch(sessionActions.restoreUser()).then(() => setIsLoaded(true));
+    dispatch(sessionActions.restoreUser())
+      .then(() => setIsLoaded(true))
+      .catch(() => setIsLoaded(true)); // Set loaded even if restore fails
   }, [dispatch]);
+
+  useEffect(() => {
+    if (sessionUser) {
+      setShowWelcome(true);
+      const timer = setTimeout(() => {
+        setShowWelcome(false);
+      }, 6000);
+      return () => clearTimeout(timer);
+    } else {
+      setShowWelcome(false);
+    }
+  }, [sessionUser]);
 
   // useEffect(() => {
   //   if (sessionUser){
@@ -31,6 +46,18 @@ function App() {
   return (
     <>
       <Navigation isLoaded={isLoaded} />
+      {isLoaded && sessionUser && showWelcome && (
+        <div className="welcome-banner">
+          {(() => {
+            const rawName = sessionUser.firstName || sessionUser.username || '';
+            const name =
+              rawName.length > 0
+                ? rawName.charAt(0).toUpperCase() + rawName.slice(1)
+                : rawName;
+            return `Welcome back, ${name}!`;
+          })()}
+        </div>
+      )}
       {isLoaded && (
         <Switch>
           <Route exact path="/">
@@ -41,6 +68,9 @@ function App() {
           </Route>
           <ProtectedRoute exact path="/spots/create">
             <NewSpotForm />
+          </ProtectedRoute>
+          <ProtectedRoute exact path="/spots/mine">
+            <MySpots />
           </ProtectedRoute>
           <Route exact path="/spots/:spotId">
             <CurrentSpot />

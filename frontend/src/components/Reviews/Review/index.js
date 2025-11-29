@@ -11,11 +11,17 @@ const Review = ({ review, sessionUser, setUpdateShowReviewModal, setReviewToUpda
   return (
     <div className='review-container'>
       <div className='review-user-info-container'>
-        <img src={icon} alt="" />
-        <div className='review-user-info'>
-          <span className='review-name'>{firstName}</span>
-          <span className='review-date'>{formattedDate}</span>
+        <div className='review-user-main'>
+          <img src={icon} alt="" />
+          <div className='review-user-info'>
+            <span className='review-name'>{firstName}</span>
+            <span className='review-date'>{formattedDate}</span>
+          </div>
         </div>
+        <span className='review-stars'>
+          <i className="fa-solid fa-star"></i>
+          <span className='review-stars-value'>{Number(review.stars)}</span>
+        </span>
       </div>
       <div className='review-content-container'>
         <span>{content}</span>

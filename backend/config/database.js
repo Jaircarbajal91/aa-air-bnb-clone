@@ -1,8 +1,9 @@
+require('dotenv').config();
 const config = require(".");
 
 module.exports = {
   development: {
-    storage: config.dbFile,
+    storage: config.dbFile || 'db/dev.db',
     dialect: 'sqlite',
     seederStorage: 'sequelize',
     logQueryParameters: true,

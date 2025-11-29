@@ -1,4 +1,6 @@
-const AWS = require("aws-sdk");
+const { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require("@aws-sdk/client-s3");
+const { Upload } = require("@aws-sdk/lib-storage");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
 // name of your bucket here
 const NAME_OF_BUCKET = "jair-bnb";
 
@@ -9,7 +11,9 @@ const multer = require("multer");
 //  AWS_SECRET_ACCESS_KEY
 //  and aws will automatically use those environment variables
 
-const s3 = new AWS.S3({ apiVersion: "2006-03-01" });
+const s3 = new S3Client({ 
+  region: process.env.AWS_REGION || "us-east-1" 
+});
 
 // --------------------------- Public UPLOAD ------------------------
 
@@ -24,7 +28,13 @@ const singlePublicFileUpload = async (file) => {
     Body: buffer,
     ACL: "public-read",
   };
-  const result = await s3.upload(uploadParams).promise();
+  
+  const upload = new Upload({
+    client: s3,
+    params: uploadParams,
+  });
+  
+  const result = await upload.done();
 
   // save the name of the file in your bucket as the key in your database to retrieve for later
   return result.Location;
@@ -50,7 +60,13 @@ const singlePrivateFileUpload = async (file) => {
     Key,
     Body: buffer,
   };
-  const result = await s3.upload(uploadParams).promise();
+  
+  const upload = new Upload({
+    client: s3,
+    params: uploadParams,
+  });
+  
+  const result = await upload.done();
 
   // save the name of the file in your bucket as the key in your database to retrieve for later
   return result.Key;
@@ -64,13 +80,14 @@ const multiplePrivateFileUpload = async (files) => {
   );
 };
 
-const retrievePrivateFile = (key) => {
+const retrievePrivateFile = async (key) => {
   let fileUrl;
   if (key) {
-    fileUrl = s3.getSignedUrl("getObject", {
+    const command = new GetObjectCommand({
       Bucket: NAME_OF_BUCKET,
       Key: key,
     });
+    fileUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
   }
   return fileUrl || key;
 };
@@ -90,6 +107,7 @@ const multipleMulterUpload = (nameOfKey) =>
 
 module.exports = {
   s3,
+  DeleteObjectCommand,
   singlePublicFileUpload,
   multiplePublicFileUpload,
   singlePrivateFileUpload,

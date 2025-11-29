@@ -32,7 +32,7 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
   useEffect(() => {
     const newErrors = []
     if (name.length > 50) newErrors.push("Name must be less than 50 characters")
-    if (previewImages.length < 5) newErrors.push("You need at least 5 images")
+    if (previewImages.length > 5) newErrors.push("Maximum 5 images allowed")
     // if (Number(lat) > 90 || Number(lat) < -90) newErrors.push("Latitude is not valid")
     // if (Number(lng) > 180 || Number(lng) < -180) newErrors.push("Longitude is not valid")
     if (!newErrors.length) setIsDisabled(false)
@@ -88,7 +88,11 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
     const reader = new FileReader(file)
     reader.readAsDataURL(file);
     reader.onloadend = function () {
-      setPreviewImages([...previewImages, reader.result])
+      const newPreviewImages = [...previewImages, reader.result]
+      // Limit to 5 images
+      if (newPreviewImages.length <= 5) {
+        setPreviewImages(newPreviewImages)
+      }
     }
   }
 
@@ -97,13 +101,25 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
     const length = uploaded.length
     const file = files[files.length - 1]
     const item = uploaded.find(uploadedFile => uploadedFile.name === file.name)
+    
+    // Check if we're at the maximum of 5 images
+    if (uploaded.length >= 5 && !item) {
+      return // Don't add more images if we're at the limit
+    }
+    
     if (item) {
       files.pop()
     } else {
       uploaded.push(file)
     }
+    
+    // Ensure we don't exceed 5 images
+    if (uploaded.length > 5) {
+      uploaded.splice(5)
+    }
+    
     setImages(uploaded)
-    if (uploaded.length !== length) {
+    if (uploaded.length !== length && uploaded.length <= 5) {
       getPreviewImages(uploaded)
     }
   }
@@ -122,7 +138,7 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
       className="update-spot-form"
     >
       <div className="update-form header">
-        <h3>Update Spot Form</h3>
+        <h3>Update Spot</h3>
       </div>
       {hasSubmitted && errors.length > 0 && (
         <ul>
@@ -235,7 +251,7 @@ function UpdateSpotForm({ setShowUpdate, spot }) {
           onChange={(e) => setDescription(e.target.value)}
           required
         />
-        <span className="add-images update">Please add minimum 5 images:</span>
+        <span className="add-images update">Add up to 5 images (maximum):</span>
         <input
           type="file"
           className="file-select update-spot"
