@@ -1,0 +1,50 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install Heroku CLI
+        run: |
+          curl https://cli-assets.heroku.com/install.sh | sh
+
+      - name: Deploy to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
+        run: |
+          if [ -z "$HEROKU_APP_NAME" ]; then
+            echo "Error: HEROKU_APP_NAME secret is not set"
+            exit 1
+          fi
+          if [ -z "$HEROKU_API_KEY" ]; then
+            echo "Error: HEROKU_API_KEY secret is not set"
+            exit 1
+          fi
+          # Configure git with credentials
+          git config --global user.email "ci@github-actions"
+          git config --global user.name "GitHub Actions"
+          # Remove existing heroku remote if it exists
+          git remote remove heroku 2>/dev/null || true
+          # Set up git remote with authenticated URL
+          git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git
+          # Push to Heroku
+          git push heroku HEAD:main --force
+

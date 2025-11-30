@@ -8,7 +8,7 @@ const Footer = () => {
   return (
     <footer className="footer-container">
       <div className='footer-content-container'>
-        <a href="https://glowing-sundae-61a61d.netlify.app/" target="_blank" rel="noopener noreferrer">
+        <a href="https://jaircarbajal91.github.io/my-portfolio/" target="_blank" rel="noopener noreferrer">
           <img src={greet} alt="" />
           <span>Meet the developer</span>
         </a>
