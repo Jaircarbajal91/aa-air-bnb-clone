@@ -6,7 +6,7 @@
 
 **Live Demo:** https://jair-bnb.herokuapp.com/
 
----
+--- 
 
 ## Core Focus: Booking System with Advanced Date Conflict Detection
 
