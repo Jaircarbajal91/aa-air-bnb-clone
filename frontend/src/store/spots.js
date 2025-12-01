@@ -187,11 +187,11 @@ const spotsReducer = (state = {}, action) => {
       action.spots.forEach(spot => {
         newState[spot.id] = spot
       })
-      // Sort by number of images (descending)
-      // Each spot has 1 previewImage + additional Images array
+      // Sort by number of images (descending) - backend already sorts, but maintain order here
+      // Use imageCount from backend if available, otherwise calculate it
       newState.orderedSpotsList = [...action.spots.sort((a, b) => {
-        const aImageCount = 1 + (a.Images?.length || 0);
-        const bImageCount = 1 + (b.Images?.length || 0);
+        const aImageCount = a.imageCount || (1 + (a.Images?.length || 0));
+        const bImageCount = b.imageCount || (1 + (b.Images?.length || 0));
         return bImageCount - aImageCount;
       })]
       return newState

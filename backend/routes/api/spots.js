@@ -194,11 +194,22 @@ router.get('/', async (req, res) => {
         spotData.avgStarRating = "0";
       }
       
+      // Calculate total image count (previewImage + Images array)
+      const imageCount = 1 + (spotData.Images?.length || 0);
+      spotData.imageCount = imageCount;
+      
       // Remove Reviews from the response
       delete spotData.Reviews
       
       return spotData;
     })
+
+    // Sort spots by image count (descending - most images first)
+    processedSpots.sort((a, b) => {
+      const aCount = a.imageCount || 0;
+      const bCount = b.imageCount || 0;
+      return bCount - aCount;
+    });
 
     res.json({
       Spots: processedSpots,
