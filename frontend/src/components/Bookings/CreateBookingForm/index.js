@@ -224,9 +224,20 @@ function CreateBookingForm({ spot, bookings }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     
+    // DEBUG LOGGING
+    console.log('=== FRONTEND: BOOKING SUBMIT ===')
+    console.log('startDate:', startDate)
+    console.log('endDate:', endDate)
+    console.log('Client timezone:', Intl.DateTimeFormat().resolvedOptions().timeZone)
+    console.log('Client current time:', new Date().toISOString())
+    
     // Ensure checkout is always at least 1 day after check-in (handled by date pickers)
     const startDateObj = parseLocalDate(startDate)
     const endDateObj = parseLocalDate(endDate)
+    
+    console.log('startDateObj:', startDateObj?.toISOString())
+    console.log('endDateObj:', endDateObj?.toISOString())
+    
     if (startDateObj && endDateObj && endDateObj.getTime() <= startDateObj.getTime()) {
       // Auto-adjust end date to be 1 day after start if somehow they're equal
       const minEnd = new Date(startDateObj)
@@ -249,11 +260,13 @@ function CreateBookingForm({ spot, bookings }) {
     setHasSubmitted(true)
     setErrors([]) // Clear previous errors
     try {
+      console.log('Sending booking request with:', { startDate, endDate })
       const booking = await dispatch(createBookingThunk(spot.id, { startDate, endDate }))
       if (booking && booking.id) {
         history.push(`/bookings/${booking.id}`)
       }
     } catch (err) {
+      console.log('❌ Booking creation error:', err)
       let errorData;
       try {
         errorData = await err.json()

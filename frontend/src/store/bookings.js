@@ -76,6 +76,11 @@ export const getAllBookingsForSpotThunk = id => async dispatch => {
   return errors;
 }
 export const createBookingThunk = (id, booking) => async dispatch => {
+  console.log('=== THUNK: Creating booking ===')
+  console.log('Spot ID:', id)
+  console.log('Booking data:', booking)
+  console.log('Request URL:', `/api/bookings/auth/${id}`)
+  
   const response = await csrfFetch(`/api/bookings/auth/${id}`, {
     method: "POST",
     headers: {
@@ -83,11 +88,22 @@ export const createBookingThunk = (id, booking) => async dispatch => {
     },
     body: JSON.stringify(booking)
   })
+  
+  console.log('Response status:', response.status)
+  console.log('Response ok:', response.ok)
+  
   if (response.ok) {
     const createdBooking = await response.json()
+    console.log('✅ Booking created successfully:', createdBooking)
     dispatch(createBookingAction(createdBooking))
     return createdBooking
   }
+  
+  // Log error response
+  const errorData = await response.clone().json().catch(() => ({}))
+  console.log('❌ THUNK: Booking creation failed')
+  console.log('Error response:', errorData)
+  
   // Throw the response so it can be caught and handled in the component
   throw response
 }

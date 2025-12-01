@@ -87,6 +87,14 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
     "errors": {}
   }
   const {startDate, endDate} = req.body;
+  
+  // DEBUG LOGGING
+  console.log('=== BOOKING CREATE REQUEST ===')
+  console.log('Received startDate:', startDate)
+  console.log('Received endDate:', endDate)
+  console.log('Server timezone:', Intl.DateTimeFormat().resolvedOptions().timeZone)
+  console.log('Server current time:', new Date().toISOString())
+  
   if (!startDate) err.errors.startDate = "Start date is required"
   if (!endDate) err.errors.endDate = "End date is required"
   if (startDate > endDate) err.errors.endDate = "endDate cannot come before startDate"
@@ -96,37 +104,49 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
   }
   
   // Ensure bookings are at least 1 day ahead (start date must be tomorrow or later)
-  // Parse dates as local dates (not UTC) to avoid timezone issues
+  // Use UTC dates consistently to avoid timezone issues across different server/client timezones
   
-  // Parse date string as local date (YYYY-MM-DD format)
-  const parseLocalDate = (dateString) => {
+  // Parse date string as UTC date (YYYY-MM-DD format)
+  const parseUTCDate = (dateString) => {
     const [year, month, day] = dateString.split('-').map(Number)
-    const date = new Date(year, month - 1, day)
-    date.setHours(0, 0, 0, 0, 0)
+    // Create date in UTC to avoid timezone issues
+    const date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0))
     return date
   }
   
-  // Get today's date as YYYY-MM-DD string and parse it consistently
-  // This ensures we compare dates in the same timezone context
+  // Get today's date in UTC as YYYY-MM-DD string and parse it consistently
   const now = new Date()
-  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-  const today = parseLocalDate(todayStr)
-  const tomorrow = new Date(today)
-  tomorrow.setDate(tomorrow.getDate() + 1)
+  const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0))
+  const todayStr = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}`
+  const tomorrow = new Date(todayUTC)
+  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1)
   
-  const startDateObj = parseLocalDate(startDate)
-  const endDateObj = parseLocalDate(endDate)
+  const startDateObj = parseUTCDate(startDate)
+  const endDateObj = parseUTCDate(endDate)
+  
+  // DEBUG LOGGING
+  console.log('Today UTC string:', todayStr)
+  console.log('Today UTC:', todayUTC.toISOString(), '| getTime():', todayUTC.getTime())
+  console.log('Tomorrow UTC:', tomorrow.toISOString(), '| getTime():', tomorrow.getTime())
+  console.log('Start date UTC:', startDateObj.toISOString(), '| getTime():', startDateObj.getTime())
+  console.log('End date UTC:', endDateObj.toISOString(), '| getTime():', endDateObj.getTime())
+  console.log('Comparison: startDateObj.getTime() < tomorrow.getTime() =', startDateObj.getTime() < tomorrow.getTime())
+  console.log('Difference in ms:', startDateObj.getTime() - tomorrow.getTime())
+  console.log('Difference in days:', (startDateObj.getTime() - tomorrow.getTime()) / (1000 * 60 * 60 * 24))
   
   // Check if start date is at least tomorrow
   if (startDateObj.getTime() < tomorrow.getTime()) {
+    console.log('❌ VALIDATION FAILED: Start date is not at least 1 day in advance')
     return res.status(400).json({
       "message": "Start date must be at least 1 day in advance",
       "statusCode": 400
     })
   }
   
+  console.log('✅ Start date validation passed')
+  
   // Check if end date is in the past
-  if (endDateObj.getTime() < today.getTime()) {
+  if (endDateObj.getTime() < todayUTC.getTime()) {
     return res.status(400).json({
       "message": "Can't book a spot in the past",
       "statusCode": 400
@@ -163,26 +183,22 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
   const newStartTime = startDateObj.getTime()
   const newEndTime = endDateObj.getTime()
   
-  // Helper to parse date strings from database as local dates
+  // Helper to parse date strings from database as UTC dates
   const parseDbDate = (dateString) => {
     // dateString might be a Date object or string
     if (dateString instanceof Date) {
       const date = new Date(dateString)
-      date.setHours(0, 0, 0, 0, 0)
-      return date
+      return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0, 0))
     }
     const dateStr = dateString.toString()
     if (dateStr.includes('T')) {
-      // ISO format with time
+      // ISO format with time - parse and convert to UTC date
       const date = new Date(dateStr)
-      date.setHours(0, 0, 0, 0, 0)
-      return date
+      return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0, 0))
     }
-    // YYYY-MM-DD format
+    // YYYY-MM-DD format - parse as UTC
     const [year, month, day] = dateStr.split('-').map(Number)
-    const date = new Date(year, month - 1, day)
-    date.setHours(0, 0, 0, 0, 0)
-    return date
+    return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0))
   }
   
   for (let dates of allDates) {
@@ -346,26 +362,25 @@ router.put('/auth/:bookingId', requireAuth, async (req, res, next) => {
   }
   
   // Ensure bookings are at least 1 day ahead (start date must be tomorrow or later)
-  // Parse dates as local dates (not UTC) to avoid timezone issues
+  // Use UTC dates consistently to avoid timezone issues across different server/client timezones
   
-  // Parse date string as local date (YYYY-MM-DD format)
-  const parseLocalDate = (dateString) => {
+  // Parse date string as UTC date (YYYY-MM-DD format)
+  const parseUTCDate = (dateString) => {
     const [year, month, day] = dateString.split('-').map(Number)
-    const date = new Date(year, month - 1, day)
-    date.setHours(0, 0, 0, 0, 0)
+    // Create date in UTC to avoid timezone issues
+    const date = new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0))
     return date
   }
   
-  // Get today's date as YYYY-MM-DD string and parse it consistently
-  // This ensures we compare dates in the same timezone context
+  // Get today's date in UTC as YYYY-MM-DD string and parse it consistently
   const now = new Date()
-  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-  const today = parseLocalDate(todayStr)
-  const tomorrow = new Date(today)
-  tomorrow.setDate(tomorrow.getDate() + 1)
+  const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0))
+  const todayStr = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}`
+  const tomorrow = new Date(todayUTC)
+  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1)
   
-  const startDateObj = parseLocalDate(startDate)
-  const endDateObj = parseLocalDate(endDate)
+  const startDateObj = parseUTCDate(startDate)
+  const endDateObj = parseUTCDate(endDate)
   
   // Check if start date is at least tomorrow
   if (startDateObj.getTime() < tomorrow.getTime()) {
@@ -376,7 +391,7 @@ router.put('/auth/:bookingId', requireAuth, async (req, res, next) => {
   }
   
   // Check if end date is in the past
-  if (endDateObj.getTime() < today.getTime()) {
+  if (endDateObj.getTime() < todayUTC.getTime()) {
     return res.status(400).json({
       "message": "Cannot set bookings in the past",
       "statusCode": 400
@@ -402,26 +417,22 @@ router.put('/auth/:bookingId', requireAuth, async (req, res, next) => {
   const newStartTime = startDateObj.getTime()
   const newEndTime = endDateObj.getTime()
   
-  // Helper to parse date strings from database as local dates
+  // Helper to parse date strings from database as UTC dates
   const parseDbDate = (dateString) => {
     // dateString might be a Date object or string
     if (dateString instanceof Date) {
       const date = new Date(dateString)
-      date.setHours(0, 0, 0, 0, 0)
-      return date
+      return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0, 0))
     }
     const dateStr = dateString.toString()
     if (dateStr.includes('T')) {
-      // ISO format with time
+      // ISO format with time - parse and convert to UTC date
       const date = new Date(dateStr)
-      date.setHours(0, 0, 0, 0, 0)
-      return date
+      return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0, 0))
     }
-    // YYYY-MM-DD format
+    // YYYY-MM-DD format - parse as UTC
     const [year, month, day] = dateStr.split('-').map(Number)
-    const date = new Date(year, month - 1, day)
-    date.setHours(0, 0, 0, 0, 0)
-    return date
+    return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0))
   }
   
   for (let dates of allDates) {
@@ -489,33 +500,30 @@ router.delete('/auth/:bookingId', requireAuth, async (req, res) => {
   }
   const {startDate} = booking.toJSON()
 
-  // Parse dates as local dates to avoid timezone issues
-  const parseLocalDate = (dateString) => {
+  // Parse dates as UTC dates to avoid timezone issues
+  const parseUTCDate = (dateString) => {
     if (!dateString) return null
     if (dateString instanceof Date) {
       const date = new Date(dateString)
-      date.setHours(0, 0, 0, 0, 0)
-      return date
+      return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0, 0))
     }
     const dateStr = dateString.toString()
     if (dateStr.includes('T')) {
-      // ISO format with time
+      // ISO format with time - parse and convert to UTC date
       const date = new Date(dateStr)
-      date.setHours(0, 0, 0, 0, 0)
-      return date
+      return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0, 0))
     }
-    // YYYY-MM-DD format - parse as local date
+    // YYYY-MM-DD format - parse as UTC date
     const [year, month, day] = dateStr.split('-').map(Number)
-    const date = new Date(year, month - 1, day)
-    date.setHours(0, 0, 0, 0, 0)
-    return date
+    return new Date(Date.UTC(year, month - 1, day, 0, 0, 0, 0))
   }
 
-  const bookingStartDate = parseLocalDate(startDate)
-  // Get today's date as YYYY-MM-DD string and parse it consistently
+  const bookingStartDate = parseUTCDate(startDate)
+  // Get today's date in UTC as YYYY-MM-DD string and parse it consistently
   const now = new Date()
-  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
-  const today = parseLocalDate(todayStr)
+  const todayUTC = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0, 0))
+  const todayStr = `${now.getUTCFullYear()}-${String(now.getUTCMonth() + 1).padStart(2, '0')}-${String(now.getUTCDate()).padStart(2, '0')}`
+  const today = parseUTCDate(todayStr)
 
   // Only prevent deletion if the booking has already started (start date is today or in the past)
   if (bookingStartDate && bookingStartDate.getTime() < today.getTime()) {
