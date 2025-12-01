@@ -131,19 +131,44 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
   console.log('Start date UTC:', startDateObj.toISOString(), '| getTime():', startDateObj.getTime())
   console.log('End date UTC:', endDateObj.toISOString(), '| getTime():', endDateObj.getTime())
   console.log('Comparison: startDateObj.getTime() < tomorrow.getTime() =', startDateObj.getTime() < tomorrow.getTime())
+  console.log('Comparison: startDateObj.getTime() === todayUTC.getTime() =', startDateObj.getTime() === todayUTC.getTime())
   console.log('Difference in ms:', startDateObj.getTime() - tomorrow.getTime())
   console.log('Difference in days:', (startDateObj.getTime() - tomorrow.getTime()) / (1000 * 60 * 60 * 24))
   
-  // Check if start date is at least tomorrow
-  if (startDateObj.getTime() < tomorrow.getTime()) {
-    console.log('❌ VALIDATION FAILED: Start date is not at least 1 day in advance')
+  // Check if start date is at least tomorrow (or today if it's early enough in the day)
+  // Allow same-day bookings if it's before 2 PM UTC (gives users in earlier timezones a chance)
+  const currentHourUTC = now.getUTCHours()
+  const allowSameDay = currentHourUTC < 14 // Before 2 PM UTC
+  
+  console.log('Current hour UTC:', currentHourUTC, '| Allow same day:', allowSameDay)
+  
+  if (startDateObj.getTime() < todayUTC.getTime()) {
+    // Start date is in the past
+    console.log('❌ VALIDATION FAILED: Start date is in the past')
     return res.status(400).json({
       "message": "Start date must be at least 1 day in advance",
       "statusCode": 400
     })
+  } else if (startDateObj.getTime() === todayUTC.getTime() && !allowSameDay) {
+    // Start date is today but it's too late in the day
+    console.log('❌ VALIDATION FAILED: Start date is today but it\'s too late (current hour UTC:', currentHourUTC, ')')
+    return res.status(400).json({
+      "message": "Start date must be at least 1 day in advance",
+      "statusCode": 400
+    })
+  } else if (startDateObj.getTime() === todayUTC.getTime() && allowSameDay) {
+    // Start date is today and we allow it (early enough in the day)
+    console.log('✅ Start date is today and allowed (current hour UTC:', currentHourUTC, ')')
+  } else if (startDateObj.getTime() < tomorrow.getTime()) {
+    // This shouldn't happen, but just in case
+    console.log('❌ VALIDATION FAILED: Start date is between today and tomorrow')
+    return res.status(400).json({
+      "message": "Start date must be at least 1 day in advance",
+      "statusCode": 400
+    })
+  } else {
+    console.log('✅ Start date validation passed (start date is tomorrow or later)')
   }
-  
-  console.log('✅ Start date validation passed')
   
   // Check if end date is in the past
   if (endDateObj.getTime() < todayUTC.getTime()) {
@@ -382,8 +407,25 @@ router.put('/auth/:bookingId', requireAuth, async (req, res, next) => {
   const startDateObj = parseUTCDate(startDate)
   const endDateObj = parseUTCDate(endDate)
   
-  // Check if start date is at least tomorrow
-  if (startDateObj.getTime() < tomorrow.getTime()) {
+  // Check if start date is at least tomorrow (or today if it's early enough in the day)
+  // Allow same-day bookings if it's before 2 PM UTC (gives users in earlier timezones a chance)
+  const currentHourUTC = now.getUTCHours()
+  const allowSameDay = currentHourUTC < 14 // Before 2 PM UTC
+  
+  if (startDateObj.getTime() < todayUTC.getTime()) {
+    // Start date is in the past
+    return res.status(400).json({
+      "message": "Start date must be at least 1 day in advance",
+      "statusCode": 400
+    })
+  } else if (startDateObj.getTime() === todayUTC.getTime() && !allowSameDay) {
+    // Start date is today but it's too late in the day
+    return res.status(400).json({
+      "message": "Start date must be at least 1 day in advance",
+      "statusCode": 400
+    })
+  } else if (startDateObj.getTime() < tomorrow.getTime() && startDateObj.getTime() !== todayUTC.getTime()) {
+    // This shouldn't happen, but just in case
     return res.status(400).json({
       "message": "Start date must be at least 1 day in advance",
       "statusCode": 400
