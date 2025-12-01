@@ -304,15 +304,6 @@ router.post('/auth', multipleMulterUpload("images"), requireAuth, async (req, re
 
 router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (req, res, next) => {
   try {
-    console.log('=== SPOT UPDATE REQUEST ===');
-    console.log('Spot ID:', req.params.spotId);
-    console.log('Request body keys:', Object.keys(req.body));
-    console.log('Request files:', req.files ? req.files.length : 'No files');
-    console.log('imagesToDelete:', req.body.imagesToDelete);
-    console.log('AWS_ACCESS_KEY_ID exists:', !!process.env.AWS_ACCESS_KEY_ID);
-    console.log('AWS_SECRET_ACCESS_KEY exists:', !!process.env.AWS_SECRET_ACCESS_KEY);
-    console.log('AWS_REGION:', process.env.AWS_REGION || 'us-east-1');
-    
     const { spotId } = req.params;
     const { address, city, state, country, lat, lng, name, description, price, imagesToDelete } = req.body;
     
@@ -330,8 +321,6 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
         "statusCode": 403
       })
     }
-    
-    console.log('Spot found, owner verified');
 
     let previewImageDeleted = false;
     if (Array.isArray(imagesToDelete)) {
@@ -384,29 +373,17 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
       }
     }
 
-    console.log('About to upload files. req.files:', req.files ? `${req.files.length} file(s)` : 'undefined');
-    console.log('req.files details:', req.files ? req.files.map(f => ({ name: f.originalname, size: f.size })) : 'No files');
-    
     let spotImages = [];
     if (req.files && req.files.length > 0) {
-      console.log('Attempting to upload', req.files.length, 'file(s) to S3...');
       try {
         spotImages = await multiplePublicFileUpload(req.files);
-        console.log('✅ Successfully uploaded', spotImages.length, 'file(s) to S3');
-        console.log('Uploaded URLs:', spotImages);
       } catch (uploadError) {
-        console.error('❌ Error uploading files to S3:', uploadError);
-        console.error('Upload error name:', uploadError.name);
-        console.error('Upload error message:', uploadError.message);
-        console.error('Upload error stack:', uploadError.stack);
         return res.status(500).json({
           "message": "Error uploading images",
           "statusCode": 500,
           "error": process.env.NODE_ENV === 'development' ? uploadError.message : "Failed to upload images to storage"
         });
       }
-    } else {
-      console.log('No files to upload');
     }
     
     let newPreviewImage;
@@ -415,10 +392,8 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
     if (previewImageDeleted) {
       if (spotImages.length > 0) {
         newPreviewImage = spotImages.shift();
-        console.log('Preview image deleted, using new preview image:', newPreviewImage);
       } else {
         // If preview image was deleted but no new images uploaded, require a new preview image
-        console.log('❌ Preview image deleted but no new images uploaded');
         return res.status(400).json({
           "message": "Validation Error",
           "statusCode": 400,
@@ -472,7 +447,6 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
 
     // Create new images if any were uploaded
     if (spotImages.length > 0) {
-      console.log('Creating', spotImages.length, 'image record(s) in database...');
       for (let i = 0; i < spotImages.length; i++) {
         await Image.create({
           url: spotImages[i],
@@ -481,29 +455,21 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
           imageableId: i
         })
       }
-      console.log('✅ Image records created');
     }
     
-    console.log('Saving spot updates...');
     await spot.save()
-    console.log('✅ Spot saved');
     
     // Reload spot with images association
-    console.log('Reloading spot with images...');
     const updatedSpot = await Spot.findByPk(spotId, {
       include: [{
         model: Image,
         as: 'Images'
       }]
     })
-    console.log('✅ Spot update complete');
     
     res.status(200).json(updatedSpot);
   } catch (err) {
-    console.error('❌ Error updating spot:', err);
-    console.error('Error name:', err.name);
-    console.error('Error message:', err.message);
-    console.error('Error stack:', err.stack);
+    console.error('Error updating spot:', err);
     next(err);
   }
 })
