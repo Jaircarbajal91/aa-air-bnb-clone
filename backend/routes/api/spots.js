@@ -302,24 +302,62 @@ router.post('/auth', multipleMulterUpload("images"), requireAuth, async (req, re
   res.status(201).json(spot);
 })
 
-router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (req, res) => {
-  const { spotId } = req.params;
-  const { address, city, state, country, lat, lng, name, description, price, imagesToDelete } = req.body;
-  let spot = await Spot.findByPk(spotId);
+router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (req, res, next) => {
+  try {
+    const { spotId } = req.params;
+    const { address, city, state, country, lat, lng, name, description, price, imagesToDelete } = req.body;
+    
+    // Check if spot exists and user has permission FIRST
+    let spot = await Spot.findByPk(spotId);
+    if (!spot) {
+      return res.status(404).json({
+        "message": "Spot couldn't be found",
+        "statusCode": 404
+      })
+    }
+    if (spot.ownerId !== req.user.id) {
+      return res.status(403).json({
+        "message": "Forbidden",
+        "statusCode": 403
+      })
+    }
 
-  let previewImageDeleted = false;
-  if (Array.isArray(imagesToDelete)) {
-    for (let image of imagesToDelete) {
+    let previewImageDeleted = false;
+    if (Array.isArray(imagesToDelete)) {
+      for (let image of imagesToDelete) {
+        const imageToDelete = await Image.findOne({
+          where: {
+            url: image
+          }
+        })
+        if (imageToDelete) {
+          await imageToDelete.destroy()
+        }
+        const splitUrl = image.split('/')
+        const key = splitUrl[splitUrl.length - 1]
+        const command = new DeleteObjectCommand({
+          Bucket: 'jair-bnb',
+          Key: key
+        });
+        try {
+          await s3.send(command);
+        } catch (err) {
+          console.error('Error deleting S3 object:', err);
+        }
+        if (image === spot.previewImage) {
+          previewImageDeleted = true
+        }
+      }
+    } else if (typeof imagesToDelete === 'string' && imagesToDelete) {
       const imageToDelete = await Image.findOne({
         where: {
-          url: image
+          url: imagesToDelete
         }
       })
       if (imageToDelete) {
         await imageToDelete.destroy()
       }
-      console.log(image)
-      const splitUrl = image.split('/')
+      const splitUrl = imagesToDelete.split('/')
       const key = splitUrl[splitUrl.length - 1]
       const command = new DeleteObjectCommand({
         Bucket: 'jair-bnb',
@@ -327,104 +365,102 @@ router.put('/auth/:spotId', multipleMulterUpload("images"), requireAuth, async (
       });
       try {
         await s3.send(command);
-        console.log('Successfully deleted object:', key);
       } catch (err) {
-        console.log(err, err.stack); // an error occurred
+        console.error('Error deleting S3 object:', err);
       }
-      if (image === spot.previewImage) {
+      if (imagesToDelete === spot.previewImage) {
         previewImageDeleted = true
       }
     }
-  } else if (typeof imagesToDelete === 'string') {
-    const splitUrl = imagesToDelete.split('/')
-      const key = splitUrl[splitUrl.length - 1]
-      const command = new DeleteObjectCommand({
-        Bucket: 'jair-bnb',
-        Key: key
-      });
-      try {
-        await s3.send(command);
-        console.log('Successfully deleted object:', key);
-      } catch (err) {
-        console.log(err, err.stack); // an error occurred
+
+    const spotImages = await multiplePublicFileUpload(req.files);
+    let newPreviewImage;
+    let previewImage = spot.previewImage;
+    
+    if (previewImageDeleted) {
+      if (spotImages.length > 0) {
+        newPreviewImage = spotImages.shift();
+      } else {
+        // If preview image was deleted but no new images uploaded, require a new preview image
+        return res.status(400).json({
+          "message": "Validation Error",
+          "statusCode": 400,
+          "errors": {
+            "previewImage": "Preview image is required when deleting the current preview image"
+          }
+        })
       }
-    previewImageDeleted = true
-  }
-
-  const spotImages = await multiplePublicFileUpload(req.files);
-  let newPreviewImage;
-  let previewImage = spot.previewImage
-  if (previewImageDeleted) {
-    newPreviewImage = spotImages.shift()
-  }
-
-  if (!spot) {
-    return res.status(404).json({
-      "message": "Spot couldn't be found",
-      "statusCode": 404
-    })
-  }
-  if (spot.ownerId !== req.user.id) {
-    return res.status(403).json({
-      "message": "Forbidden",
-      "statusCode": 403
-    })
-  }
-
-  const error = {
-    "message": "Validation Error",
-    "statusCode": 400,
-    "errors": {}
-  }
-
-  if (!address) error.errors.address = "Street address is required"
-  if (!city) error.errors.city = "City is required"
-  if (!state) error.errors.state = "State is required"
-  if (!country) error.errors.country = "Country is required"
-  if (!lat) error.errors.lat = "Latitude is required"
-  if (Number(lat) > 90 || Number(lat) < -90) error.errors.lat = "Latitude is not valid"
-  if (!lng) error.errors.lng = "Longitude is required"
-  if (Number(lng) > 180 || Number(lng) < -180) error.errors.lat = "Longitude is not valid"
-  if (!name) error.errors.name = "Name is required"
-  if (name?.length > 50) error.errors.name = "Name must be less than 50 characters"
-  if (!description) error.errors.description = "Description is required"
-  if (!price) error.errors.price = "Price per day is required"
-  if (!previewImage) error.errors.previewImage = "Preview Image is required"
-
-  if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !previewImage || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || (Number(lng) > 180 || Number(lng) < -180)) {
-    res.statusCode = 400;
-    return res.json(error);
-  }
-
-  spot.address = address
-  spot.city = city
-  spot.state = state
-  spot.lat = lat
-  spot.lng = lng
-  spot.name = name
-  spot.description = description
-  spot.price = price
-  spot.previewImage = previewImage
-  spot.country = country
-  previewImageDeleted ? spot.previewImage = newPreviewImage : spot.previewImage = previewImage
-
-
-  for (let i = 0; i < spotImages.length; i++) {
-    await Image.create({
-      url: spotImages[i],
-      spotId,
-      imageableType: "Spot",
-      imageableId: i
-    })
-  }
-  let allSpotImagesArr = await Image.findAll({
-    where: {
-      spotId
     }
-  })
 
-  await spot.save()
-  res.status(200).json(spot);
+    const error = {
+      "message": "Validation Error",
+      "statusCode": 400,
+      "errors": {}
+    }
+
+    if (!address) error.errors.address = "Street address is required"
+    if (!city) error.errors.city = "City is required"
+    if (!state) error.errors.state = "State is required"
+    if (!country) error.errors.country = "Country is required"
+    if (!lat) error.errors.lat = "Latitude is required"
+    if (Number(lat) > 90 || Number(lat) < -90) error.errors.lat = "Latitude is not valid"
+    if (!lng) error.errors.lng = "Longitude is required"
+    if (Number(lng) > 180 || Number(lng) < -180) error.errors.lng = "Longitude is not valid"
+    if (!name) error.errors.name = "Name is required"
+    if (name?.length > 50) error.errors.name = "Name must be less than 50 characters"
+    if (!description) error.errors.description = "Description is required"
+    if (!price) error.errors.price = "Price per day is required"
+    
+    // Determine the final preview image
+    const finalPreviewImage = previewImageDeleted ? newPreviewImage : previewImage;
+    if (!finalPreviewImage) {
+      error.errors.previewImage = "Preview Image is required"
+    }
+
+    if (!address || !city || !state || !country || !lat || !lng || !name || !description || !price || !finalPreviewImage || name?.length > 50 || (Number(lat) > 90 || Number(lat) < -90) || (Number(lng) > 180 || Number(lng) < -180)) {
+      res.statusCode = 400;
+      return res.json(error);
+    }
+
+    spot.address = address
+    spot.city = city
+    spot.state = state
+    spot.lat = lat
+    spot.lng = lng
+    spot.name = name
+    spot.description = description
+    spot.price = price
+    spot.previewImage = finalPreviewImage
+    spot.country = country
+
+    // Create new images if any were uploaded
+    if (spotImages.length > 0) {
+      for (let i = 0; i < spotImages.length; i++) {
+        await Image.create({
+          url: spotImages[i],
+          spotId,
+          imageableType: "Spot",
+          imageableId: i
+        })
+      }
+    }
+    
+    await spot.save()
+    
+    // Reload spot with images association
+    const updatedSpot = await Spot.findByPk(spotId, {
+      include: [{
+        model: Image,
+        as: 'Images'
+      }]
+    })
+    
+    res.status(200).json(updatedSpot);
+  } catch (err) {
+    console.error('Error updating spot:', err);
+    console.error('Error stack:', err.stack);
+    next(err);
+  }
 })
 
 router.delete('/auth/:spotId', requireAuth, async (req, res) => {
