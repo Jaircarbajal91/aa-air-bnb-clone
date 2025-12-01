@@ -11,9 +11,34 @@ const multer = require("multer");
 //  AWS_SECRET_ACCESS_KEY
 //  and aws will automatically use those environment variables
 
-const s3 = new S3Client({ 
-  region: process.env.AWS_REGION || "us-east-1" 
-});
+// Configure S3Client with explicit credentials if available
+const s3Config = {
+  region: process.env.AWS_REGION || "us-west-1"
+};
+
+// Explicitly set credentials if environment variables are available
+const hasAccessKey = !!process.env.AWS_ACCESS_KEY_ID;
+const hasSecretKey = !!process.env.AWS_SECRET_ACCESS_KEY;
+
+console.log('=== S3 CLIENT INITIALIZATION ===');
+console.log('AWS_ACCESS_KEY_ID exists:', hasAccessKey);
+console.log('AWS_SECRET_ACCESS_KEY exists:', hasSecretKey);
+console.log('AWS_REGION:', process.env.AWS_REGION || "us-west-1");
+
+if (hasAccessKey && hasSecretKey) {
+  s3Config.credentials = {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+  };
+  console.log('✅ S3Client configured with explicit credentials');
+} else {
+  console.warn('⚠️ AWS credentials not found in environment variables.');
+  console.warn('   Missing AWS_ACCESS_KEY_ID:', !hasAccessKey);
+  console.warn('   Missing AWS_SECRET_ACCESS_KEY:', !hasSecretKey);
+  console.warn('   S3Client will attempt to use default credential chain.');
+}
+
+const s3 = new S3Client(s3Config);
 
 // --------------------------- Public UPLOAD ------------------------
 
@@ -24,7 +49,7 @@ const singlePublicFileUpload = async (file) => {
   console.log('File mimetype:', file.mimetype);
   console.log('AWS_ACCESS_KEY_ID exists:', !!process.env.AWS_ACCESS_KEY_ID);
   console.log('AWS_SECRET_ACCESS_KEY exists:', !!process.env.AWS_SECRET_ACCESS_KEY);
-  console.log('AWS_REGION:', process.env.AWS_REGION || 'us-east-1');
+  console.log('AWS_REGION:', process.env.AWS_REGION || 'us-west-1');
   console.log('Bucket:', NAME_OF_BUCKET);
   
   const { originalname, mimetype, buffer } = await file;
