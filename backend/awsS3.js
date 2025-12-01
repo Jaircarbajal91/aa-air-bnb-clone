@@ -18,10 +18,21 @@ const s3 = new S3Client({
 // --------------------------- Public UPLOAD ------------------------
 
 const singlePublicFileUpload = async (file) => {
+  console.log('=== S3 UPLOAD START ===');
+  console.log('File name:', file.originalname);
+  console.log('File size:', file.size, 'bytes');
+  console.log('File mimetype:', file.mimetype);
+  console.log('AWS_ACCESS_KEY_ID exists:', !!process.env.AWS_ACCESS_KEY_ID);
+  console.log('AWS_SECRET_ACCESS_KEY exists:', !!process.env.AWS_SECRET_ACCESS_KEY);
+  console.log('AWS_REGION:', process.env.AWS_REGION || 'us-east-1');
+  console.log('Bucket:', NAME_OF_BUCKET);
+  
   const { originalname, mimetype, buffer } = await file;
   const path = require("path");
   // name of the file in your S3 bucket will be the date in ms plus the extension name
   const Key = new Date().getTime().toString() + path.extname(originalname);
+  console.log('S3 Key:', Key);
+  
   const uploadParams = {
     Bucket: NAME_OF_BUCKET,
     Key,
@@ -29,15 +40,24 @@ const singlePublicFileUpload = async (file) => {
     ACL: "public-read",
   };
   
+  console.log('Creating Upload instance...');
   const upload = new Upload({
     client: s3,
     params: uploadParams,
   });
   
-  const result = await upload.done();
-
-  // save the name of the file in your bucket as the key in your database to retrieve for later
-  return result.Location;
+  console.log('Starting upload...');
+  try {
+    const result = await upload.done();
+    console.log('✅ Upload successful! Location:', result.Location);
+    return result.Location;
+  } catch (error) {
+    console.error('❌ Upload failed!');
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
+    throw error;
+  }
 };
 
 const multiplePublicFileUpload = async (files) => {
