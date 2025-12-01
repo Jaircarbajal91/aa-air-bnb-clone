@@ -36,8 +36,8 @@ function CreateBookingForm({ spot, bookings }) {
     dayAfter.setHours(0, 0, 0, 0)
     return dayAfter
   }
-  const [startDate, setStartDate] = useState(format(getTomorrow(), 'yyy-MM-dd'))
-  const [endDate, setEndDate] = useState(format(getDayAfterTomorrow(), 'yyy-MM-dd'))
+  const [startDate, setStartDate] = useState(format(getTomorrow(), 'yyyy-MM-dd'))
+  const [endDate, setEndDate] = useState(format(getDayAfterTomorrow(), 'yyyy-MM-dd'))
   const [minEndDate, setMinEndDate] = useState(getDayAfterTomorrow())
   const [timeDifference, setTimeDifference] = useState(new Date(endDate).getTime() - new Date(startDate).getTime())
   const [daysCount, setDaysCount] = useState(timeDifference / (1000 * 3600 * 24))
@@ -190,9 +190,9 @@ function CreateBookingForm({ spot, bookings }) {
     // Ensure start date is at least tomorrow
     const tomorrow = getTomorrow()
     if (updatedStart.getTime() < tomorrow.getTime()) {
-      const validStart = format(tomorrow, 'yyy-MM-dd')
+      const validStart = format(tomorrow, 'yyyy-MM-dd')
       setStartDate(validStart)
-      const validEnd = format(getDayAfterTomorrow(), 'yyy-MM-dd')
+      const validEnd = format(getDayAfterTomorrow(), 'yyyy-MM-dd')
       setEndDate(validEnd)
       setMinEndDate(getDayAfterTomorrow())
       return
@@ -207,7 +207,7 @@ function CreateBookingForm({ spot, bookings }) {
     // Always ensure end date is at least 1 day after start date (not equal to or before)
     if (!updatedEnd || updatedEnd.getTime() <= updatedStart.getTime()) {
       // If end date is before or equal to start date, set it to 1 day after start
-      setEndDate(format(minEnd, 'yyy-MM-dd'))
+      setEndDate(format(minEnd, 'yyyy-MM-dd'))
     }
   }, [startDate, endDate])
 
@@ -231,7 +231,7 @@ function CreateBookingForm({ spot, bookings }) {
       // Auto-adjust end date to be 1 day after start if somehow they're equal
       const minEnd = new Date(startDateObj)
       minEnd.setDate(minEnd.getDate() + 1)
-      setEndDate(format(minEnd, 'yyy-MM-dd'))
+      setEndDate(format(minEnd, 'yyyy-MM-dd'))
       return
     }
     
@@ -320,7 +320,7 @@ function CreateBookingForm({ spot, bookings }) {
               name="trip-start"
               value={startDate}
               className="checkin"
-              min={format(getTomorrow(), 'yyy-MM-dd')}
+              min={format(getTomorrow(), 'yyyy-MM-dd')}
               max="2099-12-31"
               onChange={(e) => {
                 const selectedDate = e.target.value
@@ -330,9 +330,9 @@ function CreateBookingForm({ spot, bookings }) {
                 
                 // Prevent selecting dates before tomorrow
                 if (selectedDateObj.getTime() < tomorrow.getTime()) {
-                  setStartDate(format(tomorrow, 'yyy-MM-dd'))
+                  setStartDate(format(tomorrow, 'yyyy-MM-dd'))
                   // Set end date to day after tomorrow
-                  setEndDate(format(getDayAfterTomorrow(), 'yyy-MM-dd'))
+                  setEndDate(format(getDayAfterTomorrow(), 'yyyy-MM-dd'))
                 } else {
                   setStartDate(selectedDate)
                   // Automatically set end date to be at least 1 day after the new start date
@@ -343,7 +343,7 @@ function CreateBookingForm({ spot, bookings }) {
                   
                   // Always update end date if it's before or equal to new start date
                   if (!currentEndDateObj || currentEndDateObj.getTime() <= selectedDateObj.getTime()) {
-                    setEndDate(format(minEndDateObj, 'yyy-MM-dd'))
+                    setEndDate(format(minEndDateObj, 'yyyy-MM-dd'))
                   }
                 }
               }}
@@ -361,10 +361,10 @@ function CreateBookingForm({ spot, bookings }) {
               className="checkout"
               min={(() => {
                 const startDateObj = parseLocalDate(startDate)
-                if (!startDateObj) return format(getDayAfterTomorrow(), 'yyy-MM-dd')
+                if (!startDateObj) return format(getDayAfterTomorrow(), 'yyyy-MM-dd')
                 const minEnd = new Date(startDateObj)
                 minEnd.setDate(minEnd.getDate() + 1)
-                return format(minEnd, 'yyy-MM-dd')
+                return format(minEnd, 'yyyy-MM-dd')
               })()}
               max="2099-12-31"
               onChange={(e) => {
@@ -379,7 +379,7 @@ function CreateBookingForm({ spot, bookings }) {
                 
                 // Prevent selecting dates before or equal to start date (must be at least 1 day after)
                 if (selectedDateObj.getTime() <= startDateObj.getTime()) {
-                  setEndDate(format(minEnd, 'yyy-MM-dd'))
+                  setEndDate(format(minEnd, 'yyyy-MM-dd'))
                 } else {
                   setEndDate(selectedDate)
                 }
@@ -396,7 +396,7 @@ function CreateBookingForm({ spot, bookings }) {
                 minEnd.setHours(0, 0, 0, 0)
                 
                 if (selectedDateObj.getTime() <= startDateObj.getTime()) {
-                  setEndDate(format(minEnd, 'yyy-MM-dd'))
+                  setEndDate(format(minEnd, 'yyyy-MM-dd'))
                 }
               }}
               required

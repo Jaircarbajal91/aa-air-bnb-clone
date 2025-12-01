@@ -97,10 +97,6 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
   
   // Ensure bookings are at least 1 day ahead (start date must be tomorrow or later)
   // Parse dates as local dates (not UTC) to avoid timezone issues
-  const today = new Date()
-  today.setHours(0, 0, 0, 0, 0)
-  const tomorrow = new Date(today)
-  tomorrow.setDate(tomorrow.getDate() + 1)
   
   // Parse date string as local date (YYYY-MM-DD format)
   const parseLocalDate = (dateString) => {
@@ -109,6 +105,14 @@ router.post('/auth/:spotId', requireAuth, async (req, res, next) => {
     date.setHours(0, 0, 0, 0, 0)
     return date
   }
+  
+  // Get today's date as YYYY-MM-DD string and parse it consistently
+  // This ensures we compare dates in the same timezone context
+  const now = new Date()
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+  const today = parseLocalDate(todayStr)
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
   
   const startDateObj = parseLocalDate(startDate)
   const endDateObj = parseLocalDate(endDate)
@@ -343,10 +347,6 @@ router.put('/auth/:bookingId', requireAuth, async (req, res, next) => {
   
   // Ensure bookings are at least 1 day ahead (start date must be tomorrow or later)
   // Parse dates as local dates (not UTC) to avoid timezone issues
-  const today = new Date()
-  today.setHours(0, 0, 0, 0, 0)
-  const tomorrow = new Date(today)
-  tomorrow.setDate(tomorrow.getDate() + 1)
   
   // Parse date string as local date (YYYY-MM-DD format)
   const parseLocalDate = (dateString) => {
@@ -355,6 +355,14 @@ router.put('/auth/:bookingId', requireAuth, async (req, res, next) => {
     date.setHours(0, 0, 0, 0, 0)
     return date
   }
+  
+  // Get today's date as YYYY-MM-DD string and parse it consistently
+  // This ensures we compare dates in the same timezone context
+  const now = new Date()
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+  const today = parseLocalDate(todayStr)
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
   
   const startDateObj = parseLocalDate(startDate)
   const endDateObj = parseLocalDate(endDate)
@@ -504,8 +512,10 @@ router.delete('/auth/:bookingId', requireAuth, async (req, res) => {
   }
 
   const bookingStartDate = parseLocalDate(startDate)
-  const today = new Date()
-  today.setHours(0, 0, 0, 0, 0)
+  // Get today's date as YYYY-MM-DD string and parse it consistently
+  const now = new Date()
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
+  const today = parseLocalDate(todayStr)
 
   // Only prevent deletion if the booking has already started (start date is today or in the past)
   if (bookingStartDate && bookingStartDate.getTime() < today.getTime()) {
