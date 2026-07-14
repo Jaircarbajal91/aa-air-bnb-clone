@@ -1,0 +1,12 @@
+**/node_modules
+frontend/build
+.git
+.github
+**/.env
+**/.env.example
+.DS_Store
+*.md
+backend/db/*.db
+backend/db/*.db-journal
+.dockerignore
+Dockerfile

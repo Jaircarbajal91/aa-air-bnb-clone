@@ -1,50 +1,56 @@
-name: Deploy to Heroku
+name: Deploy to DigitalOcean
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE: ghcr.io/jaircarbajal91/jairbnb
+  SERVICE: jairbnb
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
         with:
-          fetch-depth: 0
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
         with:
-          node-version: '18'
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE }}:latest
+            ${{ env.IMAGE }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
-      - name: Install Heroku CLI
-        run: |
-          curl https://cli-assets.heroku.com/install.sh | sh
-
-      - name: Deploy to Heroku
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-          HEROKU_APP_NAME: ${{ secrets.HEROKU_APP_NAME }}
-        run: |
-          if [ -z "$HEROKU_APP_NAME" ]; then
-            echo "Error: HEROKU_APP_NAME secret is not set"
-            exit 1
-          fi
-          if [ -z "$HEROKU_API_KEY" ]; then
-            echo "Error: HEROKU_API_KEY secret is not set"
-            exit 1
-          fi
-          # Configure git with credentials
-          git config --global user.email "ci@github-actions"
-          git config --global user.name "GitHub Actions"
-          # Remove existing heroku remote if it exists
-          git remote remove heroku 2>/dev/null || true
-          # Set up git remote with authenticated URL
-          git remote add heroku https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git
-          # Push to Heroku
-          git push heroku HEAD:main --force
-
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -e
+            cd /opt/deploy
+            docker compose pull ${{ env.SERVICE }}
+            docker compose up -d ${{ env.SERVICE }}
+            docker compose exec -T ${{ env.SERVICE }} sh -c "cd backend && npx sequelize db:migrate"
+            docker image prune -f
